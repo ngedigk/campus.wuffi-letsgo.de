@@ -1,0 +1,12 @@
+.header-phone svg,
+.footer-phone svg,
+.footer-fb svg {
+    width: 15px;
+    fill: #fff;
+    margin-right: 12px;
+}
+
+.icon-text-left {
+    display: flex;
+    align-items: center;
+}

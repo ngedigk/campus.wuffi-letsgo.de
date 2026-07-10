@@ -1,0 +1,12 @@
+.course-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    display: flex;
+    margin: 0 -15px;
+}
+
+.course-list li {
+    margin: 0 15px;
+}

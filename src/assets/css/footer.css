@@ -1,0 +1,64 @@
+#footer {
+    color: #fff;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+    position: relative;
+    background-image: url('../images/irina-iriser-2Y4dE8sdhlc-unsplash_edit1920x600px.jpg');
+}
+
+/* WebP-Support prüfen */
+@supports (background-image: url("image.webp")) {
+    #footer {
+        background-image: url('../images/irina-iriser-2Y4dE8sdhlc-unsplash_edit1920x600px.webp');
+    }
+}
+
+/* AVIF-Support prüfen (wird von modernen Browsern unterstützt) */
+@supports (background-image: url("image.avif")) {
+    #footer {
+        background-image: url('../images/irina-iriser-2Y4dE8sdhlc-unsplash_edit1920x600px.avif');
+    }
+}
+
+#footer::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000cc;
+}
+
+#footer a {
+    color: #fff;
+}
+
+#footer-middle {
+    padding: 65px 0 73px;
+}
+
+#footer-bottom {
+    padding: 26px 0 24px;
+    position: relative;
+}
+
+#footer-bottom .container {
+    position: relative;
+}
+
+#footer-bottom .container::before {
+    content: "";
+    position: absolute;
+    top: -26px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #ded7d7;
+}
+
+.footer-phone,
+.footer-fb {
+    margin: 1rem 0;
+}

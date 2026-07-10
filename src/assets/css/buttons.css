@@ -1,0 +1,12 @@
+.button-primary {
+    display: inline-block;
+    padding: 7px 25px;
+    text-align: center;
+    font-size: 15px;
+    color: #fff;
+    background-color: var(--hauptfarbe);
+    border-radius: 5px;
+    text-transform: capitalize;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
