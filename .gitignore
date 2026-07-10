@@ -1,0 +1,4 @@
+src/vendor/
+.env
+db/data/
+.DS_Store

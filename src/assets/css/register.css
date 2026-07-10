@@ -1,0 +1,30 @@
+.password-meter {
+        margin-top: 12px;
+        width: 320px;
+    }
+
+    .password-bar {
+        height: 8px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    #password-progress {
+        height: 100%;
+        width: 0%;
+        background: #ef4444;
+        transition: width 0.3s ease, background-color 0.3s ease;
+    }
+
+    #password-label {
+        margin-top: 8px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #password-hints {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #6b7280;
+    }
