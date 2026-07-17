@@ -39,7 +39,7 @@
         type="password"
         id="password"
         name="password"
-        minlength="12"
+
         autocomplete="new-password"
         required
     >
@@ -57,7 +57,7 @@
     </div>
 
     <div id="password-hints">
-    Use 12+ characters with uppercase, lowercase, numbers, and symbols.
+        Recommendations: 12+ characters with uppercase, lowercase, numbers, and symbols.
     </div>
 
     <br><br>
@@ -71,7 +71,6 @@
     <input
         type="password"
         name="password_confirm"
-        minlength="12"
         autocomplete="new-password"
         required
     >
@@ -83,4 +82,3 @@
     </button>
 
 </form>
-
