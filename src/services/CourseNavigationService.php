@@ -6,13 +6,14 @@ class CourseNavigationService
     public function resolve(
         array $modules,
         array $slides,
-        array $get
+        array $get,
+        array $viewedSlideIds = []
     ): array {
 
         $slideByModule = [];
 
         foreach ($slides as $slide) {
-            $slideByModule[$slide['module_id']][] = $slide;
+            $slideByModule[(string)($slide['module_id'] ?? '')][] = $slide;
         }
 
         $moduleId = trim((string)($get['module_id'] ?? ''));
@@ -23,7 +24,7 @@ class CourseNavigationService
 
             if (
                 $moduleId !== '' &&
-                $module['id'] == $moduleId
+                (string)$module['id'] == $moduleId
             ) {
                 $selectedIndex = $index;
                 break;
@@ -31,13 +32,15 @@ class CourseNavigationService
         }
 
         $currentModule = $modules[$selectedIndex] ?? null;
-        $moduleSlides = $currentModule ? ($slideByModule[$currentModule['id']] ?? []) : [];
+        $moduleSlides = $currentModule ? ($slideByModule[(string)$currentModule['id']] ?? []) : [];
 
         if ($slideIndex >= count($moduleSlides)) {
             $slideIndex = max(0, count($moduleSlides)-1);
         }
 
         $currentSlide = $moduleSlides[$slideIndex] ?? null;
+        $slideUnlockState = $this->buildSlideUnlockState($slides, $viewedSlideIds);
+        $moduleUnlockState = $this->buildModuleUnlockState($modules, $slideByModule, $slideUnlockState);
 
         return [
             'slideByModule' => $slideByModule,
@@ -45,14 +48,58 @@ class CourseNavigationService
             'slidesForModule' => $moduleSlides,
             'currentSlide' => $currentSlide,
             'currentSlideIndex' => $slideIndex,
+            'slideUnlockState' => $slideUnlockState,
+            'moduleUnlockState' => $moduleUnlockState,
             ...$this->calculatePreviousNext(
                 $modules,
                 $slideByModule,
                 $selectedIndex,
                 $currentModule,
-                $slideIndex
+                $slideIndex,
+                $currentSlide,
+                $viewedSlideIds
             )
         ];
+    }
+
+    private function buildSlideUnlockState(array $slides, array $viewedSlideIds): array
+    {
+        $unlockState = [];
+        $previousSlideId = null;
+
+        foreach ($slides as $slide) {
+            $slideId = (string)($slide['id'] ?? '');
+
+            if ($slideId === '') {
+                continue;
+            }
+
+            $unlockState[$slideId] = $previousSlideId === null || !empty($viewedSlideIds[$previousSlideId]);
+            $previousSlideId = $slideId;
+        }
+
+        return $unlockState;
+    }
+
+    private function buildModuleUnlockState(array $modules, array $slideByModule, array $slideUnlockState): array
+    {
+        $moduleUnlockState = [];
+
+        foreach ($modules as $module) {
+            $moduleId = (string)($module['id'] ?? '');
+
+            if ($moduleId === '') {
+                continue;
+            }
+
+            $moduleSlides = $slideByModule[$moduleId] ?? [];
+            $firstSlide = $moduleSlides[0] ?? null;
+            $firstSlideId = (string)($firstSlide['id'] ?? '');
+
+            $moduleUnlockState[$moduleId] = $firstSlideId === '' || !empty($slideUnlockState[$firstSlideId]);
+        }
+
+        return $moduleUnlockState;
     }
 
     private function calculatePreviousNext(
@@ -60,7 +107,9 @@ class CourseNavigationService
         array $slides,
         int $moduleIndex,
         ?array $currentModule,
-        int $slideIndex
+        int $slideIndex,
+        ?array $currentSlide,
+        array $viewedSlideIds
     ): array {
 
         $previousModule = null;
@@ -68,10 +117,13 @@ class CourseNavigationService
 
         $nextModule = null;
         $nextSlideIndex = null;
+        $nextSlideUnlocked = false;
 
         if ($currentModule) {
 
-            $currentSlides = $slides[$currentModule['id']] ?? [];
+            $currentSlides = $slides[(string)$currentModule['id']] ?? [];
+            $currentSlideId = (string)($currentSlide['id'] ?? '');
+            $nextSlideUnlocked = $currentSlideId !== '' && !empty($viewedSlideIds[$currentSlideId]);
 
             if ($slideIndex > 0) {
                 $previousModule = $currentModule;
@@ -98,7 +150,8 @@ class CourseNavigationService
             'nextModule' => $nextModule,
             'nextSlideIndex' => $nextSlideIndex,
             'prevModule' => $previousModule,
-            'prevSlideIndex' => $previousSlideIndex
+            'prevSlideIndex' => $previousSlideIndex,
+            'nextSlideUnlocked' => $nextSlideUnlocked
         ];
     }
 }

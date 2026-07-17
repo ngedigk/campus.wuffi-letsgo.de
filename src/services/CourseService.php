@@ -84,6 +84,26 @@ class CourseService
             $get
         );
 
+        $this->progressService->recordSlideView($userUuid, $navigation['currentSlide']);
+
+        $slideIds = array_values(array_unique(array_map(
+            static fn(array $slide): string => (string)($slide['id'] ?? ''),
+            $slides
+        )));
+
+        $slideIds = array_values(array_filter($slideIds, static fn(string $slideId): bool => $slideId !== ''));
+
+        $viewedSlideIds = $slideIds === []
+            ? []
+            : $this->courseRepository->getViewedSlideIds($userUuid, $slideIds);
+
+        $navigation = $this->navigationService->resolve(
+            $modules,
+            $slides,
+            $get,
+            $viewedSlideIds
+        );
+
         $quiz = $this->quizService->handle(
             $navigation['currentSlide'],
             $post,
@@ -91,7 +111,6 @@ class CourseService
             $session
         );
 
-        $this->progressService->recordSlideView($userUuid, $navigation['currentSlide']);
         $this->progressService->completeModuleIfNeededBySlideViews(
             $userUuid,
             $navigation['currentModule'],
@@ -130,6 +149,7 @@ class CourseService
                 'modules' => $modules,
                 'slides' => $slides,
                 'completedModuleIds' => $completedModules,
+                'viewedSlideIds' => $viewedSlideIds,
                 'isCourseLocked' => false,
                 'redirectUrl' => $redirectUrl,
             ],

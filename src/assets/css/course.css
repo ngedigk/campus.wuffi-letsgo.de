@@ -31,6 +31,10 @@
     font-weight: bold;
 }
 
+.module-item.locked > span {
+    color: #999;
+}
+
 .slide-list {
     margin-top: 0.5rem;
     padding-left: 1rem;
@@ -43,6 +47,20 @@
 .slide-item.active > a {
     font-weight: bold;
     color: #1a73e8;
+}
+
+.slide-item.visited > a,
+.slide-item.visited > span {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.slide-item.locked > span {
+    color: #999;
+}
+
+.slide-link.disabled {
+    color: #999;
 }
 
 .course-main {
@@ -87,6 +105,13 @@
 
 .nav-button:hover {
     background: #1558b0;
+}
+
+.nav-button.disabled {
+    background: #bdbdbd;
+    color: #666;
+    pointer-events: none;
+    cursor: default;
 }
 
 .course-completion-message,
