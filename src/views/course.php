@@ -41,7 +41,11 @@
                             <a class="nav-button" href="<?= htmlspecialchars($courseService->buildCourseUrl($courseUuid, $prevModule['id'], $prevSlideIndex)) ?>">Previous</a>
                         <?php endif; ?>
                         <?php if ($nextModule !== null): ?>
-                            <a class="nav-button" href="<?= htmlspecialchars($courseService->buildCourseUrl($courseUuid, $nextModule['id'], $nextSlideIndex)) ?>">Next</a>
+                            <?php if (!empty($nextSlideUnlocked)): ?>
+                                <a class="nav-button" href="<?= htmlspecialchars($courseService->buildCourseUrl($courseUuid, $nextModule['id'], $nextSlideIndex)) ?>">Next</a>
+                            <?php else: ?>
+                                <span class="nav-button disabled">Next</span>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>
