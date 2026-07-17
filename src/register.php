@@ -8,18 +8,20 @@ require_once __DIR__ . '/validation.php';
 
 require_once __DIR__ . '/repositories/UserRepository.php';
 require_once __DIR__ . '/repositories/EmailVerificationRepository.php';
+require_once __DIR__ . '/repositories/RegistrationCodeRepository.php';
 require_once __DIR__ . '/services/RegistrationService.php';
 
 $error = '';
 $success = '';
 $email = '';
+$registrationCode = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     validateCsrf();
 
     $email = strtolower(trim($_POST['email'] ?? ''));
-
+    $registrationCode = trim($_POST['registration_code'] ?? '');
     $password = $_POST['password'] ?? '';
     $passwordConfirm = $_POST['password_confirm'] ?? '';
 
@@ -42,19 +44,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $service = new RegistrationService(
                 $pdo,
                 new UserRepository($pdo),
-                new EmailVerificationRepository($pdo)
+                new EmailVerificationRepository($pdo),
+                new RegistrationCodeRepository($pdo)
             );
 
             $result = $service->register(
                 $email,
-                $password
+                $password,
+                $registrationCode
             );
 
             $link = SITE_URL .
                 "/verify-email.php?token=" .
                 $result['token'];
 
-            require_once 'includes/mail.php';
+            require_once 'mail.php';
 
             sendMail(
                 $email,
@@ -72,6 +76,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             error_log($e);
 
+            var_dump($e);
+
             $error = "Unable to create account.";
         }
     }
@@ -86,6 +92,15 @@ $additionalJs = [
 ];
 ob_start();
 ?>
+<?php if ($success): ?>
+<h1>Account created</h1>
+<p class="success">
+    <?= htmlspecialchars($success) ?>
+</p>
+<a href="index.php">
+    Go to Login
+</a>
+<?php else: ?>
 <h1>Create Account</h1>
 
 <?php if ($error): ?>
@@ -96,20 +111,12 @@ ob_start();
 
 <?php endif; ?>
 
-
-<?php if ($success): ?>
-
-<p class="success">
-    <?= htmlspecialchars($success) ?>
-</p>
-
-<?php endif; ?>
-
 <?php require 'views/register-form.php'; ?>
 
 <a href="index.php">
     Already have an account?
 </a>
+<?php endif; ?>
 <?php
 $content = ob_get_clean();
 require_once __DIR__ . '/template.php';

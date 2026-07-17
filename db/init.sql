@@ -38,6 +38,15 @@ CREATE TABLE access_codes (
     FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
+CREATE TABLE registration_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(100) NOT NULL UNIQUE,
+    used_by_user_id CHAR(36) NULL,
+    used_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (used_by_user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
 CREATE TABLE user_courses (
     user_id CHAR(36) NOT NULL,
     course_id CHAR(36) NOT NULL,

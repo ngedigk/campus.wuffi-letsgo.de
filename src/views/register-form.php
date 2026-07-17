@@ -6,6 +6,19 @@
         value="<?= htmlspecialchars(csrfToken()) ?>"
     >
 
+    <label>Registration Code</label>
+    <br>
+
+    <input
+        type="text"
+        name="registration_code"
+        value="<?= htmlspecialchars($registrationCode) ?>"
+        autocomplete="off"
+        required
+    >
+
+    <br><br>
+
     <label>Email</label>
     <br>
 
@@ -70,3 +83,4 @@
     </button>
 
 </form>
+
