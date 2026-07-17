@@ -2,7 +2,7 @@
 
 function validatePassword(string $password): ?string
 {
-    if(strlen($password) < 12) {
+    /*if(strlen($password) < 12) {
         return "Password must be at least 12 characters.";
     }
 
@@ -20,7 +20,7 @@ function validatePassword(string $password): ?string
 
     if(!preg_match('/[^A-Za-z0-9]/', $password)) {
         return "Password must contain a special character.";
-    }
+    }*/
 
     return null;
 }

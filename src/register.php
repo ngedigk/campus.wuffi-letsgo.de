@@ -76,8 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             error_log($e);
 
-            var_dump($e);
-
             $error = "Unable to create account.";
         }
     }
