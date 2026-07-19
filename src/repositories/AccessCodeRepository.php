@@ -47,6 +47,17 @@ class AccessCodeRepository
         $stmt->execute([$code, $courseUuid]);
     }
 
+    public function createForRegistration(int $registrationCodeId, string $userId, string $courseId): int
+    {
+        $accessCode = bin2hex(random_bytes(16));
+        $stmt = $this->pdo->prepare("
+            INSERT INTO access_codes (code, course_id)
+            VALUES (?, ?)
+        ");
+        $stmt->execute([$accessCode, $courseId]);
+        return (int)$this->pdo->lastInsertId();
+    }
+
     public function list(): array
     {
         $stmt = $this->pdo->prepare("

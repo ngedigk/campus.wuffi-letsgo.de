@@ -9,6 +9,7 @@ require_once __DIR__ . '/validation.php';
 require_once __DIR__ . '/repositories/UserRepository.php';
 require_once __DIR__ . '/repositories/EmailVerificationRepository.php';
 require_once __DIR__ . '/repositories/RegistrationCodeRepository.php';
+require_once __DIR__ . '/repositories/AccessCodeRepository.php';
 require_once __DIR__ . '/services/RegistrationService.php';
 
 $error = '';
@@ -45,7 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $pdo,
                 new UserRepository($pdo),
                 new EmailVerificationRepository($pdo),
-                new RegistrationCodeRepository($pdo)
+                new RegistrationCodeRepository($pdo),
+                new AccessCodeRepository($pdo)
             );
 
             $result = $service->register(

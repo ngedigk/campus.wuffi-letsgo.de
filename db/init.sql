@@ -47,6 +47,14 @@ CREATE TABLE registration_codes (
     FOREIGN KEY (used_by_user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
+CREATE TABLE registration_code_courses (
+    registration_code_id INT NOT NULL,
+    course_id CHAR(36) NOT NULL,
+    PRIMARY KEY (registration_code_id, course_id),
+    FOREIGN KEY (registration_code_id) REFERENCES registration_codes(id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
+
 CREATE TABLE user_courses (
     user_id CHAR(36) NOT NULL,
     course_id CHAR(36) NOT NULL,
