@@ -6,7 +6,8 @@ class RegistrationService
         private PDO $pdo,
         private UserRepository $users,
         private EmailVerificationRepository $verifications,
-        private RegistrationCodeRepository $codes
+        private RegistrationCodeRepository $codes,
+        private AccessCodeRepository $accessCodes
     ) {}
 
     public function register(
@@ -49,6 +50,21 @@ class RegistrationService
             $this->users->create($userId, $email, $passwordHash);
             $this->verifications->create($userId, $token);
             $this->codes->markAsUsed($codeData['id'], $userId);
+
+            $courseIds = $this->codes->getCourseIds($codeData['id']);
+            $courseAccessPairs = [];
+            foreach ($courseIds as $courseId) {
+                $accessCodeId = $this->accessCodes->createForRegistration($codeData['id'], $userId, $courseId);
+                $courseAccessPairs[] = [
+                    'course_id' => $courseId,
+                    'access_code_id' => $accessCodeId
+                ];
+            }
+
+            if (!empty($courseAccessPairs)) {
+                $this->users->enrollInCourses($userId, $courseAccessPairs);
+            }
+
             $this->pdo->commit();
 
         } catch(Throwable $e) {

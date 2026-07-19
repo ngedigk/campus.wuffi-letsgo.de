@@ -75,4 +75,23 @@ class UserRepository
             $isAdmin
         ]);
     }
+
+    public function enrollInCourses(string $userId, array $courseAccessPairs): void
+    {
+        if (empty($courseAccessPairs)) {
+            return;
+        }
+        $placeholders = [];
+        $values = [];
+        foreach ($courseAccessPairs as $pair) {
+            $placeholders[] = '(?, ?, ?)';
+            $values[] = $userId;
+            $values[] = $pair['course_id'];
+            $values[] = $pair['access_code_id'];
+        }
+        $sql = "INSERT IGNORE INTO user_courses (user_id, course_id, access_code_id) VALUES " . implode(', ', $placeholders);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($values);
+    }
 }
+
