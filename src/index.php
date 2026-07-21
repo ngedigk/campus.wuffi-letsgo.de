@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if (isIpBlocked($pdo)) {
-        $error = "Too many login attempts. Please try again later.";
+        $error = "Zu viele Anmeldeversuche. Bitte versuchen Sie es später nochmal.";
     } else {
 
         $stmt = $pdo->prepare(
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ) {
 
             if ((int)$user['email_verified'] !== 1) {
-                $error = "Please verify your email first.";
+                $error = "Bestätigen Sie bitte erst Ihre E-Mail Adresse.";
             } else {
                 session_regenerate_id(true);
 
@@ -62,12 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         else {
             recordFailedLogin($pdo);
-            $error = "Invalid email or password";
+            $error = "E-Mail oder Passwort ungültig";
         }
     }
 }
 
-$pageTitle = 'Home';
+$pageTitle = 'Startseite';
 
 ob_start();
 ?>
