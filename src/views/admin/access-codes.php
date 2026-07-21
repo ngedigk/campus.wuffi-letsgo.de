@@ -12,7 +12,6 @@
             <tr>
                 <th>Code</th>
                 <th>Course</th>
-                <th>Created</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>
@@ -26,8 +25,15 @@
                 <?php foreach ($accessCodes as $code): ?>
                     <tr>
                         <td><code><?= htmlspecialchars($code['code']) ?></code></td>
-                        <td><?= htmlspecialchars($code['course_title'] ?? 'Unknown Course') ?></td>
-                        <td><?= htmlspecialchars($code['created_at'] ?? 'N/A') ?></td>
+                        <td>
+                            <?php if (!empty($code['course_title'])): ?>
+                                <a href="admin.php?page=courses&course_id=<?= $code['course_id'] ?>">
+                                    <?= htmlspecialchars($code['course_title']) ?>
+                                </a>
+                            <?php else: ?>
+                                Unknown Course
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <span class="status-badge active">Active</span>
                         </td>
