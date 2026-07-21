@@ -95,8 +95,7 @@ ob_start();
     $courseService = new CourseService(
         $courseRepository,
         new ModuleRepository($pdo),
-        new SlideRepository($pdo),
-        new QuizService($courseRepository)
+        new SlideRepository($pdo)
     );
 
     $courses = $courseService->getAllForUser($user['id']);
