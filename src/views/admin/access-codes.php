@@ -4,6 +4,16 @@
     </button>
 </div>
 
+<form
+    id="delete-access-code-form"
+    method="post"
+    action="admin.php?page=access-codes"
+>
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+    <input type="hidden" name="action" value="delete_access_code">
+    <input type="hidden" id="delete-access-code-id" name="access_code_id" value="">
+</form>
+
 <div class="data-table">
     <table>
         <thead>
