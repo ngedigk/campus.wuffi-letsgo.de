@@ -61,8 +61,10 @@ class AccessCodeRepository
     public function list(): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, code, course_id
-            FROM access_codes
+            SELECT ac.id, ac.code, ac.course_id, c.title as course_title
+            FROM access_codes as ac
+            LEFT JOIN courses as c
+            ON ac.course_id = c.id
         ");
 
         $stmt->execute();

@@ -46,6 +46,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="admin.php?page=access-codes" class="<?= $activePage === 'access-codes' ? 'active' : '' ?>">
+                            <span>Access Codes</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin.php?page=settings" class="<?= $activePage === 'settings' ? 'active' : '' ?>">
                             <span>Settings</span>
                         </a>
