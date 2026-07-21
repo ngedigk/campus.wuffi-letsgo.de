@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
-        $error = "Invalid email address.";
+        $error = "Ungültige E-Mail Adresse.";
 
     } elseif ($password !== $passwordConfirm) {
 
-        $error = "Passwords do not match.";
+        $error = "Passwörter stimmen nicht überein.";
 
     } elseif ($passwordError = validatePassword($password)) {
 
@@ -64,26 +64,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             sendMail(
                 $email,
-                "Verify your email",
+                "Bestätigen Sie Ihre E-Mail",
                 "
-                <h1>Verify your account</h1>
-                <p>Click the link below:</p>
+                <h1>Account verifizieren</h1>
+                <p>Klicken Sie auf den unteren Link:</p>
                 <a href='$link'>$link</a>
                 "
             );
 
-            $success = "Registration successful. Check your email.";
+            $success = "Registrierung erfolgreich. Überprüfen Sie Ihre E-Mails.";
 
         } catch (Throwable $e) {
 
             error_log($e);
 
-            $error = "Unable to create account.";
+            $error = "Bei der Erstellung des Accounts ist ein Problem aufgetreten. Informieren Sie den Anbieter und versuchen Sie es später nochmal.";
         }
     }
 }
 
-$pageTitle = 'Register';
+$pageTitle = 'Registrierung';
 $additionalCss = [
     '/assets/css/register.css'
 ];
@@ -93,15 +93,15 @@ $additionalJs = [
 ob_start();
 ?>
 <?php if ($success): ?>
-<h1>Account created</h1>
+<h1>Account erstellt</h1>
 <p class="success">
     <?= htmlspecialchars($success) ?>
 </p>
 <a href="index.php">
-    Go to Login
+    Zur Anmeldung
 </a>
 <?php else: ?>
-<h1>Create Account</h1>
+<h1>Account erstellen</h1>
 
 <?php if ($error): ?>
 
@@ -114,7 +114,7 @@ ob_start();
 <?php require 'views/register-form.php'; ?>
 
 <a href="index.php">
-    Already have an account?
+    Sie haben bereits einen Account?
 </a>
 <?php endif; ?>
 <?php
