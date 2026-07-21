@@ -79,4 +79,10 @@ class AccessCodeRepository
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function delete(int $accessCodeId): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM access_codes WHERE id = ?");
+        $stmt->execute([$accessCodeId]);
+    }
 }

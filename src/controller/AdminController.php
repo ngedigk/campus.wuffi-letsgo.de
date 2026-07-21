@@ -120,6 +120,7 @@ class AdminController
                 $this->renderCourses($context);
                 break;
             case 'access-codes':
+                $context['additionalJs'][] = '/assets/js/admin/access-codes.js';
                 $this->renderAccessCodes($context);
                 break;
             case 'users':
@@ -159,6 +160,9 @@ class AdminController
                     break;
                 case 'create_access_code':
                     $this->handleCreateAccessCode();
+                    break;
+                case 'delete_access_code':
+                    $this->handleDeleteAccessCode();
                     break;
                 case 'create_module':
                     $this->handleCreateModule();
@@ -262,6 +266,13 @@ class AdminController
 
         $this->accessCodeRepository->create($code, $courseId);
         $_SESSION['admin_success'] = 'Access code created.';
+    }
+
+    private function handleDeleteAccessCode(): void
+    {
+        $accessCodeId = trim($_POST['access_code_id'] ?? '');
+        $this->accessCodeRepository->delete($accessCodeId);
+        $_SESSION['admin_success'] = 'Access code deleted and removed user access.';
     }
 
     private function handleCreateModule(): void

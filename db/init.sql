@@ -64,7 +64,7 @@ CREATE TABLE user_courses (
     UNIQUE KEY access_code_id (access_code_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (course_id) REFERENCES courses(id),
-    FOREIGN KEY (access_code_id) REFERENCES access_codes(id) ON DELETE SET NULL
+    FOREIGN KEY (access_code_id) REFERENCES access_codes(id) ON DELETE CASCADE
 );
 
 CREATE TABLE course_modules (
