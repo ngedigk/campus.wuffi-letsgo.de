@@ -1,5 +1,3 @@
-<?php if ($isAdmin): ?>
-
 <div class="page-actions">
     <button class="btn btn-primary" onclick="document.getElementById('createAccessCodeModal').style.display='flex'">
         + Create Access Code
@@ -84,17 +82,3 @@
         </form>
     </div>
 </div>
-
-<script>
-function editAccessCode(id) {
-    console.log('Edit access code:', id);
-}
-
-function deleteAccessCode(id) {
-    if (confirm('Are you sure you want to delete this access code?')) {
-        console.log('Delete access code:', id);
-    }
-}
-</script>
-
-<?php endif; ?>

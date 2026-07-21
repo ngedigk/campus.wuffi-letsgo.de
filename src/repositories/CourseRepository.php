@@ -30,9 +30,7 @@ class CourseRepository
                 c.id,
                 c.title,
                 c.description,
-                c.prerequisite_course_id,
-                uc.is_completed,
-                uc.completed_at
+                c.prerequisite_course_id
             FROM courses c
             INNER JOIN user_courses uc
                 ON uc.course_id = c.id
@@ -75,9 +73,7 @@ class CourseRepository
                 c.id,
                 c.title,
                 c.description,
-                c.prerequisite_course_id,
-                uc.is_completed,
-                uc.completed_at
+                c.prerequisite_course_id
             FROM courses c
             INNER JOIN user_courses uc
                 ON uc.course_id = c.id

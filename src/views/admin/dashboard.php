@@ -1,4 +1,3 @@
-<?php if ($isAdmin): ?>
 <h1>Welcome, <?= htmlspecialchars($user['email']) ?>!</h1>
 
 <h2>Your Admin Dashboard</h2>
@@ -17,4 +16,3 @@
         <span class="stat-number"><?= count($allUsers) ?></span>
     </div>
 </div>
-<?php endif; ?>

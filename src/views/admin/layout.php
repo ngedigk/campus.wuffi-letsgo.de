@@ -111,6 +111,10 @@
                 
             </div>
         </main>
+
+        <!-- Create Course Modals -->
+        <?php require __DIR__ . '/courses/partials/modals/create-course-modal.php'; ?>
+    
     </div>
     <?php if (!empty($additionalJs)): ?>
         <?php foreach ($additionalJs as $jsFile): ?>

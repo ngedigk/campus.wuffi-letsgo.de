@@ -1,5 +1,3 @@
-
-<?php if ($isAdmin): ?>
 <div class="admin-courses-layout">
     <!-- Course Details -->
     <div class="course-details-panel">
@@ -10,6 +8,10 @@
             <!-- Modules Section -->
             <?php require __DIR__ . '/partials/modules-list.php'; ?>
             <?php require __DIR__ . '/partials/module-form-delete.php'; ?>
+
+            <!-- Create Module Modals -->
+            <?php require __DIR__ . '/partials/modals/create-module-modal.php'; ?>
+            <?php require __DIR__ . '/partials/modals/create-slide-modal.php'; ?>
 
             <?php if ($selectedModule): ?>
                 <!-- Module Details Section -->
@@ -34,7 +36,3 @@
         <?php endif; ?>
     </div>
 </div>
-
-<!-- Modals -->
-<?php require __DIR__ . '/partials/modals.php'; ?>
-<?php endif; ?>
