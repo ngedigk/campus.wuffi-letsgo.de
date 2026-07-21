@@ -228,10 +228,10 @@ class AdminController
         $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
 
         $this->courseService->create(new CreateCourse(
-            generateUuid(),
-            $title,
-            $description,
-            $prerequisiteCourseId
+            uuid: generateUuid(),
+            title: $title,
+            description: $description,
+            prerequisiteCourseId: $prerequisiteCourseId
         ));
         $_SESSION['admin_success'] = 'Course created.';
     }
@@ -246,10 +246,10 @@ class AdminController
         if ($title === '') throw new Exception('Please provide a valid title.');
 
         $this->courseService->update(new CreateCourse(
-            $courseId,
-            $title,
-            $description,
-            $prerequisiteCourseId
+            uuid: $courseId,
+            title: $title,
+            description: $description,
+            prerequisiteCourseId: $prerequisiteCourseId
         ));
         $_SESSION['admin_success'] = 'Course updated.';
     }
@@ -270,10 +270,15 @@ class AdminController
     {
         $courseId = trim($_POST['course_id'] ?? '');
         $title = trim($_POST['title'] ?? '');
+        $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($courseId === '' || $title === '') throw new Exception('Please provide a course and module title.');
 
-        $moduleId = $this->moduleService->create(new CreateModule($courseId, $title, 0));
+        $moduleId = $this->moduleService->create(new CreateModule(
+            courseId: $courseId,
+            title: $title,
+            sortOrder: $sortOrder
+        ));
         $_SESSION['admin_success'] = "Module $moduleId created.";
     }
 
@@ -285,7 +290,12 @@ class AdminController
 
         if ($moduleId === 0 || $title === '') throw new Exception('Please provide a valid module ID and title.');
 
-        $this->moduleService->update(new Module($moduleId, $title, $sortOrder, null));
+        $this->moduleService->update(new Module(
+            id: $moduleId,
+            title: $title,
+            sortOrder: $sortOrder,
+            slides: null
+        ));
         $_SESSION['admin_success'] = 'Module updated.';
     }
 
@@ -293,10 +303,19 @@ class AdminController
     {
         $moduleId = (int)trim($_POST['module_id'] ?? '');
         $title = trim($_POST['title'] ?? '');
+        $audioUrl = trim($_POST['audio_url'] ?? '');
+        $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') throw new Exception('Please provide a slide title.');
 
-        $slideId = $this->slideService->create(new CreateSlide($moduleId, $title, '', '', 0, false));
+        $slideId = $this->slideService->create(new CreateSlide(
+            moduleId: $moduleId,
+            title: $title,
+            audioUrl: $audioUrl,
+            htmlContent: '',
+            sortOrder: $sortOrder,
+            isQuiz: false
+        ));
         $_SESSION['admin_success'] = "Slide $slideId created.";
     }
 
@@ -311,7 +330,14 @@ class AdminController
 
         if ($slideId === 0 || $title === '') throw new Exception('Please provide a valid slide ID and title.');
 
-        $this->slideService->update(new Slide($slideId, $title, $htmlContent, $audioUrl, $sortOrder, $isQuiz));
+        $this->slideService->update(new Slide(
+            id: $slideId,
+            title: $title,
+            htmlContent: $htmlContent,
+            audioUrl: $audioUrl,
+            sortOrder: $sortOrder,
+            isQuiz: $isQuiz
+        ));
         $_SESSION['admin_success'] = 'Slide updated.';
     }
 

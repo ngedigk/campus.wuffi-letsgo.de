@@ -13,6 +13,11 @@
                 <label for="new-module-title">Module Title *</label>
                 <input type="text" id="new-module-title" name="title" placeholder="Enter module title" required>
             </div>
+
+            <div class="form-group">
+                <label for="new-module-title">Sort Order</label>
+                <input type="text" id="new-module-sort" name="sort_order" value="0">
+            </div>
             
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('createModuleModal').style.display='none'">Cancel</button>
