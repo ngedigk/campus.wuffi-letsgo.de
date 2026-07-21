@@ -56,6 +56,20 @@ class UserRepository
         $stmt->execute([(int)$isAdmin, $id]);
     }
 
+    public function hasAnyAdmin(): bool
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT 1
+            FROM users
+            WHERE is_admin = ?
+            LIMIT 1
+        ");
+
+        $stmt->execute([(int)true]);
+
+        return $stmt->fetchColumn() !== false;
+    }
+
     public function verify(string $id): void
     {
         $stmt = $this->pdo->prepare("
@@ -71,7 +85,7 @@ class UserRepository
         string $id,
         string $email,
         string $passwordHash,
-        bool $isAdmin
+        bool $isAdmin = false
     ): void {
 
         $stmt = $this->pdo->prepare("

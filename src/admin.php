@@ -13,7 +13,6 @@ require_once __DIR__ . '/repositories/UserRepository.php';
 
 require_once __DIR__ . '/services/SlideService.php';
 require_once __DIR__ . '/services/ModuleService.php';
-require_once __DIR__ . '/services/QuizService.php';
 require_once __DIR__ . '/services/CourseService.php';
 require_once __DIR__ . '/services/UserService.php';
 
@@ -38,7 +37,6 @@ $accessCodeRepository = new AccessCodeRepository($pdo);
 $slideService = new SlideService($slideRepository);
 $moduleService = new ModuleService($moduleRepository);
 
-$quizService = new QuizService($slideRepository);
 $courseService = new CourseService(
     $courseRepository,
     $moduleRepository,
