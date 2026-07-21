@@ -15,7 +15,6 @@ class AdminController
     private SlideService $slideService;
     private ModuleService $moduleService;
     private string $basePath;
-    private string $baseCss;
 
     public function __construct(
         CourseService $courseService,
@@ -31,7 +30,6 @@ class AdminController
         $this->slideService = $slideService;
         $this->moduleService = $moduleService;
         $this->basePath = $basePath;
-        $this->baseCss = '/assets/css/admin.css';
     }
 
     public function handle(string $page): void
@@ -65,8 +63,8 @@ class AdminController
             'adminError' => $adminError,
             'adminSuccess' => $adminSuccess,
             'breadcrumb' => $breadcrumb,
-            'additionalCss' => [$this->baseCss],
-            'additionalJs' => [],
+            'additionalCss' => ['/assets/css/admin.css'],
+            'additionalJs' => ['/assets/js/admin/general.js'],
             'allCourses' => $allCourses
         ];
 
