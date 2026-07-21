@@ -7,8 +7,7 @@ class CourseService
     public function __construct(
         private CourseRepository $courseRepository,
         private ModuleRepository $moduleRepository,
-        private SlideRepository $slideRepository,
-        private QuizService $quizService
+        private SlideRepository $slideRepository
     ) {}
 
     public function create(
