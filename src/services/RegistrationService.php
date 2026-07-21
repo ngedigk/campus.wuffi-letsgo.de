@@ -4,10 +4,10 @@ class RegistrationService
 {
     public function __construct(
         private PDO $pdo,
-        private UserRepository $users,
-        private EmailVerificationRepository $verifications,
-        private RegistrationCodeRepository $codes,
-        private AccessCodeRepository $accessCodes
+        private UserRepository $userRepository,
+        private EmailVerificationRepository $emailVerificationRepository,
+        private RegistrationCodeRepository $registrationCodeRepository,
+        private AccessCodeRepository $accessCodeRepository
     ) {}
 
     public function register(
@@ -16,20 +16,20 @@ class RegistrationService
         string $registrationCode
     ): array {
 
-        if ($this->users->existsByEmail($email)) {
+        if ($this->userRepository->existsByEmail($email)) {
 
             throw new Exception(
                 "Email already exists."
             );
         }
 
-        $codeData = $this->codes->findByCodeForUpdate($registrationCode);
+        $codeData = $this->registrationCodeRepository->findByCodeForUpdate($registrationCode);
 
         if (!$codeData) {
             throw new Exception("Invalid registration code.");
         }
 
-        if ($this->codes->isUsed($registrationCode)) {
+        if ($this->registrationCodeRepository->isUsed($registrationCode)) {
             throw new Exception("Registration code has already been used.");
         }
 
@@ -47,14 +47,14 @@ class RegistrationService
         $this->pdo->beginTransaction();
 
         try {
-            $this->users->create($userId, $email, $passwordHash);
-            $this->verifications->create($userId, $token);
-            $this->codes->markAsUsed($codeData['id'], $userId);
+            $this->userRepository->create($userId, $email, $passwordHash);
+            $this->emailVerificationRepository->create($userId, $token);
+            $this->registrationCodeRepository->markAsUsed($codeData['id'], $userId);
 
-            $courseIds = $this->codes->getCourseIds($codeData['id']);
+            $courseIds = $this->registrationCodeRepository->getCourseIds($codeData['id']);
             $courseAccessPairs = [];
             foreach ($courseIds as $courseId) {
-                $accessCodeId = $this->accessCodes->createForRegistration($codeData['id'], $userId, $courseId);
+                $accessCodeId = $this->accessCodeRepository->createForRegistration($codeData['id'], $userId, $courseId);
                 $courseAccessPairs[] = [
                     'course_id' => $courseId,
                     'access_code_id' => $accessCodeId
@@ -62,7 +62,7 @@ class RegistrationService
             }
 
             if (!empty($courseAccessPairs)) {
-                $this->users->enrollInCourses($userId, $courseAccessPairs);
+                $this->userRepository->enrollInCourses($userId, $courseAccessPairs);
             }
 
             $this->pdo->commit();
