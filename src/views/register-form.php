@@ -6,7 +6,7 @@
         value="<?= htmlspecialchars(csrfToken()) ?>"
     >
 
-    <label>Registration Code</label>
+    <label>Registrierungscode</label>
     <br>
 
     <input
@@ -19,7 +19,7 @@
 
     <br><br>
 
-    <label>Email</label>
+    <label>E-Mail</label>
     <br>
 
     <input
@@ -32,7 +32,7 @@
 
     <br><br>
 
-    <label>Password</label>
+    <label>Passwort</label>
     <br>
 
     <input
@@ -51,19 +51,19 @@
         </div>
 
         <div id="password-label">
-            Enter a password
+            Passwort eingeben
         </div>
 
     </div>
 
     <div id="password-hints">
-        Recommendations: 12+ characters with uppercase, lowercase, numbers, and symbols.
+        Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
     </div>
 
     <br><br>
 
     <label>
-    Confirm password
+    Passwort bestätigen
     </label>
 
     <br>
@@ -78,7 +78,7 @@
     <br><br>
 
     <button type="submit">
-        Register
+        Registrieren
     </button>
 
 </form>
