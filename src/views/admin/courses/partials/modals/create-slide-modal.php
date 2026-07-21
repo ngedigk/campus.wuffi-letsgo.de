@@ -15,6 +15,16 @@
                 <input type="text" id="new-slide-title" name="title" placeholder="Enter slide title" required>
             </div>
             
+            <div class="form-group">
+                <label for="new-slide-title">Audio Url</label>
+                <input type="text" id="new-slide-audio-url" name="audio_url" placeholder="Enter audio file name. (example: filename.mp3)">
+            </div>
+
+            <div class="form-group">
+                <label for="new-module-title">Sort Order</label>
+                <input type="text" id="new-module-sort" name="sort_order" value="0">
+            </div>
+            
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('createSlideModal').style.display='none'">Cancel</button>
                 <button type="submit" class="btn btn-primary">Create Slide</button>
