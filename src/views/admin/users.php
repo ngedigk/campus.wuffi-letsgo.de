@@ -1,5 +1,3 @@
-<?php if ($isAdmin): ?>
-
 <div class="data-table">
     <table>
         <thead>
@@ -79,21 +77,3 @@
         </tbody>
     </table>
 </div>
-
-<script>
-function grantAdmin(userId) {
-    if (confirm('Are you sure you want to grant admin access to this user?')) {
-        // Implementation would go here
-        console.log('Grant admin to:', userId);
-    }
-}
-
-function revokeAdmin(userId) {
-    if (confirm('Are you sure you want to revoke admin access from this user?')) {
-        // Implementation would go here
-        console.log('Revoke admin from:', userId);
-    }
-}
-</script>
-
-<?php endif; ?>
