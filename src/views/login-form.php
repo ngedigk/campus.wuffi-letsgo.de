@@ -1,4 +1,4 @@
-<h1>Login</h1>
+<h1>Anmelden</h1>
 
 <?php if($error): ?>
 <p><?= htmlspecialchars($error) ?></p>
@@ -12,7 +12,7 @@
         value="<?= htmlspecialchars(csrfToken()) ?>"
     >
 
-    <label>Email</label>
+    <label>E-Mail</label>
     <br>
 
     <input
@@ -23,7 +23,7 @@
 
     <br><br>
 
-    <label>Password</label>
+    <label>Passwort</label>
     <br>
 
     <input
@@ -35,7 +35,7 @@
     <br><br>
 
     <button type="submit">
-        Login
+        Anmelden
     </button>
 
 </form>
@@ -43,11 +43,11 @@
 <br>
 
 <a href="register.php">
-Create account
+Account erstellen
 </a>
 
 <br>
 
 <a href="forgot-password.php">
-Forgot password
+Passwort vergessen?
 </a>
