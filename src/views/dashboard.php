@@ -11,20 +11,20 @@
         <?php foreach ($courses as $course): ?>
             <?php
             $courseCardClass = 'course-card';
-            if (!empty($course['is_completed'])) {
+            if (!empty($course->isCompleted)) {
                 $courseCardClass .= ' completed';
-            } elseif (empty($course['is_unlocked'])) {
+            } elseif (empty($course->isUnlocked)) {
                 $courseCardClass .= ' locked';
             }
             ?>
             <li class="<?= htmlspecialchars($courseCardClass) ?>">
                 <div class="card-image"></div>
                 <div class="card-text">
-                    <strong><?= htmlspecialchars($course['title']) ?></strong>
-                    <div><?= htmlspecialchars($course['description']) ?></div>
+                    <strong><?= htmlspecialchars($course->title) ?></strong>
+                    <div><?= htmlspecialchars($course->description) ?></div>
                     <br>
-                    <?php if (!empty($course['is_unlocked'])): ?>
-                        <a href="course.php?id=<?= urlencode($course['id']) ?>" class="button-primary">
+                    <?php if (!empty($course->isUnlocked)): ?>
+                        <a href="course.php?id=<?= urlencode($course->uuid) ?>" class="button-primary">
                             Open Course
                         </a>
                     <?php else: ?>

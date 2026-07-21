@@ -1,6 +1,6 @@
 <?php
 
-class QuizResult
+final class QuizResult
 {
     public function __construct(
         public array $questions = [],

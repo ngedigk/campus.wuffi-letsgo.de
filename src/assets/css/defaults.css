@@ -1,14 +1,14 @@
 :root {
-  --hauptfarbe: rgb(19, 153, 146);
+    --hauptfarbe: rgb(19, 153, 146);
 }
 
 *, ::after, ::before {
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body, html {
-  overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 body {
@@ -23,16 +23,22 @@ body {
 }
 
 .sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-  border: 0;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
 }
 
 a {
     text-decoration: none;
+}
+
+img {
+    display: inline-block;
+    max-width: 100%;
+    height: auto;
 }

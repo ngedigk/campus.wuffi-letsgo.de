@@ -1,12 +1,29 @@
 <?php
 
+require_once __DIR__ . '/../dto/Course.php';
+
 class CourseRepository
 {
     public function __construct(
         private PDO $pdo
     ) {}
 
-    public function getCourseForUser(string $userUuid, string $courseUuid): ?array
+    public function get(string $courseUuid): Course
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM courses
+            WHERE id = ?
+        ");
+
+        $stmt->execute([$courseUuid]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $this->createDto($row);
+    }
+
+    public function getCourseForUser(string $userUuid, string $courseUuid): ?Course
     {
         $stmt = $this->pdo->prepare("
             SELECT
@@ -26,91 +43,55 @@ class CourseRepository
 
         $stmt->execute([$userUuid, $courseUuid]);
 
-        $course = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return $course ?: null;
-    }
-
-    public function isCourseUnlocked(string $userUuid, ?string $prerequisiteCourseId): bool
-    {
-        if ($prerequisiteCourseId === null || $prerequisiteCourseId === '') {
-            return true;
+        if ($row === false) {
+            return null;
         }
 
-        $stmt = $this->pdo->prepare("
-            SELECT is_completed
-            FROM user_courses
-            WHERE user_id = ?
-              AND course_id = ?
-        ");
-
-        $stmt->execute([$userUuid, $prerequisiteCourseId]);
-
-        return (int)$stmt->fetchColumn() === 1;
+        return $this->createDto($row);
     }
 
-    public function getModules(string $courseUuid): array
+    public function getAll(): array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM courses
+        ");
+
+        $stmt->execute();
+
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(function($row) {
+            return $this->createDto($row);
+        }, $rows);
+    }
+
+    public function getAllForUser(string $userUuid): array
     {
         $stmt = $this->pdo->prepare("
             SELECT
-                id,
-                title,
-                sort_order
-            FROM course_modules
-            WHERE course_id = ?
-            ORDER BY sort_order
-        ");
-
-        $stmt->execute([$courseUuid]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getSlides(string $courseUuid): array
-    {
-        $stmt = $this->pdo->prepare("
-            SELECT
-                ms.*,
-                cm.title AS module_title
-            FROM module_slides ms
-            INNER JOIN course_modules cm
-                ON cm.id = ms.module_id
-            WHERE cm.course_id = ?
-            ORDER BY
-                cm.sort_order,
-                ms.sort_order
-        ");
-
-        $stmt->execute([$courseUuid]);
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getCompletedModuleIds(string $userUuid, array $moduleIds): array
-    {
-        if (empty($moduleIds)) {
-            return [];
-        }
-
-        $placeholders = implode(',', array_fill(0, count($moduleIds), '?'));
-
-        $stmt = $this->pdo->prepare("
-            SELECT module_id
-            FROM user_module_completions
+                c.id,
+                c.title,
+                c.description,
+                c.prerequisite_course_id,
+                uc.is_completed,
+                uc.completed_at
+            FROM courses c
+            INNER JOIN user_courses uc
+                ON uc.course_id = c.id
             WHERE
-                user_id = ?
-                AND module_id IN ($placeholders)
+                uc.user_id = ?
         ");
 
-        $stmt->execute(array_merge([$userUuid], $moduleIds));
+        $stmt->execute([$userUuid]);
 
-        $completed = [];
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $moduleId) {
-            $completed[(string)$moduleId] = true;
-        }
-
-        return $completed;
+        return array_map(function($row) {
+            return $this->createDto($row);
+        }, $rows);
     }
 
     public function getQuestions(array $slideIds): array
@@ -153,99 +134,7 @@ class CourseRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function recordSlideView(string $userUuid, string $slideId): void
-    {
-        $stmt = $this->pdo->prepare("
-            INSERT IGNORE INTO user_slide_views
-            (
-                user_id,
-                slide_id,
-                viewed_at
-            )
-            VALUES
-            (
-                ?,
-                ?,
-                NOW()
-            )
-        ");
-
-        $stmt->execute([$userUuid, $slideId]);
-    }
-
-    public function getViewedSlideIds(string $userUuid, array $slideIds): array
-    {
-        if (empty($slideIds)) {
-            return [];
-        }
-
-        $placeholders = implode(',', array_fill(0, count($slideIds), '?'));
-
-        $stmt = $this->pdo->prepare("
-            SELECT slide_id
-            FROM user_slide_views
-            WHERE user_id = ?
-              AND slide_id IN ($placeholders)
-        ");
-
-        $stmt->execute(array_merge([$userUuid], $slideIds));
-
-        $viewed = [];
-
-        foreach ($stmt->fetchAll(PDO::FETCH_COLUMN) as $slideId) {
-            $viewed[(string)$slideId] = true;
-        }
-
-        return $viewed;
-    }
-
-    public function completeModule(string $userUuid, string $moduleId): void
-    {
-        $stmt = $this->pdo->prepare("
-            INSERT IGNORE INTO user_module_completions
-            (
-                user_id,
-                module_id,
-                completed_at
-            )
-            VALUES
-            (
-                ?,
-                ?,
-                NOW()
-            )
-        ");
-
-        $stmt->execute([
-            $userUuid,
-            $moduleId
-        ]);
-    }
-
-    public function completeCourse(string $userUuid, string $courseUuid): void
-    {
-        $stmt = $this->pdo->prepare("
-            UPDATE user_courses
-            SET
-                is_completed = 1,
-                completed_at = NOW()
-            WHERE
-                user_id = ?
-                AND course_id = ?
-        ");
-
-        $stmt->execute([
-            $userUuid,
-            $courseUuid
-        ]);
-    }
-
-    public function create(
-        string $id,
-        string $title,
-        string $description,
-        ?string $prerequisiteCourseId
-    ): void {
+    public function create(CreateCourse $course): string {
         $stmt = $this->pdo->prepare("
             INSERT INTO courses
             (
@@ -258,40 +147,44 @@ class CourseRepository
         ");
 
         $stmt->execute([
-            $id,
-            $title,
-            $description,
-            $prerequisiteCourseId
+            $course->uuid,
+            $course->title,
+            $course->description,
+            $course->prerequisiteCourseId
+        ]);
+
+        return $course->uuid;
+    }
+
+    public function update(CreateCourse $course): void {
+        $stmt = $this->pdo->prepare("
+            UPDATE courses
+            SET title = ?, description = ?, prerequisite_course_id = ?
+            WHERE id = ?
+        ");
+        $stmt->execute([
+            $course->title,
+            $course->description,
+            $course->prerequisiteCourseId,
+            $course->uuid
         ]);
     }
 
-    public function listAll(): array
-    {
-        $stmt = $this->pdo->prepare("
-            SELECT id, title, description, prerequisite_course_id
-            FROM courses
-            ORDER BY title
-        ");
-
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    public function delete(string $uuid): void {
+        $stmt = $this->pdo->prepare("DELETE FROM courses WHERE id = ?");
+        $stmt->execute([$uuid]);
     }
 
-    public function beginTransaction(): void
-    {
-        $this->pdo->beginTransaction();
-    }
-
-    public function commit(): void
-    {
-        $this->pdo->commit();
-    }
-
-    public function rollback(): void
-    {
-        if ($this->pdo->inTransaction()) {
-            $this->pdo->rollBack();
-        }
+    private function createDto(array $row): Course {
+        return new Course(
+            $row['id'],
+            $row['title'],
+            $row['description'],
+            $row['prerequisite_course_id'],
+            false,
+            false,
+            null
+        );
     }
 }
+

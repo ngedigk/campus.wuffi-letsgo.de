@@ -9,17 +9,14 @@ class QuizService
     ) {}
 
     public function handle(
-        ?array $slide,
-        array $post,
-        array $server,
-        array &$session = []
+        ?Slide $slide
     ): QuizResult {
 
-        if (!$slide || empty($slide['is_quiz'])) {
+        if (!$slide || empty($slide->isQuiz)) {
             return new QuizResult();
         }
 
-        $questions = $this->repository->getQuestions([$slide['id']]);
+        $questions = $this->repository->getQuestions([$slide->id]);
         $choicesByQuestion = $this->getRandomizedChoicesByQuestion($questions);
 
         $errors = [];
@@ -30,7 +27,7 @@ class QuizService
         $passed = false;
         $attempted = false;
 
-        $storedSubmission = $this->consumeStoredSubmission($slide['id'] ?? null, $session);
+        $storedSubmission = $this->consumeStoredSubmission($slide->id ?? null);
 
         if ($storedSubmission !== null) {
             $attempted = true;
@@ -41,12 +38,12 @@ class QuizService
             $passed = $storedSubmission['passed'];
         }
         elseif (
-            $server['REQUEST_METHOD'] === 'POST'
-            && isset($post['quiz_submit'])
+            $_SERVER['REQUEST_METHOD'] === 'POST'
+            && isset($_POST['quiz_submit'])
         ) {
             $attempted = true;
             $passed = true;
-            $submittedAnswers = is_array($post['answers'] ?? []) ? $post['answers'] : [];
+            $submittedAnswers = is_array($_POST['answers'] ?? []) ? $_POST['answers'] : [];
 
             foreach ($questions as $question) {
                 $id = (string)$question['id'];
@@ -71,7 +68,7 @@ class QuizService
                     as $choice
                 ) {
                     if (!empty($choice['is_correct'])) {
-                        $correct[] = (string)$choice['id'];
+                        $correct[] = $choice['id'];
                     }
                 }
 
@@ -91,7 +88,7 @@ class QuizService
                 $passed = $passed && $isCorrect;
             }
 
-            $session['quiz_results'][(string)$slide['id']] = [
+            $_SESSION['quiz_results'][$slide->id] = [
                 'errors' => $errors,
                 'feedback' => $feedback,
                 'answers' => $answers,
@@ -114,7 +111,7 @@ class QuizService
         );
     }
 
-    private function consumeStoredSubmission(?int $slideId, array &$session): ?array
+    private function consumeStoredSubmission(?int $slideId): ?array
     {
         if ($slideId === null) {
             return null;
@@ -122,12 +119,12 @@ class QuizService
 
         $key = (string)$slideId;
 
-        if (!isset($session['quiz_results'][$key])) {
+        if (!isset($_SESSION['quiz_results'][$key])) {
             return null;
         }
 
-        $submission = $session['quiz_results'][$key];
-        unset($session['quiz_results'][$key]);
+        $submission = $_SESSION['quiz_results'][$key];
+        unset($_SESSION['quiz_results'][$key]);
 
         return $submission;
     }
