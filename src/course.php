@@ -22,15 +22,14 @@ $moduleRepository = new ModuleRepository($pdo);
 $slideRepository = new SlideRepository($pdo);
 $progressRepository = new ProgressRepository($pdo);
 
-$quizService = new QuizService($courseRepository);
+$quizService = new QuizService($slideRepository);
 
 $progressService = new ProgressService($progressRepository);
 
 $courseService = new CourseService(
     $courseRepository,
     $moduleRepository,
-    $slideRepository,
-    $quizService,
+    $slideRepository
 );
 
 $errors = [];

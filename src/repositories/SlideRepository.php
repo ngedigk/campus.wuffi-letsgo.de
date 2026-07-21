@@ -85,6 +85,46 @@ class SlideRepository
         $stmt->execute([$slideId]);
     }
 
+    public function getQuestions(array $slideIds): array
+    {
+        if (empty($slideIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($slideIds), '?'));
+
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM quiz_questions
+            WHERE slide_id IN ($placeholders)
+            ORDER BY id
+        ");
+
+        $stmt->execute($slideIds);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getChoices(array $questionIds): array
+    {
+        if (empty($questionIds)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($questionIds), '?'));
+
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM question_choices
+            WHERE question_id IN ($placeholders)
+            ORDER BY sort_order
+        ");
+
+        $stmt->execute($questionIds);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     private function createDto(array $row): Slide {
         return new Slide(
             $row['id'],
@@ -96,3 +136,4 @@ class SlideRepository
         );
     }
 }
+

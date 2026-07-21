@@ -5,7 +5,7 @@ require_once __DIR__ . '/../dto/QuizResult.php';
 class QuizService
 {
     public function __construct(
-        private CourseRepository $repository
+        private SlideRepository $slideRepository
     ) {}
 
     public function handle(
@@ -16,18 +16,17 @@ class QuizService
             return new QuizResult();
         }
 
-        $questions = $this->repository->getQuestions([$slide->id]);
+        $questions = $this->slideRepository->getQuestions([$slide->id]);
         $choicesByQuestion = $this->getRandomizedChoicesByQuestion($questions);
 
         $errors = [];
         $feedback = [];
         $answers = [];
         $submittedAnswers = [];
-
         $passed = false;
         $attempted = false;
 
-        $storedSubmission = $this->consumeStoredSubmission($slide->id ?? null);
+        $storedSubmission = $this->consumeStoredSubmission($slide->id);
 
         if ($storedSubmission !== null) {
             $attempted = true;
@@ -54,7 +53,6 @@ class QuizService
                 $selected = array_values(array_filter(array_map('strval', $selected), static function ($value) {
                     return $value !== '';
                 }));
-
                 if (!$selected) {
                     $errors[] = 'Please answer all quiz questions.';
                     $passed = false;
@@ -71,12 +69,10 @@ class QuizService
                         $correct[] = $choice['id'];
                     }
                 }
-
                 sort($selected);
                 sort($correct);
 
                 $answers[$id] = $selected;
-
                 $isCorrect = $selected === $correct;
 
                 $feedback[$id] = [
@@ -131,7 +127,7 @@ class QuizService
 
     private function getRandomizedChoicesByQuestion(array $questions): array
     {
-        $choices = $this->repository->getChoices(array_column($questions, 'id'));
+        $choices = $this->slideRepository->getChoices(array_column($questions, 'id'));
 
         $choicesByQuestion = [];
 

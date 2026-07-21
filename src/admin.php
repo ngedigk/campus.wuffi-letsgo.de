@@ -38,12 +38,11 @@ $accessCodeRepository = new AccessCodeRepository($pdo);
 $slideService = new SlideService($slideRepository);
 $moduleService = new ModuleService($moduleRepository);
 
-$quizService = new QuizService($courseRepository);
+$quizService = new QuizService($slideRepository);
 $courseService = new CourseService(
     $courseRepository,
     $moduleRepository,
-    $slideRepository,
-    $quizService
+    $slideRepository
 );
 
 $userService = new UserService($userRepository);
