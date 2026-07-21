@@ -15,6 +15,7 @@ require_once __DIR__ . '/services/SlideService.php';
 require_once __DIR__ . '/services/ModuleService.php';
 require_once __DIR__ . '/services/QuizService.php';
 require_once __DIR__ . '/services/CourseService.php';
+require_once __DIR__ . '/services/UserService.php';
 
 require_once __DIR__ . '/dto/Slide.php';
 
@@ -43,6 +44,8 @@ $courseService = new CourseService(
     $quizService
 );
 
+$userService = new UserService($userRepository);
+
 $action = $_POST['action'] ?? '';
 $page = $_GET['page'] ?? 'dashboard';
 
@@ -70,14 +73,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     throw new Exception('Please provide an email address.');
                 }
 
-                $user = $userRepository->findByEmail($email);
+                $userService->grantAdmin($email);
+                $_SESSION['admin_success'] = 'Admin permissions granted.';
+                break;
+            case 'revoke_admin':
+                $email = strtolower(trim($_POST['email'] ?? ''));
 
-                if (!$user) {
-                    throw new Exception('No user with that email exists.');
+                if ($email === '') {
+                    throw new Exception('Please provide an email address.');
                 }
 
-                $userRepository->setAdmin($user['id'], true);
-                $_SESSION['admin_success'] = 'Admin permissions granted.';
+                if ($email === currentUser($pdo)['email']) {
+                    throw new Exception('Can\'t remove your own admin.');
+                }
+
+                $userService->removeAdmin($email);
+                $_SESSION['admin_success'] = 'Admin permissions removed.';
+                break;
+
+            case 'manually_verify':
+                $email = trim($_POST['email'] ?? '');
+
+                if ($email === '') {
+                    throw new Exception('Please provide an email address.');
+                }
+
+                $userService->verify($email);
+                $_SESSION['admin_success'] = 'User manually verified.';
                 break;
 
             case 'create_course':
@@ -251,7 +273,7 @@ unset($_SESSION['admin_success']);
 
 $accessCodes = $accessCodeRepository->list();
 $allCourses = $courseService->getAll();
-$allUsers = $userRepository->listAll();
+$allUsers = $userService->getAll();
 
 // Selected course for details view
 $selectedCourse = null;

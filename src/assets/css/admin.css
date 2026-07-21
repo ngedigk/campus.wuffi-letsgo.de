@@ -730,6 +730,11 @@
     background: #d1d5db;
 }
 
+.btn-warn {
+    color: #92400e;
+    background: #fef3c7;
+}
+
 .btn-danger {
     background: #dc2626;
     color: #fff;

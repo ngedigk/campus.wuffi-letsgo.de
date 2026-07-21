@@ -7,7 +7,7 @@ class UserRepository
     ) {}
 
 
-    public function listAll(): array
+    public function getAll(): array
     {
         $stmt = $this->pdo->query("
             SELECT id, email, is_admin, email_verified, created_at
@@ -56,17 +56,23 @@ class UserRepository
         $stmt->execute([(int)$isAdmin, $id]);
     }
 
+    public function verify(string $id): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users
+            SET email_verified = ?
+            WHERE id = ?
+        ");
+
+        $stmt->execute([true, $id]);
+    }
+
     public function create(
         string $id,
         string $email,
-        string $passwordHash
+        string $passwordHash,
+        bool $isAdmin
     ): void {
-
-        $adminExistsStmt = $this->pdo->query(
-            "SELECT 1 FROM users WHERE is_admin = 1 LIMIT 1"
-        );
-        $hasAdmin = (bool)$adminExistsStmt->fetch();
-        $isAdmin = $hasAdmin ? 0 : 1;
 
         $stmt = $this->pdo->prepare("
             INSERT INTO users
@@ -83,7 +89,7 @@ class UserRepository
             $id,
             $email,
             $passwordHash,
-            $isAdmin
+            (int)$isAdmin
         ]);
     }
 
