@@ -256,7 +256,7 @@ class AdminController
 
     private function handleCreateAccessCode(): void
     {
-        $code = strtoupper(trim($_POST['code'] ?? ''));
+        $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
         if ($code === '' || $courseId === '') throw new Exception('Please provide both an access code and a course.');
@@ -354,7 +354,7 @@ class AdminController
             ...$context,
             'pageTitle' => $pageTitle
         ]);
-        $accessCodes = $this->accessCodeRepository->list();
+        $accessCodes = $this->accessCodeRepository->getAll();
         $allUsers = $this->userService->getAll();
         require_once $this->basePath . '/views/admin/dashboard.php';
     }
@@ -392,9 +392,10 @@ class AdminController
     private function renderAccessCodes(array $context): void
     {
         $pageTitle = 'Access Codes';
-        $accessCodes = $this->accessCodeRepository->list();
+        $accessCodes = $this->accessCodeRepository->getAll();
 
         extract([
+            ...$context,
             'pageTitle' => $pageTitle,
             'accessCodes' => $accessCodes,
         ]);

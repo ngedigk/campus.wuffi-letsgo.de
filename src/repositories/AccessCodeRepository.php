@@ -58,13 +58,21 @@ class AccessCodeRepository
         return (int)$this->pdo->lastInsertId();
     }
 
-    public function list(): array
+    public function getAll(): array
     {
         $stmt = $this->pdo->prepare("
-            SELECT ac.id, ac.code, ac.course_id, c.title as course_title
+            SELECT
+                ac.id,
+                ac.code,
+                ac.course_id,
+                c.title as course_title, 
+                (uc.access_code_id IS NOT NULL) AS claimed,
+                uc.user_id AS claimed_by_user_id
             FROM access_codes as ac
             LEFT JOIN courses as c
-            ON ac.course_id = c.id
+                ON ac.course_id = c.id
+            LEFT JOIN user_courses as uc
+                ON ac.id = uc.access_code_id
         ");
 
         $stmt->execute();
