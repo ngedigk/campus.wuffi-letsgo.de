@@ -7,6 +7,17 @@ class UserRepository
     ) {}
 
 
+    public function listAll(): array
+    {
+        $stmt = $this->pdo->query("
+            SELECT id, email, is_admin, email_verified, created_at
+            FROM users
+        ");
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function existsByEmail(string $email): bool
     {
         $stmt = $this->pdo->prepare("

@@ -60,8 +60,6 @@ CREATE TABLE user_courses (
     course_id CHAR(36) NOT NULL,
     access_code_id INT NULL,
     granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_completed TINYINT(1) NOT NULL DEFAULT 0,
-    completed_at DATETIME NULL,
     PRIMARY KEY (user_id, course_id),
     UNIQUE KEY access_code_id (access_code_id),
     FOREIGN KEY (user_id) REFERENCES users(id),
@@ -85,15 +83,6 @@ CREATE TABLE module_slides (
     audio_url VARCHAR(255) NULL,
     sort_order INT NOT NULL DEFAULT 0,
     is_quiz TINYINT(1) NOT NULL DEFAULT 0,
-    FOREIGN KEY (module_id) REFERENCES course_modules(id) ON DELETE CASCADE
-);
-
-CREATE TABLE user_module_completions (
-    user_id CHAR(36) NOT NULL,
-    module_id INT NOT NULL,
-    completed_at DATETIME NOT NULL,
-    PRIMARY KEY (user_id, module_id),
-    FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (module_id) REFERENCES course_modules(id) ON DELETE CASCADE
 );
 

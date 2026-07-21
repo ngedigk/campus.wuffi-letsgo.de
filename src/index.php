@@ -4,8 +4,18 @@ require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/rate_limit.php';
+
 require_once __DIR__ . '/repositories/CourseRepository.php';
+require_once __DIR__ . '/repositories/ModuleRepository.php';
+require_once __DIR__ . '/repositories/SlideRepository.php';
 require_once __DIR__ . '/repositories/UserRepository.php';
+
+require_once __DIR__ . '/services/SlideService.php';
+require_once __DIR__ . '/services/ModuleService.php';
+require_once __DIR__ . '/services/QuizService.php';
+require_once __DIR__ . '/services/CourseService.php';
+require_once __DIR__ . '/repositories/ProgressRepository.php';
+require_once __DIR__ . '/services/ProgressService.php';
 
 $error = '';
 
@@ -78,37 +88,26 @@ ob_start();
         $_SESSION['admin_success']
     );
 
-    $stmt = $pdo->prepare("
-        SELECT
-            c.id,
-            c.title,
-            c.description,
-            c.prerequisite_course_id,
-            pc.title AS prerequisite_title,
-            uc.is_completed,
-            uc.completed_at,
-            CASE
-                WHEN c.prerequisite_course_id IS NULL THEN 1
-                WHEN EXISTS (
-                    SELECT 1
-                    FROM user_courses prereq_uc
-                    WHERE prereq_uc.user_id = ?
-                      AND prereq_uc.course_id = c.prerequisite_course_id
-                      AND prereq_uc.is_completed = 1
-                ) THEN 1
-                ELSE 0
-            END AS is_unlocked
-        FROM courses c
-        JOIN user_courses uc ON c.id = uc.course_id
-        LEFT JOIN courses pc ON c.prerequisite_course_id = pc.id
-        WHERE uc.user_id = ?
-    ");
-
-    $stmt->execute([$user['id'], $user['id']]);
-
-    $courses = $stmt->fetchAll();
     $courseRepository = new CourseRepository($pdo);
-    $courseOptions = $courseRepository->listAll();
+    $progressRepo = new ProgressRepository($pdo);
+    $progressService = new ProgressService($progressRepo);
+
+    $courseService = new CourseService(
+        $courseRepository,
+        new ModuleRepository($pdo),
+        new SlideRepository($pdo),
+        new QuizService($courseRepository)
+    );
+
+    $courses = $courseService->getAllForUser($user['id']);
+
+    foreach ($courses as $course) {
+        $course->isUnlocked = true;
+        if ($course->prerequisiteCourseId) {
+            $course->isUnlocked = $progressService->isCourseCompleted($user['id'], $course->prerequisiteCourseId) ? 1 : 0;
+        }
+        $course->isCompleted = $progressService->isCourseCompleted($user['id'], $course->uuid) ? 1 : 0;
+    }
     $additionalCss = [
         '/assets/css/dashboard.css'
     ];

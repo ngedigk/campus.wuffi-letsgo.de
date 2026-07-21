@@ -2,16 +2,16 @@
     <p>No slide available for this module.</p>
 <?php else: ?>
     <article class="slide-content">
-        <h3><?= htmlspecialchars($currentSlide['title'] ?? 'Untitled Slide') ?></h3>
+        <h3><?= htmlspecialchars($currentSlide->title ?? 'Untitled Slide') ?></h3>
 
-        <?php if (!empty($currentSlide['html_content'])): ?>
+        <?php if (!empty($currentSlide->htmlContent)): ?>
             <div class="slide-html">
-                <?= $currentSlide['html_content'] ?>
+                <?= $currentSlide->htmlContent ?>
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($currentSlide['audio_url'])):
-            $audioFile = basename(trim((string)$currentSlide['audio_url']));
+        <?php if (!empty($currentSlide->audioUrl)):
+            $audioFile = basename(trim((string)$currentSlide->audioUrl));
             $audioFile = preg_replace('/\.mp3$/i', '', $audioFile);
             $audioSrc = '/assets/audio/' . rawurlencode($audioFile) . '.mp3';
         ?>
@@ -23,7 +23,7 @@
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($currentSlide['is_quiz'])): ?>
+        <?php if (!empty($currentSlide->isQuiz)): ?>
             <div class="slide-quiz">
                 <h4>Quiz</h4>
                 <?php if ($quizAttempted): ?>
@@ -33,7 +33,7 @@
                         <?php elseif ($quizPassed): ?>
                             <p class="quiz-success-message">You answered this quiz correctly.</p>
                         <?php else: ?>
-                            <p class="course-errors">Some answers were incorrect. Review the feedback below and try again.</p>
+                            <p class="course-errors">Some answers were incorrect or incomplete. Review the feedback below.</p>
                         <?php endif; ?>
                         <?php foreach ($currentSlideQuestions as $question): ?>
                             <fieldset>
@@ -60,7 +60,9 @@
                                         <label class="<?= htmlspecialchars($labelClass) ?>">
                                             <input type="checkbox" disabled <?= $isChosen ? 'checked' : '' ?>>
                                             <?= htmlspecialchars($choice['choice_text']) ?>
-                                            <?php if ($isCorrect): ?>
+                                            <?php if ($isCorrect && $isChosen): ?>
+                                                <strong> (Correct, Your answer)</strong>
+                                            <?php elseif ($isCorrect): ?>
                                                 <strong> (Correct)</strong>
                                             <?php elseif ($isChosen): ?>
                                                 <strong> (Your answer)</strong>

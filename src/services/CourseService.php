@@ -6,155 +6,104 @@ class CourseService
 {
     public function __construct(
         private CourseRepository $courseRepository,
-        private CourseNavigationService $navigationService,
-        private QuizService $quizService,
-        private CourseProgressService $progressService
+        private ModuleRepository $moduleRepository,
+        private SlideRepository $slideRepository,
+        private QuizService $quizService
     ) {}
 
-    public function buildCourseUrl(
-        string $courseUuid,
-        string $moduleId,
-        int $slideIndex
+    public function create(
+        CreateCourse $course
     ): string {
-        return sprintf(
-            'course.php?id=%s&module_id=%s&slide=%d',
-            urlencode($courseUuid),
-            urlencode($moduleId),
-            $slideIndex
+        try {
+            $courseId = $this->courseRepository->create($course);
+        } catch (\Exception $e) {
+            throw new \Exception("Failed to create course: " . $e->getMessage());
+        }
+        return $courseId;        
+    }
+
+    public function update(
+        CreateCourse $course
+    ): void {
+        $this->courseRepository->update($course);
+    }
+
+    public function delete(
+        string $uuid
+    ): void {
+        $this->courseRepository->delete($uuid);
+    }
+
+    public function get(string $courseUuid): Course {
+        return $this->courseRepository->get($courseUuid);
+    }
+
+    public function getWithDetails(string $courseUuid): Course {
+        $course = $this->courseRepository->get($courseUuid);
+        $course->isUnlocked = true;
+        $course->isCompleted = false;
+
+        $modules = $this->moduleRepository->getByCourseId($courseUuid);
+        foreach ($modules as $module) {
+            $module->slides = $this->slideRepository->getByModule($module->id);
+        }
+
+        return new Course(
+            uuid: $course->uuid,
+            title: $course->title,
+            description: $course->description,
+            prerequisiteCourseId: $course->prerequisiteCourseId,
+            isUnlocked: $course->isUnlocked,
+            isCompleted: $course->isCompleted,
+            modules: $modules,
         );
     }
 
-    public function buildCourseContext(
-        string $userUuid,
-        array $get,
-        array $post,
-        array $server,
-        array &$session
-    ): array {
-
-        $courseUuid = trim((string)($get['id'] ?? ''));
-
-        if (!isValidUuid($courseUuid)) {
-            throw new InvalidArgumentException('Invalid course id.');
-        }
-
+    public function getWithDetailsForUser(string $userUuid, string $courseUuid): Course {
         $course = $this->courseRepository->getCourseForUser($userUuid, $courseUuid);
+        
         if (!$course) {
             throw new RuntimeException('Access denied.');
         }
 
-        if (!$this->courseRepository->isCourseUnlocked($userUuid, $course['prerequisite_course_id'] ?? null)) {
-            return [
-                'userUuid' => $userUuid,
-                'courseUuid' => $courseUuid,
-                'course' => $course,
-                'modules' => [],
-                'slides' => [],
-                'completedModuleIds' => [],
-                'currentModule' => null,
-                'slidesForModule' => [],
-                'currentSlide' => null,
-                'currentSlideIndex' => 0,
-                'prevModule' => null,
-                'prevSlideIndex' => null,
-                'nextModule' => null,
-                'nextSlideIndex' => null,
-                'isCourseLocked' => true,
-                'questions' => [],
-                'currentSlideQuestions' => [],
-                'choicesByQuestion' => [],
-                'userAnswersByQuestion' => [],
-                'submittedAnswers' => [],
-                'quizFeedback' => [],
-                'errors' => [],
-                'quizPassed' => false,
-                'quizAttempted' => false,
-            ];
+        $course->isUnlocked = true;
+        $course->isCompleted = false;
+        
+        $modules = $this->moduleRepository->getByCourseId($courseUuid);
+        foreach ($modules as $module) {
+            $module->slides = $this->slideRepository->getByModule($module->id);
         }
 
-        $modules = $this->courseRepository->getModules($courseUuid);
-
-        $slides = $this->courseRepository->getSlides($courseUuid);
-
-        $completedModules = $this->courseRepository->getCompletedModuleIds($userUuid, array_column($modules, 'id'));
-
-        $navigation = $this->navigationService->resolve(
-            $modules,
-            $slides,
-            $get
+        return new Course(
+            uuid: $course->uuid,
+            title: $course->title,
+            description: $course->description,
+            prerequisiteCourseId: $course->prerequisiteCourseId,
+            isUnlocked: $course->isUnlocked,
+            isCompleted: $course->isCompleted,
+            modules: $modules,
         );
+    }
 
-        $this->progressService->recordSlideView($userUuid, $navigation['currentSlide']);
+    public function getAll(): array {
+        return $this->courseRepository->getAll();
+    }
 
-        $slideIds = array_values(array_unique(array_map(
-            static fn(array $slide): string => (string)($slide['id'] ?? ''),
-            $slides
-        )));
+    public function getAllForUser(string $userUuid): array {
+        return $this->courseRepository->getAllForUser($userUuid);
+    }
 
-        $slideIds = array_values(array_filter($slideIds, static fn(string $slideId): bool => $slideId !== ''));
-
-        $viewedSlideIds = $slideIds === []
-            ? []
-            : $this->courseRepository->getViewedSlideIds($userUuid, $slideIds);
-
-        $navigation = $this->navigationService->resolve(
-            $modules,
-            $slides,
-            $get,
-            $viewedSlideIds
-        );
-
-        $quiz = $this->quizService->handle(
-            $navigation['currentSlide'],
-            $post,
-            $server,
-            $session
-        );
-
-        $this->progressService->completeModuleIfNeededBySlideViews(
-            $userUuid,
-            $navigation['currentModule'],
-            $navigation['slidesForModule'],
-            $completedModules
-        );
-
-        $this->progressService->completeCourseIfNeeded(
-            $userUuid,
-            $courseUuid,
-            $course,
-            $modules,
-            $completedModules
-        );
-
-        $redirectUrl = null;
-
-        if (
-            $server['REQUEST_METHOD'] === 'POST'
-            && isset($post['quiz_submit'])
-            && $navigation['currentSlide']
-            && !empty($navigation['currentSlide']['is_quiz'])
-        ) {
-            $redirectUrl = $this->buildCourseUrl(
-                $courseUuid,
-                (string)($navigation['currentModule']['id'] ?? ''),
-                (int)($navigation['currentSlideIndex'] ?? 0)
-            );
-        }
-
-        return array_merge(
-            [
-                'userUuid' => $userUuid,
-                'courseUuid' => $courseUuid,
-                'course' => $course,
-                'modules' => $modules,
-                'slides' => $slides,
-                'completedModuleIds' => $completedModules,
-                'viewedSlideIds' => $viewedSlideIds,
-                'isCourseLocked' => false,
-                'redirectUrl' => $redirectUrl,
-            ],
-            $navigation,
-            $quiz->toArray()
+    public function buildCourseUrl(
+        string $courseUuid,
+        int $moduleIndex,
+        int $slideIndex
+    ): string {
+        return sprintf(
+            'course.php?id=%s&module=%s&slide=%d',
+            urlencode($courseUuid),
+            $moduleIndex,
+            $slideIndex
         );
     }
 }
+
