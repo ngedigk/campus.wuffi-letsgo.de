@@ -33,7 +33,15 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <span class="status-badge active">Active</span>
+                            <?php if ($code['claimed']): ?>
+                                <span class="status-badge active">
+                                    Claimed
+                                </span>
+                            <?php else: ?>
+                                <span class="status-badge pending">
+                                    Not Claimed
+                                </span>
+                            <?php endif; ?>
                         </td>
                         <td class="actions">
                             <button class="btn btn-small" onclick="editAccessCode('<?= $code['id'] ?>')">Edit</button>
@@ -68,7 +76,7 @@
                 <select id="access-course" name="course_id" required>
                     <option value="">Select a course</option>
                     <?php foreach ($allCourses as $course): ?>
-                        <option value="<?= htmlspecialchars($course->id) ?>">
+                        <option value="<?= htmlspecialchars($course->uuid) ?>">
                             <?= htmlspecialchars($course->title) ?>
                         </option>
                     <?php endforeach; ?>
