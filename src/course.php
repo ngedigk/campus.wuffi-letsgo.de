@@ -16,6 +16,8 @@ require_once __DIR__ . '/services/ProgressService.php';
 
 requireLogin();
 
+$isAdmin = isAdmin($pdo);
+
 $userUuid = (string)($_SESSION['user_id'] ?? '');
 $courseRepository = new CourseRepository($pdo);
 $moduleRepository = new ModuleRepository($pdo);
