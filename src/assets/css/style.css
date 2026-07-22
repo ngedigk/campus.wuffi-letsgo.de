@@ -1,7 +1,11 @@
+@import url("color.css");
+@import url("font.css");
 @import url("defaults.css");
 @import url("grid.css");
 @import url("cards.css");
 @import url("buttons.css");
 @import url("icons.css");
 @import url("header.css");
+@import url("content-header.css");
+@import url("content.css");
 @import url("footer.css");
