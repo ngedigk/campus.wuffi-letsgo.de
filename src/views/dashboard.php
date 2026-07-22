@@ -55,7 +55,7 @@
                                             Zum Kurs
                                         </a>
                                     <?php else: ?>
-                                        <span>Locked</span>
+                                        <span>Als nächstes an der Reihe<img src="/assets/images/icons/lock-solid-full.svg" aria-hidden="true"></span>
                                     <?php endif; ?>
                                 </div>
                             </article>
