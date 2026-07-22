@@ -1,7 +1,6 @@
 .header {
     z-index: auto;
     position: static;
-    top: auto;
     background-color: #fff;
 }
 
@@ -22,6 +21,12 @@
     box-shadow: 0px 0px 50px 0px rgba(0,0,0,0.5);
 }
 
+.header-menu {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
 .header .logo {
     display: block;
     font-size: 1.5rem;
@@ -31,19 +36,27 @@
     margin-top: 26px;
 }
 
+.header .logo img {
+    display: block;
+}
+
 .header-top {
-    background: var(--hauptfarbe) none repeat scroll 0 0;
-    padding: 5px 0;
+    color: #fff;
+    background: var(--primary) none repeat scroll 0 0;
+    padding: 6px 0 5px;
 }
 
 .header-top a {
-  color: #fff;
-  font-size: 15px;
+    color: #fff;
+    font-size: 15px;
+    margin-top: 1px;
 }
 
 .profile-container {
     position: relative;
     display: inline-block;
+    display: flex;
+    justify-content: end;
 }
 
 .profile-icon {
@@ -55,10 +68,8 @@
 .profile-icon:hover {
     background-color: #e2e6ea;
 }
-.profile-icon svg {
-    width: 24px;
-    height: 24px;
-    fill: #555;
+.profile-icon img {
+    width: 40px;
 }
 
 .dropdown-menu {

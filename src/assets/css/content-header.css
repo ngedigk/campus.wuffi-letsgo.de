@@ -1,0 +1,108 @@
+#content-header {
+    position: relative;
+    height: 260px;
+    min-height: 260px;
+    max-height: 260px;
+    overflow: hidden;
+    color: var(--text-on-dark);
+    background:
+        linear-gradient(
+            to right,
+            var(--primary) 0%,
+            var(--accent) 50%,
+            var(--accent2) 100%
+        )
+        left
+        bottom
+        #07001e
+        no-repeat;
+    background-size: 100% 5px;
+}
+
+#content-header::before {
+    position: absolute;
+    inset: 0;
+    bottom: 4px;
+    z-index: 1;
+    content: "";
+    background: linear-gradient(90deg, rgba(7, 0, 30, 0.76) 0%, rgba(7, 0, 30, 0.48) 37%, rgba(7, 0, 30, 0.28) 70%, rgba(7, 0, 30, 0.52) 100%), linear-gradient(0deg, rgba(7, 0, 30, 0.40) 0%, rgba(7, 0, 30, 0.04) 48%, rgba(7, 0, 30, 0.24) 100%);
+    pointer-events: none;
+}
+
+#content-header p,
+#content-header h1 {
+    font-family: 'Asap', sans-serif;
+}
+
+#content-header p {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.11em;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+#content-header p::before {
+  display: inline-block;
+  width: 28px;
+  height: 2px;
+  content: "";
+  border-radius: 999px;
+
+  background: var(--accent);
+}
+
+#content-header h1 {
+    font-size: 50px;
+    line-height: 1.05;
+    margin: .5rem 0 1.25rem;
+}
+
+#content-header #breadcrumb {
+    font-size: 17px;
+    line-height: 1.25;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#content-header .container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+    height: 100%;
+}
+
+#hero {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    grid-template-rows: 1fr;
+    gap: 0;
+    width: 100%;
+    height: 100%;
+    padding-bottom: 5px;
+}
+
+.hero-image {
+    position: relative;
+    min-width: 0;
+    height: 100%;
+    background-image: var(--hero-image);
+    background-position: var(--hero-focus, center center);
+    background-size: cover;
+    background-repeat: no-repeat;
+    transform: scale(1.01);
+}

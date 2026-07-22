@@ -1,7 +1,3 @@
-:root {
-    --hauptfarbe: rgb(19, 153, 146);
-}
-
 *, ::after, ::before {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -13,13 +9,13 @@ body, html {
 
 body {
     margin: 0;
-    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    font-size: 1rem;
+    font-family: 'Mulish', sans-serif;
+    font-size: 17px;
     font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
+    line-height: 1.6;
+    color: var(--text);
     text-align: left;
-    background-color: #fff;
+    background-color: var(--page-bg);
 
     display: flex;
     flex-direction: column;
@@ -50,4 +46,18 @@ img {
     display: inline-block;
     max-width: 100%;
     height: auto;
+}
+
+input {
+    padding: .75rem 1rem;
+    border: 1px solid #d8d8d8;
+    border-radius: .5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+input:focus {
+    border-color: #009c9c;
+    box-shadow: 0 0 0 3px rgba(0, 156, 156, .15);
 }

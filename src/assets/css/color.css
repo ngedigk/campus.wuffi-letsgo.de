@@ -1,0 +1,12 @@
+:root {
+    --page-bg: #fff;
+    --primary: #139992;
+    --accent: #f8b130;
+    --accent2: #9967c1;
+    --text: #383245;
+    --text-on-dark: #fff;
+    --locked: #ccc;
+
+    --primary-btn: var(--primary);
+    --primary-btn-hover: #000
+}

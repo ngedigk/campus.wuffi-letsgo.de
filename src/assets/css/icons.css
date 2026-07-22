@@ -1,9 +1,10 @@
-.header-phone svg,
-.footer-phone svg,
-.footer-fb svg {
-    width: 15px;
-    fill: #fff;
-    margin-right: 12px;
+.header-phone img,
+.footer-phone img,
+.footer-fb img {
+    color: #fff;
+    width: 13px;
+    margin-right: 10px;
+    margin-top: 2px;
 }
 
 .icon-text-left {
