@@ -1,84 +1,114 @@
-<form method="post">
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
 
-    <input
-        type="hidden"
-        name="csrf_token"
-        value="<?= htmlspecialchars(csrfToken()) ?>"
-    >
+            <?php if ($success): ?>
+            <h1>Account erstellt</h1>
+            <p class="success">
+                <?= htmlspecialchars($success) ?>
+            </p>
+            <a href="index.php">
+                Zur Anmeldung
+            </a>
+            <?php else: ?>
+            <h1>Account erstellen</h1>
 
-    <label>Registrierungscode</label>
-    <br>
+            <?php if ($error): ?>
 
-    <input
-        type="text"
-        name="registration_code"
-        value="<?= htmlspecialchars($registrationCode) ?>"
-        autocomplete="off"
-        required
-    >
+            <p class="error">
+                <?= htmlspecialchars($error) ?>
+            </p>
 
-    <br><br>
+            <?php endif; ?>
+                
+            <form method="post">
 
-    <label>E-Mail</label>
-    <br>
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars(csrfToken()) ?>"
+                >
 
-    <input
-        type="email"
-        name="email"
-        value="<?= htmlspecialchars($email) ?>"
-        autocomplete="email"
-        required
-    >
+                <label>Registrierungscode</label>
+                <br>
 
-    <br><br>
+                <input
+                    type="text"
+                    name="registration_code"
+                    value="<?= htmlspecialchars($registrationCode) ?>"
+                    autocomplete="off"
+                    required
+                >
 
-    <label>Passwort</label>
-    <br>
+                <br><br>
 
-    <input
-        type="password"
-        id="password"
-        name="password"
+                <label>E-Mail</label>
+                <br>
 
-        autocomplete="new-password"
-        required
-    >
+                <input
+                    type="email"
+                    name="email"
+                    value="<?= htmlspecialchars($email) ?>"
+                    autocomplete="email"
+                    required
+                >
 
-    <div class="password-meter">
+                <br><br>
 
-        <div class="password-bar">
-            <div id="password-progress"></div>
+                <label>Passwort</label>
+                <br>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+
+                    autocomplete="new-password"
+                    required
+                >
+
+                <div class="password-meter">
+
+                    <div class="password-bar">
+                        <div id="password-progress"></div>
+                    </div>
+
+                    <div id="password-label">
+                        Passwort eingeben
+                    </div>
+
+                </div>
+
+                <div id="password-hints">
+                    Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
+                </div>
+
+                <br><br>
+
+                <label>
+                Passwort bestätigen
+                </label>
+
+                <br>
+
+                <input
+                    type="password"
+                    name="password_confirm"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <br><br>
+
+                <button type="submit">
+                    Registrieren
+                </button>
+
+            </form>
+            <a href="index.php">
+                Sie haben bereits einen Account?
+            </a>
         </div>
-
-        <div id="password-label">
-            Passwort eingeben
-        </div>
-
     </div>
-
-    <div id="password-hints">
-        Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
-    </div>
-
-    <br><br>
-
-    <label>
-    Passwort bestätigen
-    </label>
-
-    <br>
-
-    <input
-        type="password"
-        name="password_confirm"
-        autocomplete="new-password"
-        required
-    >
-
-    <br><br>
-
-    <button type="submit">
-        Registrieren
-    </button>
-
-</form>
+</div>
+<?php endif; ?>
