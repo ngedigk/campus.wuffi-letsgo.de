@@ -1,16 +1,34 @@
 .course-card {
-    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.1);
     position: relative;
+    width: 369px;
+    height: 230px;
+    box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.1);
     border-left: 5px solid transparent;
     transition: border-color 0.15s linear;
 }
 
 .course-card:hover {
-    border-left: 5px solid var(--primary);
+    border-color: var(--primary);
 }
 
-.course-card.locked {
-    background-color: #ddd;
+.course-card.locked:hover {
+    border-color: var(--locked);
+}
+
+.course-card.locked,
+.course-card.locked h3 {
+    color: var(--locked);
+}
+
+.course-card.locked span {
+    display: flex;
+    margin-top: auto;
+    font-size: 22px;
+}
+
+.course-card.locked img {
+    width: 35px;
+    margin-left: 10px;
 }
 
 .course-card.completed::after {
