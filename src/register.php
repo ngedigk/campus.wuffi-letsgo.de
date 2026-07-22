@@ -92,31 +92,7 @@ $additionalJs = [
 ];
 ob_start();
 ?>
-<?php if ($success): ?>
-<h1>Account erstellt</h1>
-<p class="success">
-    <?= htmlspecialchars($success) ?>
-</p>
-<a href="index.php">
-    Zur Anmeldung
-</a>
-<?php else: ?>
-<h1>Account erstellen</h1>
-
-<?php if ($error): ?>
-
-<p class="error">
-    <?= htmlspecialchars($error) ?>
-</p>
-
-<?php endif; ?>
-
 <?php require 'views/register-form.php'; ?>
-
-<a href="index.php">
-    Sie haben bereits einen Account?
-</a>
-<?php endif; ?>
 <?php
 $content = ob_get_clean();
 require_once __DIR__ . '/template.php';

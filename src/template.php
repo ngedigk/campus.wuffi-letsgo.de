@@ -19,13 +19,7 @@
     <?php require_once __DIR__ . '/views/header.php'; ?>
 
     <main>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <?= $content ?? '' ?>
-                </div>
-            </div>
-        </div>
+        <?= $content ?? '' ?>
     </main>
 
     <?php require_once __DIR__ . '/views/footer.php'; ?>
