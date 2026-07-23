@@ -1,3 +1,7 @@
+<?php
+/** @var Course $course */
+/** @var Module $currentModule */
+?>
 <aside class="course-sidebar">
     <h2>Modules</h2>
     <ul class="module-list">

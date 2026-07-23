@@ -1,3 +1,7 @@
+<?php
+/** @var Slide $currentSlide */
+/** @var QuizResult $quizResult */
+?>
 <?php if (!$currentSlide): ?>
     <p>No slide available for this module.</p>
 <?php else: ?>
