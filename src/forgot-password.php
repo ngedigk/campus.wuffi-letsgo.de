@@ -1,9 +1,9 @@
 <?php
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/mail.php';
 require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/Database.php';
 
 $message = '';
 
@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = trim($_POST['email']);
 
+    $pdo = Database::getInstance();
     $stmt = $pdo->prepare("
         SELECT id FROM users WHERE email = ?
     ");

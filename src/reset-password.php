@@ -1,13 +1,14 @@
 <?php
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf.php';
+require_once __DIR__ . '/Database.php';
 
 $token = $_GET['token'] ?? '';
 $error = '';
 $success = '';
 
+$pdo = Database::getInstance();
 $stmt = $pdo->prepare("
     SELECT user_id
     FROM password_resets

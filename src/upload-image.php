@@ -2,7 +2,9 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/Database.php';
+
+$pdo = Database::getInstance();
 
 if (!isAdmin($pdo)) {
     $_SESSION['admin_error'] = 'You do not have permission to manage admin features.';

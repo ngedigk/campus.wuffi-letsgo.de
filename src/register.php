@@ -1,10 +1,10 @@
 <?php
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/uuid.php';
 require_once __DIR__ . '/validation.php';
+require_once __DIR__ . '/Database.php';
 
 require_once __DIR__ . '/repositories/UserRepository.php';
 require_once __DIR__ . '/repositories/EmailVerificationRepository.php';
@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
 
         try {
-
+            $pdo = Database::getInstance();
+            
             $service = new RegistrationService(
                 $pdo,
                 new UserRepository($pdo),
