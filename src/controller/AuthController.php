@@ -1,47 +1,13 @@
 <?php
 
-require_once __DIR__ . '/../auth.php';
-require_once __DIR__ . '/../csrf.php';
-require_once __DIR__ . '/../rate_limit.php';
-require_once __DIR__ . '/../Database.php';
-
-require_once __DIR__ . '/../repositories/CourseRepository.php';
-require_once __DIR__ . '/../repositories/ModuleRepository.php';
-require_once __DIR__ . '/../repositories/SlideRepository.php';
-require_once __DIR__ . '/../repositories/UserRepository.php';
-require_once __DIR__ . '/../repositories/ProgressRepository.php';
-
-require_once __DIR__ . '/../services/SlideService.php';
-require_once __DIR__ . '/../services/ModuleService.php';
-require_once __DIR__ . '/../services/QuizService.php';
-require_once __DIR__ . '/../services/CourseService.php';
-require_once __DIR__ . '/../services/ProgressService.php';
-
 class AuthController
 {
-    private CourseService $courseService;
-    private ProgressService $progressService;
-    private string $basePath;
-
-    public function __construct(string $basePath)
-    {
-        $this->basePath = rtrim($basePath, '/');
-        $this->initServices();
-    }
-
-    private function initServices(): void
-    {
-        $pdo = Database::getInstance();
-        
-        $this->courseService = new CourseService(
-            new CourseRepository($pdo),
-            new ModuleRepository($pdo),
-            new SlideRepository($pdo)
-        );
-        $this->progressService = new ProgressService(
-            new ProgressRepository($pdo)
-        );
-    }
+    
+    public function __construct(
+        private DashboardService $dashboardService,
+        private ViewRenderer $viewRenderer,
+        private AuthService $authService
+    ) {}
 
     public function handle(): void
     {
@@ -49,27 +15,22 @@ class AuthController
             $this->handleLogin();
         }
 
-        $pdo = Database::getInstance();
-        $user = currentUser($pdo);
-        $isAdmin = isAdmin($pdo);
+        $user = $this->authService->currentUser();
 
-        $loginError= $_SESSION['login_error'] ?? null;
-        $redeemError = $_SESSION['redeem_error'] ?? null;
-        $redeemSuccess = $_SESSION['redeem_success'] ?? null;
+        $context = [
+            'user' => $user,
+            'isLoggedIn' => $this->authService->isLoggedIn(),
+            'isAdmin' => $this->authService->isAdmin(),
+            'loginError' => $_SESSION['login_error'] ?? null,
+            'redeemError' => $_SESSION['redeem_error'] ?? null,
+            'redeemSuccess' => $_SESSION['redeem_success'] ?? null,
+            'additionalCss' => [],
+        ];
         unset(
             $_SESSION['login_error'],
             $_SESSION['redeem_error'],
             $_SESSION['redeem_success']
         );
-
-        $context = [
-            'user' => $user,
-            'isAdmin' => $isAdmin,
-            'loginError' => $loginError,
-            'redeemError' => $redeemError,
-            'redeemSuccess' => $redeemSuccess,
-            'additionalCss' => [],
-        ];
 
         if ($user) {
             $this->renderDashboard($context);
@@ -80,6 +41,11 @@ class AuthController
 
     private function handleLogin(): void
     {
+        if (!isset($_POST['email'], $_POST['password'])) {
+            $_SESSION['login_error'] = 'Bitte füllen Sie alle Felder aus.';
+            return;
+        }
+        
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $pdo = Database::getInstance();
@@ -118,51 +84,25 @@ class AuthController
 
     private function renderDashboard(array $context): void
     {
-        $pageTitle = 'Dashboard';
-        $user = $context['user'];
+        $courses = $this->dashboardService->getUserDashboardData($context['user']['id']);
 
-        $courses = $this->courseService->getAllForUser($user['id']);
-        foreach ($courses as $course) {
-            $course->isUnlocked = true;
-            if ($course->prerequisiteCourseId) {
-                $course->isUnlocked = $this->progressService->isCourseCompleted($user['id'], $course->prerequisiteCourseId) ? 1 : 0;
-            }
-            $course->isCompleted = $this->progressService->isCourseCompleted($user['id'], $course->uuid) ? 1 : 0;
-        }
-
-        $context['courses'] = $courses;
-        $context['additionalCss'][] = '/assets/css/dashboard.css';
-
-        extract([
+        $viewData = [
+            'pageTitle' => 'Dashboard',
             ...$context,
-            'pageTitle' => $pageTitle
-        ]);
+            'courses' => $courses,
+            'additionalCss' => [...$context['additionalCss'], '/assets/css/dashboard.css']
+        ];
 
-        ob_start();
-        require_once $this->basePath . '/views/dashboard.php';
-        $content = ob_get_clean();
-
-        require_once $this->basePath . '/template.php';
+        $this->viewRenderer->renderWithTemplate('dashboard', $viewData);
     }
 
     private function renderLoginForm(array $context): void
     {
-        $pageTitle = 'Login';
-
-        extract([
+        $viewData = [
+            'pageTitle' => 'Login',
             ...$context,
-            'pageTitle' => $pageTitle
-        ]);
+        ];
 
-        ob_start();
-        require_once $this->basePath . '/views/login-form.php';
-        $content = ob_get_clean();
-
-        require_once $this->basePath . '/template.php';
-    }
-
-    private function getPdo(): PDO
-    {
-        return $GLOBALS['pdo'] ?? new PDO('sqlite::memory:');
+        $this->viewRenderer->renderWithTemplate('login-form', $viewData);
     }
 }

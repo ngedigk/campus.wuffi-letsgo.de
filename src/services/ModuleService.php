@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../dto/Module.php';
-
 class ModuleService {
     public function __construct(
         private ModuleRepository $moduleRepository

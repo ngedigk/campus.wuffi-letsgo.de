@@ -1,4 +1,5 @@
 <?php
+/** @var bool $isLoggedIn */
 /** @var bool $isAdmin */
 ?>
 <header class="header">
@@ -31,7 +32,7 @@
                 <div class="header-spacer col-md-8 col-sm-8 col-xs-8">
                 </div>
                 <div class="header-menu col-md-2 col-sm-2 col-xs-4">
-                    <?php if (isLoggedIn()): ?>
+                    <?php if ($isLoggedIn): ?>
                         <div class="profile-container" id="profileContainer">
                             <div class="profile-icon" onclick="toggleDropdown()">
                                 <img src="assets/images/icons/user-solid-full.svg" alt="Benutzer Menu öffnen" width="40px" height="40px">

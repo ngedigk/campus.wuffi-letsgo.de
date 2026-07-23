@@ -1,10 +1,12 @@
 <?php
-
+require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/rate_limit.php';
+require_once __DIR__ . '/Container.php';
 
-require_once __DIR__ . '/controller/AuthController.php';
+$container = Container::getInstance();
 
-$app = new AuthController(__DIR__);
+// Entrypoint
+$app = $container->get(AuthController::class);
 $app->handle();

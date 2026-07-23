@@ -2,11 +2,13 @@
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/Container.php';
 
-$pdo = Database::getInstance();
+$container = Container::getInstance();
 
-if (!isAdmin($pdo)) {
+$authService = $container->get(AuthService::class);
+
+if (!$authService->isAdmin()) {
     $_SESSION['admin_error'] = 'You do not have permission to manage admin features.';
     header('Location: index.php');
     exit;

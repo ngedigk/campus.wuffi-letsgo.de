@@ -119,7 +119,7 @@
     color: green;
 }
 
-.course-errors {
+.quiz-error-message {
     color: red;
 }
 
@@ -127,6 +127,6 @@
     color: green;
 }
 
-.answer-choice.selected:not(.correct) {
+.answer-choice.chosen.incorrect {
     color: red;
 }

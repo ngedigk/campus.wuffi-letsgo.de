@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . '/../dto/Slide.php';
-
 class SlideService {
     public function __construct(
         private SlideRepository $slideRepository

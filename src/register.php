@@ -1,16 +1,13 @@
 <?php
 
+require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/uuid.php';
 require_once __DIR__ . '/validation.php';
-require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/Container.php';
 
-require_once __DIR__ . '/repositories/UserRepository.php';
-require_once __DIR__ . '/repositories/EmailVerificationRepository.php';
-require_once __DIR__ . '/repositories/RegistrationCodeRepository.php';
-require_once __DIR__ . '/repositories/AccessCodeRepository.php';
-require_once __DIR__ . '/services/RegistrationService.php';
+$container = Container::getInstance();
 
 $error = '';
 $success = '';
@@ -40,18 +37,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        try {
-            $pdo = Database::getInstance();
-            
-            $service = new RegistrationService(
-                $pdo,
-                new UserRepository($pdo),
-                new EmailVerificationRepository($pdo),
-                new RegistrationCodeRepository($pdo),
-                new AccessCodeRepository($pdo)
-            );
+        try {   
+            $registrationService = $container->get(RegistrationService::class);         
 
-            $result = $service->register(
+            $result = $registrationService->register(
                 $email,
                 $password,
                 $registrationCode
@@ -84,6 +73,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+$authService = $container->get(AuthService::class);
+
+$isLoggedIn = $authService->isLoggedIn();
+
 $pageTitle = 'Registrierung';
 $additionalCss = [
     '/assets/css/register.css'
@@ -96,5 +89,5 @@ ob_start();
 <?php require 'views/register-form.php'; ?>
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/template.php';
+require_once __DIR__ . '/views/template.php';
 ?>

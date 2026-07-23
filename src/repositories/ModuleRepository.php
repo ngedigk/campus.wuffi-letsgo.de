@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../dto/Module.php';
+require_once __DIR__ . "/../dto/Module.php";
 
 class ModuleRepository
 {
