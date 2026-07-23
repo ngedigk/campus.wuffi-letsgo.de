@@ -1,3 +1,7 @@
+<?php
+/** @var Course $selectedCourse */
+/** @var array $allCourses */
+?>
 <form
     id="course-form"
     method="post"
