@@ -1,11 +1,14 @@
+<?php
+/** @var string $loginError */
+?>
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
 
             <h1>Anmelden</h1>
 
-            <?php if($error): ?>
-            <p><?= htmlspecialchars($error) ?></p>
+            <?php if($loginError): ?>
+            <p><?= htmlspecialchars($loginError) ?></p>
             <?php endif; ?>
 
             <form method="post">

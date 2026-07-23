@@ -1,9 +1,9 @@
 <?php
 
 require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/functions.php';
+require_once __DIR__ . '/Database.php';
 
 require_once __DIR__ . '/repositories/AccessCodeRepository.php';
 require_once __DIR__ . '/repositories/UserCourseRepository.php';
@@ -25,11 +25,9 @@ if ($code === '') {
 }
 
 try {
-
+    $pdo = Database::getInstance();
     $accessCodes = new AccessCodeRepository($pdo);
-
     $userCourses = new UserCourseRepository($pdo);
-
     $service = new RedeemService(
         $pdo,
         $accessCodes,

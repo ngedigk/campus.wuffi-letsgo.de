@@ -1,5 +1,6 @@
 <?php
 
+require_once __DIR__ . '/../Database.php';
 require_once __DIR__ . '/../dto/Slide.php';
 require_once __DIR__ . '/../dto/Course.php';
 require_once __DIR__ . '/../dto/Module.php';
@@ -38,12 +39,14 @@ class AdminController
             $this->handlePost();
         }
 
+        $pdo = Database::getInstance();
+
         $page = $this->validatePage($page);
         $allCourses = $this->courseService->getAll();
 
         $activePage = $page;
-        $user = currentUser($this->getPdo());
-        $isAdmin = isAdmin($this->getPdo());
+        $user = currentUser($pdo);
+        $isAdmin = isAdmin($pdo);
 
         $adminError = $_SESSION['admin_error'] ?? null;
         $adminSuccess = $_SESSION['admin_success'] ?? null;
@@ -197,6 +200,7 @@ class AdminController
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
         if ($email === '') throw new Exception('Please provide an email address.');
+
         $this->userService->grantAdmin($email);
         $_SESSION['admin_success'] = 'Admin permissions granted.';
     }
@@ -205,7 +209,9 @@ class AdminController
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
         if ($email === '') throw new Exception('Please provide an email address.');
-        if ($email === strtolower(currentUser($this->getPdo())['email'])) {
+
+        $pdo = Database::getInstance();
+        if ($email === strtolower(currentUser($pdo)['email'])) {
             throw new Exception("Can't remove your own admin.");
         }
         $this->userService->removeAdmin($email);
@@ -379,11 +385,6 @@ class AdminController
     {
         $validPages = ['dashboard', 'courses', 'access-codes', 'users'];
         return in_array($page, $validPages, true) ? $page : 'dashboard';
-    }
-
-    private function getPdo(): PDO
-    {
-        return $GLOBALS['pdo'] ?? new PDO('sqlite::memory:');
     }
 
     private function renderDashboard(array $context): void

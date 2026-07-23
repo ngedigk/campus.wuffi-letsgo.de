@@ -2,8 +2,8 @@
 
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/csrf.php';
-require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/uuid.php';
+require_once __DIR__ . '/Database.php';
 
 require_once __DIR__ . '/repositories/CourseRepository.php';
 require_once __DIR__ . '/repositories/ModuleRepository.php';
@@ -15,6 +15,8 @@ require_once __DIR__ . '/services/ProgressService.php';
 
 
 requireLogin();
+
+$pdo = Database::getInstance();
 
 $isAdmin = isAdmin($pdo);
 

@@ -1,8 +1,9 @@
 <?php
-
-require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/Database.php';
 
 $token = $_GET['token'] ?? '';
+
+$pdo = Database::getInstance();
 
 $stmt = $pdo->prepare("
     SELECT user_id
