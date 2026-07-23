@@ -1,3 +1,8 @@
+<?php
+/** @var array $courses */
+/** @var string $redeemError */
+/** @var string $redeemSuccess */
+?>
 <header id="content-header">
     <section id="hero" aria-hidden="true">
         <div class="hero-image" style="--hero-image: url('/assets/images/hero/aht-hero-06.webp'); --hero-focus: 84% 44%;"></div>

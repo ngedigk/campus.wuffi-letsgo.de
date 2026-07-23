@@ -1,3 +1,6 @@
+<?php
+/** @var array $allCourses */
+?>
 <div class="page-actions">
     <button class="btn btn-primary" onclick="document.getElementById('createAccessCodeModal').style.display='flex'">
         + Create Access Code

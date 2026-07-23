@@ -1,3 +1,7 @@
+<?php
+/** @var Course $selectedCourse */
+/** @var Module $selectedModule */
+?>
 <div class="module-details-section">
     <form
         id="module-form"

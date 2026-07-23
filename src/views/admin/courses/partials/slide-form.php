@@ -1,3 +1,8 @@
+<?php
+/** @var Course $selectedCourse */
+/** @var Module $selectedModule */
+/** @var Slide $selectedSlide */
+?>
 <div class="slide-details-section">
     <form
         id="slide-form"

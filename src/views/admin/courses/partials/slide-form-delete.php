@@ -1,3 +1,7 @@
+<?php
+/** @var Course $selectedCourse */
+/** @var Module $selectedModule */
+?>
 <form
     id="delete-slide-form"
     method="post"

@@ -1,3 +1,6 @@
+<?php
+/** @var bool $isAdmin */
+?>
 <header class="header">
     <div class="header-top">
         <div class="container">

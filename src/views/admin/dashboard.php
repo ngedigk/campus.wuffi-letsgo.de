@@ -1,3 +1,9 @@
+<?php
+/** @var array $user */
+/** @var array $allCourses */
+/** @var array $accessCodes */
+/** @var array $allUsers */
+?>
 <h1>Welcome, <?= htmlspecialchars($user['email']) ?>!</h1>
 
 <h2>Your Admin Dashboard</h2>
