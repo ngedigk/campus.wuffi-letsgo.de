@@ -1,3 +1,14 @@
+<?php
+/** @var Course $course */
+/** @var array $errors */
+/** @var Module $currentModule */
+/** @var int $currentSlideIndex */
+/** @var array $slidesForModule */
+/** @var string $prevUrl */
+/** @var string $nextUrl */
+/** @var bool $isLastSlide */
+?>
+
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
