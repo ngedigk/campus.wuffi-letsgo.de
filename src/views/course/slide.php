@@ -26,47 +26,40 @@
         <?php if (!empty($currentSlide->isQuiz)): ?>
             <div class="slide-quiz">
                 <h4>Quiz</h4>
-                <?php if ($quizAttempted): ?>
+                <?php if ($quizResult && $quizResult->isSubmitted): ?>
                     <div class="quiz-results">
-                        <?php if (!empty($errors)): ?>
-                            <p class="course-errors">Please answer all quiz questions.</p>
-                        <?php elseif ($quizPassed): ?>
-                            <p class="quiz-success-message">You answered this quiz correctly.</p>
-                        <?php else: ?>
-                            <p class="course-errors">Some answers were incorrect or incomplete. Review the feedback below.</p>
-                        <?php endif; ?>
-                        <?php foreach ($currentSlideQuestions as $question): ?>
+                        <p class="quiz-<?= htmlspecialchars($quizResult->feedbackType) ?>-message">
+                            <?= htmlspecialchars($quizResult->feedbackMessage) ?>
+                        </p>
+                        <?php foreach ($quizResult->questions as $question):
+                            $qId = $question['id'];
+                            $result = $quizResult->results[$qId] ?? null;
+                            $isQuestionCorrect = $result && $result['is_correct'];
+                        ?>
                             <fieldset>
-                                <legend><?= htmlspecialchars($question['question_text']) ?></legend>
-                                <?php foreach ($choicesByQuestion[$question['id']] ?? [] as $choice):
-                                    $qid = (string)$question['id'];
-                                    $chosenArr = [];
-                                    if (!empty($userAnswersByQuestion[$qid])) {
-                                        $chosenArr = $userAnswersByQuestion[$qid];
-                                    } elseif (!empty($submittedAnswers[$qid])) {
-                                        $val = $submittedAnswers[$qid];
-                                        $chosenArr = is_array($val) ? array_map('strval', $val) : [(string)$val];
-                                    }
-                                    $isChosen = in_array((string)$choice['id'], $chosenArr, true);
-                                    $isCorrect = !empty($choice['is_correct']);
+                                <legend><?= htmlspecialchars($question['question_text']) ?>
+                                    <span class="question-result <?= $isQuestionCorrect ? 'correct' : 'incorrect' ?>">
+                                        <?= $isQuestionCorrect ? '✓ Correct' : '✗ Incorrect' ?>
+                                    </span>
+                                </legend>
+                                <?php foreach ($quizResult->results[$qId]['choices'] ?? $quizResult->choicesByQuestion[$qId] ?? [] as $choice):
+                                    $labelSuffix = $quizResult->getChoiceLabel($choice);
+                                    $isChosen = $choice['was_chosen'] ?? false;
+                                    $isCorrect = $choice['is_correct'] ?? false;
                                     $labelClass = 'answer-choice';
-                                    if ($isCorrect) {
+                                    if ($isCorrect && $isChosen) {
+                                        $labelClass .= ' correct chosen';
+                                    } elseif ($isCorrect) {
                                         $labelClass .= ' correct';
                                     } elseif ($isChosen) {
-                                        $labelClass .= ' selected';
+                                        $labelClass .= ' incorrect chosen';
                                     }
                                 ?>
                                     <div>
                                         <label class="<?= htmlspecialchars($labelClass) ?>">
                                             <input type="checkbox" disabled <?= $isChosen ? 'checked' : '' ?>>
                                             <?= htmlspecialchars($choice['choice_text']) ?>
-                                            <?php if ($isCorrect && $isChosen): ?>
-                                                <strong> (Correct, Your answer)</strong>
-                                            <?php elseif ($isCorrect): ?>
-                                                <strong> (Correct)</strong>
-                                            <?php elseif ($isChosen): ?>
-                                                <strong> (Your answer)</strong>
-                                            <?php endif; ?>
+                                            <?= $labelSuffix ?>
                                         </label>
                                     </div>
                                 <?php endforeach; ?>
@@ -75,21 +68,20 @@
                     </div>
                 <?php else: ?>
                     <form method="post">
-                        <?php foreach ($currentSlideQuestions as $question): ?>
+                        <?php foreach ($quizResult->questions as $question): ?>
                             <fieldset>
                                 <legend><?= htmlspecialchars($question['question_text']) ?></legend>
 
-                                <?php foreach ($choicesByQuestion[$question['id']] ?? [] as $choice): ?>
+                                <?php foreach ($quizResult->choicesByQuestion[$question['id']] ?? [] as $choice): ?>
                                     <?php
                                         $qid = (string)$question['id'];
-                                        $chosenArr = [];
-                                        if (!empty($submittedAnswers[$qid])) {
-                                            $val = $submittedAnswers[$qid];
-                                            $chosenArr = is_array($val) ? array_map('strval', $val) : [(string)$val];
-                                        } elseif (!empty($userAnswersByQuestion[$qid])) {
-                                            $chosenArr = $userAnswersByQuestion[$qid];
+                                        $checked = '';
+                                        // Check if there was a previous submission
+                                        if ($quizResult && $quizResult->isSubmitted && isset($quizResult->results[$qid])) {
+                                            if (in_array((string)$choice['id'], $quizResult->results[$qid]['submitted'], true)) {
+                                                $checked = 'checked';
+                                            }
                                         }
-                                        $checked = in_array((string)$choice['id'], $chosenArr, true) ? 'checked' : '';
                                     ?>
                                     <div>
                                         <label>
@@ -113,3 +105,4 @@
         <?php endif; ?>
     </article>
 <?php endif; ?>
+

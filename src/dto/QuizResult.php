@@ -1,32 +1,31 @@
 <?php
 
-final class QuizResult
+class QuizResult
 {
     public function __construct(
-        public array $questions = [],
-        public array $currentSlideQuestions = [],
-        public array $choicesByQuestion = [],
-        public array $answers = [],
-        public array $submittedAnswers = [],
-        public array $feedback = [],
-        public array $errors = [],
-        public bool $passed = false,
-        public bool $attempted = false
+        public readonly bool $isSubmitted = false,
+        public readonly bool $passed = false,
+        public readonly ?string $feedbackMessage = null,
+        public readonly string $feedbackType = 'info',
+        public readonly array $questions = [],
+        public readonly array $choicesByQuestion = [],
+        public readonly array $results = []
     ) {}
 
-
-    public function toArray(): array
+    /**
+     * Helper to generate the feedback label for a choice in the view.
+     */
+    public function getChoiceLabel(array $choice): string
     {
-        return [
-            'questions' => $this->questions,
-            'currentSlideQuestions' => $this->currentSlideQuestions,
-            'choicesByQuestion' => $this->choicesByQuestion,
-            'userAnswersByQuestion' => $this->answers,
-            'submittedAnswers' => $this->submittedAnswers,
-            'quizFeedback' => $this->feedback,
-            'errors' => $this->errors,
-            'quizPassed' => $this->passed,
-            'quizAttempted' => $this->attempted
-        ];
+        if ($choice['is_correct'] && $choice['was_chosen']) {
+            return ' <strong>(Correct, Your answer)</strong>';
+        }
+        if ($choice['is_correct']) {
+            return ' <strong>(Correct)</strong>';
+        }
+        if ($choice['was_chosen']) {
+            return ' <strong>(Your answer)</strong>';
+        }
+        return '';
     }
 }

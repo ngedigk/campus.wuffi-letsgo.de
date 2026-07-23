@@ -1,15 +1,15 @@
 <?php
 
+require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/csrf.php';
-require_once __DIR__ . '/functions.php';
-require_once __DIR__ . '/Database.php';
+require_once __DIR__ . '/Container.php';
 
-require_once __DIR__ . '/repositories/AccessCodeRepository.php';
-require_once __DIR__ . '/repositories/UserCourseRepository.php';
-require_once __DIR__ . '/services/RedeemService.php';
+$container = Container::getInstance();
 
-requireLogin();
+$authService = $container->get(AuthService::class);
+$authService->requireLogin(__DIR__);
+
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: index.php");
@@ -25,16 +25,10 @@ if ($code === '') {
 }
 
 try {
-    $pdo = Database::getInstance();
-    $accessCodes = new AccessCodeRepository($pdo);
-    $userCourses = new UserCourseRepository($pdo);
-    $service = new RedeemService(
-        $pdo,
-        $accessCodes,
-        $userCourses
-    );
+    $redeemService = $container->get(RedeemService::class);
 
-    $service->redeem(
+
+    $redeemService->redeem(
         $_SESSION['user_id'],
         $code
     );
@@ -51,4 +45,21 @@ try {
     error_log($e);
 
     redeemError("Something went wrong. Please try again later.");
+}
+
+function redeemError(string $message): never
+{
+    $_SESSION['redeem_error'] = $message;
+
+    header("Location: index.php");
+    exit;
+}
+
+
+function redeemSuccess(string $message): never
+{
+    $_SESSION['redeem_success'] = $message;
+
+    header("Location: index.php");
+    exit;
 }

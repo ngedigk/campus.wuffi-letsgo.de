@@ -4,27 +4,26 @@ class RedeemService
 {
     public function __construct(
         private PDO $pdo,
-        private AccessCodeRepository $accessCodes,
-        private UserCourseRepository $userCourses
+        private AccessCodeRepository $accessCodeRepository,
+        private UserCourseRepository $userCourseRepository
     ) {}
 
     public function redeem(
         string $userUuid,
         string $code
     ): void {
-
         $this->pdo->beginTransaction();
 
         try {
 
-            $access = $this->accessCodes
+            $access = $this->accessCodeRepository
                 ->findByCodeForUpdate($code);
 
             if (!$access) {
                 throw new Exception("Invalid code.");
             }
 
-            if ($this->userCourses->userHasCourse(
+            if ($this->userCourseRepository->userHasCourse(
                 $userUuid,
                 $access['course_id']
             )) {
@@ -34,7 +33,7 @@ class RedeemService
             }
 
             try {
-                $this->userCourses->addCourse(
+                $this->userCourseRepository->addCourse(
                     $userUuid,
                     $access['course_id'],
                     $access['id']

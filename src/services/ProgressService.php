@@ -1,15 +1,10 @@
 <?php
 
-require_once __DIR__ . '/../repositories/ProgressRepository.php';
-
 class ProgressService
 {
-    private ProgressRepository $progressRepo;
-
-    public function __construct(ProgressRepository $progressRepo)
-    {
-        $this->progressRepo = $progressRepo;
-    }
+    public function __construct(
+        private ProgressRepository $progressRepo
+    ) { }
 
     public function recordSlideView(string $userId, int $slideId): void
     {

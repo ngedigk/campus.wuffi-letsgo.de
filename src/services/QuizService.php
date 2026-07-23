@@ -1,145 +1,88 @@
 <?php
 
-require_once __DIR__ . '/../dto/QuizResult.php';
-
 class QuizService
 {
-    public function __construct(
-        private SlideRepository $slideRepository
-    ) {}
+    public function __construct(private readonly QuizRepository $quizRepository) {}
 
-    public function handle(
-        ?Slide $slide
-    ): QuizResult {
+    public function getQuizData(int $slideId): QuizResult
+    {
+        $data = $this->quizRepository->getQuizDataForSlide($slideId);
 
-        if (!$slide || empty($slide->isQuiz)) {
+        if (empty($data['questions'])) {
             return new QuizResult();
         }
 
-        $questions = $this->slideRepository->getQuestions([$slide->id]);
-        $choicesByQuestion = $this->getRandomizedChoicesByQuestion($questions);
+        $questions = $data['questions'];
+        $choices = $data['choices'];
 
-        $errors = [];
-        $feedback = [];
-        $answers = [];
-        $submittedAnswers = [];
-        $passed = false;
-        $attempted = false;
-
-        $storedSubmission = $this->consumeStoredSubmission($slide->id);
-
-        if ($storedSubmission !== null) {
-            $attempted = true;
-            $errors = $storedSubmission['errors'];
-            $feedback = $storedSubmission['feedback'];
-            $answers = $storedSubmission['answers'];
-            $submittedAnswers = $storedSubmission['submittedAnswers'];
-            $passed = $storedSubmission['passed'];
-        }
-        elseif (
-            $_SERVER['REQUEST_METHOD'] === 'POST'
-            && isset($_POST['quiz_submit'])
-        ) {
-            $attempted = true;
-            $passed = true;
-            $submittedAnswers = is_array($_POST['answers'] ?? []) ? $_POST['answers'] : [];
-
-            foreach ($questions as $question) {
-                $id = (string)$question['id'];
-                $selected = $submittedAnswers[$id] ?? [];
-
-                $selected = is_array($selected) ? $selected : [$selected];
-
-                $selected = array_values(array_filter(array_map('strval', $selected), static function ($value) {
-                    return $value !== '';
-                }));
-                if (!$selected) {
-                    $errors[] = 'Please answer all quiz questions.';
-                    $passed = false;
-                    continue;
-                }
-
-                $correct = [];
-
-                foreach (
-                    $choicesByQuestion[$question['id']] ?? []
-                    as $choice
-                ) {
-                    if (!empty($choice['is_correct'])) {
-                        $correct[] = $choice['id'];
-                    }
-                }
-                sort($selected);
-                sort($correct);
-
-                $answers[$id] = $selected;
-                $isCorrect = $selected === $correct;
-
-                $feedback[$id] = [
-                    'selected' => $selected,
-                    'correct' => $correct,
-                    'isCorrect' => $isCorrect
-                ];
-
-                $passed = $passed && $isCorrect;
-            }
-
-            $_SESSION['quiz_results'][$slide->id] = [
-                'errors' => $errors,
-                'feedback' => $feedback,
-                'answers' => $answers,
-                'submittedAnswers' => $submittedAnswers,
-                'passed' => $passed && empty($errors),
-                'attempted' => true,
-            ];
+        foreach ($choices as $qId => $choiceList) {
+            shuffle($choiceList);
+            $choices[$qId] = $choiceList;
         }
 
         return new QuizResult(
             questions: $questions,
-            currentSlideQuestions: $questions,
-            choicesByQuestion: $choicesByQuestion,
-            answers: $answers,
-            submittedAnswers: $submittedAnswers,
-            feedback: $feedback,
-            errors: $errors,
-            passed: $passed && empty($errors),
-            attempted: $attempted
+            choicesByQuestion: $choices
         );
     }
 
-    private function consumeStoredSubmission(?int $slideId): ?array
+    public function submitQuiz(QuizResult $baseQuiz, array $userAnswers): QuizResult
     {
-        if ($slideId === null) {
-            return null;
+        $results = [];
+        $correctQuestions = 0;
+        $totalQuestions = count($baseQuiz->questions);
+
+        foreach ($baseQuiz->questions as $question) {
+            $qId = $question['id'];
+            $submitted = array_map('strval', $userAnswers[$qId] ?? []);
+
+            $correctChoices = array_filter(
+                $baseQuiz->choicesByQuestion[$qId],
+                fn($choice) => $choice['is_correct']
+            );
+
+            $correctAnswers = array_map(
+                fn($choice) => (string)$choice['id'],
+                $correctChoices
+            );
+
+            sort($submitted);
+            sort($correctAnswers);
+
+            $isCorrect = $submitted === $correctAnswers;
+            if ($isCorrect) {
+                $correctQuestions++;
+            }
+
+            $choicesWithFlags = array_map(function($choice) use ($submitted) {
+                $choice['was_chosen'] = in_array((string)$choice['id'], $submitted, true);
+                return $choice;
+            }, $baseQuiz->choicesByQuestion[$qId]);
+
+            $results[$qId] = [
+                'question_id' => $qId,
+                'question_text' => $question['question_text'],
+                'is_correct' => $isCorrect,
+                'submitted' => $submitted,
+                'correct' => $correctAnswers,
+                'choices' => $choicesWithFlags,
+            ];
         }
 
-        $key = (string)$slideId;
+        $allPassed = $correctQuestions === $totalQuestions && $totalQuestions > 0;
+        $feedbackMessage = $allPassed
+            ? 'You answered this quiz correctly!'
+            : 'Some answers were incorrect or incomplete. Review the feedback below.';
+        $feedbackType = $allPassed ? 'success' : 'error';
 
-        if (!isset($_SESSION['quiz_results'][$key])) {
-            return null;
-        }
-
-        $submission = $_SESSION['quiz_results'][$key];
-        unset($_SESSION['quiz_results'][$key]);
-
-        return $submission;
-    }
-
-    private function getRandomizedChoicesByQuestion(array $questions): array
-    {
-        $choices = $this->slideRepository->getChoices(array_column($questions, 'id'));
-
-        $choicesByQuestion = [];
-
-        foreach ($choices as $choice) {
-            $choicesByQuestion[$choice['question_id']][] = $choice;
-        }
-
-        foreach ($choicesByQuestion as &$questionChoices) {
-            shuffle($questionChoices);
-        }
-        unset($questionChoices);
-
-        return $choicesByQuestion;
+        return new QuizResult(
+            isSubmitted: true,
+            passed: $allPassed,
+            feedbackMessage: $feedbackMessage,
+            feedbackType: $feedbackType,
+            questions: $baseQuiz->questions,
+            choicesByQuestion: $baseQuiz->choicesByQuestion,
+            results: $results
+        );
     }
 }

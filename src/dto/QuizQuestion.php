@@ -1,4 +1,5 @@
 <?php
+
 abstract class QuizQuestionData
 {
     public function __construct(
