@@ -5,7 +5,8 @@ abstract class CourseData {
         public string $uuid,
         public string $title,
         public string $description,
-        public ?string $prerequisiteCourseId
+        public ?string $prerequisiteCourseId,
+        public int $sortOrder
     ) {}
 }
 
@@ -14,13 +15,15 @@ final class CreateCourse extends CourseData {
         string $uuid,
         string $title,
         string $description,
-        ?string $prerequisiteCourseId
+        ?string $prerequisiteCourseId,
+        int $sortOrder
     ) {
         parent::__construct(
             $uuid,
             $title,
             $description,
-            $prerequisiteCourseId
+            $prerequisiteCourseId,
+            $sortOrder
         );
     }
 }
@@ -34,6 +37,7 @@ final class Course extends CourseData {
         string $title,
         string $description,
         ?string $prerequisiteCourseId,
+        int $sortOrder,
         public ?bool $isUnlocked,
         public ?bool $isCompleted,
         public ?array $modules,
@@ -42,7 +46,8 @@ final class Course extends CourseData {
             $uuid,
             $title,
             $description,
-            $prerequisiteCourseId
+            $prerequisiteCourseId,
+            $sortOrder
         );
     }
 
@@ -53,6 +58,7 @@ final class Course extends CourseData {
             'title' => $this->title,
             'description' => $this->description,
             'prerequisiteCourseId' => $this->prerequisiteCourseId,
+            'sortOrder' => $this->sortOrder,
             'isUnlocked' => $this->isUnlocked,
             'isCompleted' => $this->isCompleted,
             'modules' => $this->modules

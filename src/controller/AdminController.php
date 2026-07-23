@@ -225,6 +225,7 @@ class AdminController
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $prerequisiteCourseId = trim($_POST['prerequisite_course_id'] ?? '');
+        $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') throw new Exception('Please provide a course title.');
         $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
@@ -233,7 +234,8 @@ class AdminController
             uuid: generateUuid(),
             title: $title,
             description: $description,
-            prerequisiteCourseId: $prerequisiteCourseId
+            prerequisiteCourseId: $prerequisiteCourseId,
+            sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = 'Course created.';
     }
@@ -244,6 +246,7 @@ class AdminController
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $prerequisiteCourseId = trim($_POST['prerequisite_course_id'] ?? '') ?: null;
+        $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') throw new Exception('Please provide a valid title.');
 
@@ -251,7 +254,8 @@ class AdminController
             uuid: $courseId,
             title: $title,
             description: $description,
-            prerequisiteCourseId: $prerequisiteCourseId
+            prerequisiteCourseId: $prerequisiteCourseId,
+            sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = 'Course updated.';
     }

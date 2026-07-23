@@ -48,5 +48,9 @@
             <label for="course-description">Description</label>
             <textarea id="course-description" name="description" rows="3"><?= htmlspecialchars($selectedCourse->description ?? '') ?></textarea>
         </div>
+        <div class="form-group">
+            <label for="course-sort">Sort Order</label>
+            <input type="number" id="course-sort" name="sort_order" value="<?= htmlspecialchars($selectedCourse->sortOrder) ?>" min="0">
+        </div>
     </div>
 </form>
