@@ -6,6 +6,11 @@ class UserService
         private UserRepository $userRepository
     ) {}
 
+    public function get(string $id): ?array
+    {
+        return $this->userRepository->findById($id);
+    }
+
     public function getAll(): array
     {
         return $this->userRepository->getAll();

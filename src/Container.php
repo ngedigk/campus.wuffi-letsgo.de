@@ -33,12 +33,13 @@ class Container
         $this->set(RegistrationCodeRepository::class, fn($c) => new RegistrationCodeRepository($c->get(PDO::class))); 
         $this->set(EmailVerificationRepository::class, fn($c) => new EmailVerificationRepository($c->get(PDO::class))); 
         $this->set(AccessCodeRepository::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));
-        $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class))); 
+        $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class)));
+        $this->set(AuthRepository::class, fn($c) => new AuthRepository($c->get(PDO::class)));
         
 
         // Services
-        $this->set(AuthService::class, fn($c) => new AuthService($c->get(PDO::class)));
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
+        $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(CourseRepository::class), $c->get(ModuleRepository::class), $c->get(SlideRepository::class)
         ));

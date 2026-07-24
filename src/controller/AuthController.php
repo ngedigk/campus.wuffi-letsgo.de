@@ -50,7 +50,7 @@ class AuthController
         $password = $_POST['password'] ?? '';
         $pdo = Database::getInstance();
 
-        if (isIpBlocked($pdo)) {
+        if ($this->authService->isIpBlocked()) {
             $_SESSION['login_error'] = 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später nochmal.';
             return;
         }
@@ -66,18 +66,18 @@ class AuthController
         if ($user && password_verify($password, $user['password_hash'])) {
             if ((int)$user['email_verified'] !== 1) {
                 $_SESSION['login_error'] = 'Bestätigen Sie bitte erst Ihre E-Mail Adresse.';
-                recordFailedLogin($pdo);
+                $this->authService->recordFailedLogin();
                 return;
             }
 
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['is_admin'] = (int)$user['is_admin'];
-            clearOldAttempts($pdo);
+            $this->authService->clearOldAttempts();
             header("Location: index.php");
             exit;
         } else {
-            recordFailedLogin($pdo);
+            $this->authService->recordFailedLogin();
             $_SESSION['login_error'] = 'E-Mail oder Passwort ungültig';
         }
     }

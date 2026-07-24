@@ -6,6 +6,19 @@ class UserRepository
         private PDO $pdo
     ) {}
 
+    public function findById(int $id): ?array
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT id, email, is_admin
+            FROM users
+            WHERE id = ?
+        ");
+
+        $stmt->execute([$id]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+    }
+
 
     public function getAll(): array
     {
