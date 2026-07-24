@@ -6,7 +6,7 @@ class UserRepository
         private PDO $pdo
     ) {}
 
-    public function findById(int $id): ?array
+    public function findById(string $id): ?array
     {
         $stmt = $this->pdo->prepare("
             SELECT id, email, is_admin

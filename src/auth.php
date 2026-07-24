@@ -1,6 +1,9 @@
 <?php
 require_once __DIR__ . '/Database.php';
 require_once __DIR__ . '/services/AuthService.php';
+require_once __DIR__ . '/Container.php';
 
-$pdo = Database::getInstance();
-(new AuthService($pdo))->start();
+$container = Container::getInstance();
+
+$authService = $container->get(AuthService::class);
+$authService->start();
