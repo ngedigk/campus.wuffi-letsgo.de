@@ -5,7 +5,8 @@ class AuthService
     private ?array $userCache = null;
 
     public function __construct(
-        private PDO $pdo
+        private UserService $userService,
+        private AuthRepository $authRepository
     ) {}
 
     public function start(): void
@@ -49,14 +50,37 @@ class AuthService
             return $this->userCache = null;
         }
 
-        $stmt = $this->pdo->prepare("SELECT id, email, is_admin FROM users WHERE id = ?");
-        $stmt->execute([$id]);
-        return $this->userCache = $stmt->fetch() ?: null;
+        return $this->userCache = $this->userService->get($id);
     }
 
     public function isAdmin(): bool
     {
         $user = $this->currentUser();
         return (bool)($user['is_admin'] ?? 0);
+    }
+
+    public function isIpBlocked($limit = 5, $windowMinutes = 10)
+    {
+        $ip = $this->getClientIp();
+
+        $count = $this->authRepository->getLoginAttemptAmount($ip, $windowMinutes);
+
+        return $count >= $limit;
+    }
+
+    public function recordFailedLogin()
+    {
+        $ip = $this->getClientIp();
+        $this->authRepository->recordFailedLogin($ip);
+    }
+
+    public function clearOldAttempts($windowMinutes = 10)
+    {
+        $this->authRepository->clearOldAttempts($windowMinutes);
+    }
+
+    public function getClientIp(): string
+    {
+        return $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
     }
 }
