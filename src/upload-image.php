@@ -1,11 +1,9 @@
 <?php
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/auth.php';
-require_once __DIR__ . '/Container.php';
+require_once __DIR__ . '/bootstrap.php';
 
 $container = Container::getInstance();
-
 $authService = $container->get(AuthService::class);
 
 if (!$authService->isAdmin()) {

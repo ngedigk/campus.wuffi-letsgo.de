@@ -1,11 +1,8 @@
 <?php
 
-require_once __DIR__ . '/autoload.php';
-require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/csrf.php';
-require_once __DIR__ . '/uuid.php';
 require_once __DIR__ . '/validation.php';
-require_once __DIR__ . '/Container.php';
 
 $container = Container::getInstance();
 
@@ -74,16 +71,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $authService = $container->get(AuthService::class);
-
 $isLoggedIn = $authService->isLoggedIn();
-
 $pageTitle = 'Registrierung';
-$additionalCss = [
-    '/assets/css/register.css'
-];
-$additionalJs = [
-    '/assets/js/password-meter.js'
-];
+$additionalCss = ['/assets/css/register.css'];
+$additionalJs = ['/assets/js/password-meter.js'];
 ob_start();
 ?>
 <?php require 'views/register-form.php'; ?>

@@ -11,19 +11,14 @@ class AuthService
 
     public function start(): void
     {
-        session_set_cookie_params([
-            'lifetime' => 0,
-            'path' => '/',
-            'secure' => filter_var($_SERVER['HTTPS'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'httponly' => true,
-            'samesite' => 'Strict'
-        ]);
-
         header('X-Content-Type-Options: nosniff');
         header('Referrer-Policy: no-referrer');
         header('X-Frame-Options: DENY');
         header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
-        session_start();
+        
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
     }
 
     public function isLoggedIn(): bool
