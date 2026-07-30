@@ -48,7 +48,7 @@ class UserRepository
     public function findByEmail(string $email): ?array
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, email, is_admin
+            SELECT *
             FROM users
             WHERE email = ?
         ");

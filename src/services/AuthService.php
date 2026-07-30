@@ -54,6 +54,62 @@ class AuthService
         return (bool)($user['is_admin'] ?? 0);
     }
 
+    public function authenticate(string $email, string $password): ?array
+    {
+        $user = $this->userService->findByEmail($email);
+
+        if (!$user) {
+            return null;
+        }
+
+        if (!password_verify($password, $user['password_hash'])) {
+            return null;
+        }
+
+        return $user;
+    }
+
+    public function login(string $email, string $password): AuthenticationResult
+    {
+        if ($this->isIpBlocked()) {
+            return new AuthenticationResult(
+                false,
+                'Zu viele Anmeldeversuche. Bitte versuchen Sie es später nochmal.'
+            );
+        }
+
+        $user = $this->userService->findByEmail($email);
+
+        if (!$user || !password_verify($password, $user['password_hash'])) {
+            $this->recordFailedLogin();
+
+            return new AuthenticationResult(
+                false,
+                'E-Mail oder Passwort ungültig'
+            );
+        }
+
+        if ((int)$user['email_verified'] !== 1) {
+            $this->recordFailedLogin();
+
+            return new AuthenticationResult(
+                false,
+                'Bestätigen Sie bitte erst Ihre E-Mail Adresse.'
+            );
+        }
+
+        session_regenerate_id(true);
+
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['is_admin'] = (int)$user['is_admin'];
+
+        $this->userCache = $user;
+
+        $this->clearOldAttempts();
+
+        return new AuthenticationResult(true);
+    }
+
     public function isIpBlocked($limit = 5, $windowMinutes = 10)
     {
         $ip = $this->getClientIp();

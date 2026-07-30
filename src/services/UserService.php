@@ -16,6 +16,11 @@ class UserService
         return $this->userRepository->getAll();
     }
 
+    public function findByEmail(string $email): ?array
+    {
+        return $this->userRepository->findByEmail($email);
+    }
+
     public function create(string $id, string $email, string $passwordHash): void
     {
         $hasAdmin = $this->userRepository->hasAnyAdmin();

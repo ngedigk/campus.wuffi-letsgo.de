@@ -76,9 +76,17 @@ class Container
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class)
         ));
-        $this->set(AuthController::class, fn($c) => new AuthController(
+        $this->set(DashboardController::class, fn($c) => new DashboardController(
             $c->get(DashboardService::class),
+            $c->get(ViewRenderer::class)
+        ));
+        $this->set(AuthController::class, fn($c) => new AuthController(
             $c->get(ViewRenderer::class),
+            $c->get(AuthService::class)
+        ));
+        $this->set(HomeController::class, fn($c) => new HomeController(
+            $c->get(DashboardController::class),
+            $c->get(AuthController::class),
             $c->get(AuthService::class)
         ));
         $this->set(CourseController::class, fn($c) => new CourseController(
