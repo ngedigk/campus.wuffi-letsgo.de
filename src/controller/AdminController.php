@@ -138,7 +138,7 @@ class AdminController
         if ($title === '') throw new Exception('Please provide a course title.');
         $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
 
-        $this->courseService->create(new CreateCourse(
+        $this->courseService->create(new CourseInput(
             uuid: generateUuid(),
             title: $title,
             description: $description,
@@ -158,7 +158,7 @@ class AdminController
 
         if ($title === '') throw new Exception('Please provide a valid title.');
 
-        $this->courseService->update(new CreateCourse(
+        $this->courseService->update(new CourseInput(
             uuid: $courseId,
             title: $title,
             description: $description,
@@ -195,7 +195,7 @@ class AdminController
 
         if ($courseId === '' || $title === '') throw new Exception('Please provide a course and module title.');
 
-        $moduleId = $this->moduleService->create(new CreateModule(
+        $moduleId = $this->moduleService->create(new ModuleInput(
             courseId: $courseId,
             title: $title,
             sortOrder: $sortOrder
@@ -229,7 +229,7 @@ class AdminController
 
         if ($title === '') throw new Exception('Please provide a slide title.');
 
-        $slideId = $this->slideService->create(new CreateSlide(
+        $slideId = $this->slideService->create(new SlideInput(
             moduleId: $moduleId,
             title: $title,
             audioUrl: $audioUrl,

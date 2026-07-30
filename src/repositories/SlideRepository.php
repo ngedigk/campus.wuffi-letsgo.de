@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../dto/Slide.php";
+require_once __DIR__ . "/../dto/SlideInput.php";
 
 class SlideRepository
 {
@@ -44,7 +45,7 @@ class SlideRepository
         }, $rows);
     }
 
-    public function create(CreateSlide $slide): int {
+    public function create(SlideInput $slide): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides
             (module_id, title, html_content, audio_url, sort_order, is_quiz)

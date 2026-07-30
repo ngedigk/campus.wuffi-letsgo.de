@@ -6,7 +6,7 @@ class ModuleService {
     ) {}
 
     public function create(
-        CreateModule $module
+        ModuleInput $module
     ): int {
         try {
             $moduleId = $this->moduleRepository->create($module);

@@ -11,7 +11,7 @@ class CourseService
     ) {}
 
     public function create(
-        CreateCourse $course
+        CourseInput $course
     ): string {
         try {
             $courseId = $this->courseRepository->create($course);
@@ -22,7 +22,7 @@ class CourseService
     }
 
     public function update(
-        CreateCourse $course
+        CourseInput $course
     ): void {
         $this->courseRepository->update($course);
     }
@@ -42,11 +42,6 @@ class CourseService
         $course->isUnlocked = true;
         $course->isCompleted = false;
 
-        $modules = $this->moduleRepository->getByCourseId($courseUuid);
-        foreach ($modules as $module) {
-            $module->slides = $this->slideRepository->getByModule($module->id);
-        }
-
         return new Course(
             uuid: $course->uuid,
             title: $course->title,
@@ -55,7 +50,7 @@ class CourseService
             sortOrder: $course->sortOrder,
             isUnlocked: $course->isUnlocked,
             isCompleted: $course->isCompleted,
-            modules: $modules,
+            modules: $this->loadModules($courseUuid),
         );
     }
 
@@ -68,11 +63,6 @@ class CourseService
 
         $course->isUnlocked = true;
         $course->isCompleted = false;
-        
-        $modules = $this->moduleRepository->getByCourseId($courseUuid);
-        foreach ($modules as $module) {
-            $module->slides = $this->slideRepository->getByModule($module->id);
-        }
 
         return new Course(
             uuid: $course->uuid,
@@ -82,8 +72,19 @@ class CourseService
             sortOrder: $course->sortOrder,
             isUnlocked: $course->isUnlocked,
             isCompleted: $course->isCompleted,
-            modules: $modules,
+            modules: $this->loadModules($courseUuid),
         );
+    }
+
+    private function loadModules(string $courseUuid): array
+    {
+        $modules = $this->moduleRepository->getByCourseId($courseUuid);
+
+        foreach ($modules as $module) {
+            $module->slides = $this->slideRepository->getByModule($module->id);
+        }
+
+        return $modules;
     }
 
     public function getAll(): array {

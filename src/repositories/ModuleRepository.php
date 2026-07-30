@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../dto/Module.php";
+require_once __DIR__ . "/../dto/ModuleInput.php";
 
 class ModuleRepository
 {
@@ -43,7 +44,7 @@ class ModuleRepository
         }, $rows);
     }
 
-    public function create(CreateModule $module): int {
+    public function create(ModuleInput $module): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO course_modules
             (course_id, title, sort_order)

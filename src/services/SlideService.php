@@ -6,7 +6,7 @@ class SlideService {
     ) {}
 
     public function create(
-        CreateSlide $slide
+        SlideInput $slide
     ): int {
         try {
             $slideId = $this->slideRepository->create($slide);

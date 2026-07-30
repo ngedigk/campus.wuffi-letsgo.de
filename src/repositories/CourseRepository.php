@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../dto/Course.php";
+require_once __DIR__ . "/../dto/CourseInput.php";
 
 class CourseRepository
 {
@@ -96,7 +97,7 @@ class CourseRepository
         }, $rows);
     }
 
-    public function create(CreateCourse $course): string {
+    public function create(CourseInput $course): string {
         $stmt = $this->pdo->prepare("
             INSERT INTO courses
             (
@@ -120,7 +121,7 @@ class CourseRepository
         return $course->uuid;
     }
 
-    public function update(CreateCourse $course): void {
+    public function update(CourseInput $course): void {
         $stmt = $this->pdo->prepare("
             UPDATE courses
             SET title = ?, description = ?, prerequisite_course_id = ?, sort_order = ?
