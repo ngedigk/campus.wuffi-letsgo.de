@@ -697,6 +697,11 @@
     background: #f3f4f6;
 }
 
+.gjs-block-label svg,
+.gjs-block__media svg {
+    width: 54px;
+}
+
 /* Buttons */
 .btn {
     display: inline-flex;

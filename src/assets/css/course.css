@@ -1,19 +1,47 @@
-.course-layout {
-    display: flex;
-    gap: 1.5rem;
-    align-items: flex-start;
+.course-main {
+    border-top: 10px solid var(--primary);
 }
 
 .course-sidebar {
-    width: 280px;
-    border: 1px solid #ddd;
-    background: #fafafa;
-    padding: 1rem;
-    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);
+    padding: 20px 0;
+}
+
+@media screen and (min-width: 1970px) {
+    .course-layout {
+        display: flex;
+        gap: 1.5rem;
+    }
+    .course-sidebar {
+        position: sticky;
+        top: 8rem;
+        width: 370px;
+        height: fit-content;
+        margin-left: calc(-370px - 1.5rem);
+    }
+    .course-main {
+        flex: 1;
+    }
 }
 
 .course-sidebar h2 {
+    font-size: 24px;
     margin-top: 0;
+    position: relative;
+    padding: 0 20px;
+}
+
+.course-sidebar h2::before {
+    content: '';
+    height: 20px;
+    display: inline-block;
+    background: var(--primary);
+    width: 3px;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
 }
 
 .module-list,
@@ -23,11 +51,17 @@
     padding: 0;
 }
 
+.module-list {
+    padding: 0 20px;
+}
+
 .module-item {
     margin-bottom: 1rem;
+    font-family: 'Asap', sans-serif;
 }
 
 .module-item.active > a {
+    color: var(--primary);
     font-weight: bold;
 }
 
@@ -44,15 +78,20 @@
     margin-bottom: 0.35rem;
 }
 
-.slide-item.active > a {
-    font-weight: bold;
-    color: #1a73e8;
-}
-
+.slide-item > a,
+.slide-item.active > a,
 .slide-item.visited > a,
 .slide-item.visited > span {
-    font-weight: 600;
-    color: #2e7d32;
+    color: var(--text);
+}
+
+.slide-item > a {
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s linear;
+}
+.slide-item > a:hover,
+.slide-item > a:focus {
+    border-bottom: 1px solid var(--primary);
 }
 
 .slide-item.locked > span {
@@ -63,15 +102,11 @@
     color: #999;
 }
 
-.course-main {
-    flex: 1;
-}
-
 .slide-panel {
     border: 1px solid #ddd;
-    border-radius: 10px;
     padding: 1.25rem;
     background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
 }
 
 .slide-header {
@@ -88,11 +123,20 @@
     margin-bottom: 1.25rem;
 }
 
+.slide-audio {
+    display: flex;
+    justify-content: center;
+}
+
 .slide-navigation {
     display: flex;
-    justify-content: space-between;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
+    justify-content: center;
+    gap: 45px;
+}
+
+.slide-navigation p {
+    margin: 0;
+    color: var(--slide-nav);
 }
 
 .nav-button {
