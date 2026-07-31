@@ -90,6 +90,9 @@ class AdminController
                 case 'delete_course':
                     $this->handleDeleteCourse();
                     break;
+                case 'upload_image':
+                    $this->handleUploadImage();
+                    break;
                 default:
                     throw new Exception('Unsupported admin action.');
             }
@@ -281,6 +284,50 @@ class AdminController
         $courseId = trim($_POST['course_id'] ?? '');
         $this->courseService->delete($courseId);
         $_SESSION['admin_success'] = 'Course deleted.';
+    }
+    
+    private function handleUploadImage(): void
+    {
+        if (!$this->authService->isAdmin()) {
+            http_response_code(403);
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+
+        validateCsrf();
+
+        if (!isset($_FILES['files'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No file uploaded']);
+            exit;
+        }
+
+        $uploadDir = __DIR__ . '/../assets/images/slides/';
+
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+
+        $response = [];
+
+        foreach ($_FILES['files']['name'] as $index => $originalName) {
+            $tmpName = $_FILES['files']['tmp_name'][$index];
+
+            $filename = uniqid() . '-' . basename($originalName);
+
+            $target = $uploadDir . $filename;
+
+            if (move_uploaded_file($tmpName, $target)) {
+                $response[] = [
+                    'src' => '/assets/images/slides/' . $filename
+                ];
+            }
+        }
+
+        echo json_encode([
+            'data' => $response
+        ]);
+        exit;
     }
 
     private function validatePage(string $page): string

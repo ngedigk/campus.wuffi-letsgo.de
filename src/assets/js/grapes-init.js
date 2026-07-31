@@ -21,7 +21,7 @@ const editor = grapesjs.init({
     storageManager: false,
 
     assetManager: {
-        upload: '/upload-image.php',
+        upload: '/admin.php',
         uploadName: 'files',
 
         assets: [],
