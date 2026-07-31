@@ -39,8 +39,6 @@ class CourseService
 
     public function getWithDetails(string $courseUuid): Course {
         $course = $this->courseRepository->get($courseUuid);
-        $course->isUnlocked = true;
-        $course->isCompleted = false;
 
         return new Course(
             uuid: $course->uuid,
@@ -48,8 +46,6 @@ class CourseService
             description: $course->description,
             prerequisiteCourseId: $course->prerequisiteCourseId,
             sortOrder: $course->sortOrder,
-            isUnlocked: $course->isUnlocked,
-            isCompleted: $course->isCompleted,
             modules: $this->loadModules($courseUuid),
         );
     }
@@ -61,17 +57,12 @@ class CourseService
             throw new RuntimeException('Access denied.');
         }
 
-        $course->isUnlocked = true;
-        $course->isCompleted = false;
-
         return new Course(
             uuid: $course->uuid,
             title: $course->title,
             description: $course->description,
             prerequisiteCourseId: $course->prerequisiteCourseId,
             sortOrder: $course->sortOrder,
-            isUnlocked: $course->isUnlocked,
-            isCompleted: $course->isCompleted,
             modules: $this->loadModules($courseUuid),
         );
     }

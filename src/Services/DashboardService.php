@@ -10,15 +10,27 @@ class DashboardService
     public function getUserDashboardData(string $userId): array
     {
         $courses = $this->courseService->getAllForUser($userId);
+        
+        $cards = [];
 
         foreach ($courses as $course) {
-            $course->isUnlocked = true;
+            $isUnlocked = true;
+            $isCompleted = $this->progressService->isCourseCompleted($userId, $course->uuid);
+
             if ($course->prerequisiteCourseId) {
-                $course->isUnlocked = $this->progressService->isCourseCompleted($userId, $course->prerequisiteCourseId) ? 1 : 0;
+                $isUnlocked = $this->progressService->isCourseCompleted($userId, $course->prerequisiteCourseId) ? 1 : 0;
             }
-            $course->isCompleted = $this->progressService->isCourseCompleted($userId, $course->uuid) ? 1 : 0;
+
+            $cards[] = new CourseCard(
+                uuid: $course->uuid,
+                title: $course->title,
+                description: $course->description,
+                isUnlocked: $isUnlocked,
+                isCompleted: $isCompleted,
+                prerequisiteCourseId: $course->prerequisiteCourseId
+            );
         }
 
-        return $courses;
+        return $cards;
     }
 }

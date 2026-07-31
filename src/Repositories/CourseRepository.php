@@ -145,8 +145,6 @@ class CourseRepository
             $row['description'],
             $row['prerequisite_course_id'],
             $row['sort_order'],
-            false,
-            false,
             null
         );
     }
