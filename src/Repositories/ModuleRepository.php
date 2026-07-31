@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../dto/Module.php";
-require_once __DIR__ . "/../dto/ModuleInput.php";
-
 class ModuleRepository
 {
     public function __construct(

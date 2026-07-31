@@ -8,7 +8,7 @@ class ViewRenderer
         extract($data, EXTR_SKIP);
 
         ob_start();
-        require $this->basePath . '/views/' . $viewFile . '.php';
+        require $this->basePath . '/Views/' . $viewFile . '.php';
         return ob_get_clean();
     }
 
@@ -18,7 +18,7 @@ class ViewRenderer
         
         extract($data, EXTR_SKIP);
 
-        require $this->basePath . '/views/template.php';
+        require $this->basePath . '/Views/template.php';
     }
 
     public function renderWithAdminTemplate(string $viewFile, array $data): void
@@ -27,6 +27,6 @@ class ViewRenderer
         
         extract($data, EXTR_SKIP);
 
-        require $this->basePath . '/views/admin/template.php';
+        require $this->basePath . '/Views/admin/template.php';
     }
 }

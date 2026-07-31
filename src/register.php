@@ -77,8 +77,8 @@ $additionalCss = ['/assets/css/register.css'];
 $additionalJs = ['/assets/js/password-meter.js'];
 ob_start();
 ?>
-<?php require 'views/register-form.php'; ?>
+<?php require_once __DIR__ . '/Views/register-form.php'; ?>
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/views/template.php';
+require_once __DIR__ . '/Views/template.php';
 ?>

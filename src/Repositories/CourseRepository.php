@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../dto/Course.php";
-require_once __DIR__ . "/../dto/CourseInput.php";
-
 class CourseRepository
 {
     public function __construct(

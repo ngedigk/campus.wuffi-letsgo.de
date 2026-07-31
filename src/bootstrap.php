@@ -14,7 +14,7 @@ if (session_status() === PHP_SESSION_NONE) {
 require_once __DIR__ . '/autoload.php';
 require_once __DIR__ . '/Container.php';
 require_once __DIR__ . '/Database.php';
-require_once __DIR__ . '/services/AuthService.php';
+require_once __DIR__ . '/Services/AuthService.php';
 
 $container = Container::getInstance();
 $authService = $container->get(AuthService::class);

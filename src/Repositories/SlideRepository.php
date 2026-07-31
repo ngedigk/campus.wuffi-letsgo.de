@@ -1,8 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../dto/Slide.php";
-require_once __DIR__ . "/../dto/SlideInput.php";
-
 class SlideRepository
 {
     public function __construct(

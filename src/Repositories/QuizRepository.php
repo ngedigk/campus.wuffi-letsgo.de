@@ -1,7 +1,5 @@
 <?php
 
-require_once __DIR__ . "/../dto/QuizQuestion.php";
-
 class QuizRepository {
 
     public function __construct(

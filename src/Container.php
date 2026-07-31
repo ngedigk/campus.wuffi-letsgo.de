@@ -62,6 +62,9 @@ class Container
             $c->get(RegistrationCodeRepository::class),
             $c->get(AccessCodeRepository::class)
         ));
+        $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
+            $c->get(CourseService::class)
+        ));
 
         // Helpers
         $this->set(ViewRenderer::class, fn() => new ViewRenderer(__DIR__));
@@ -90,7 +93,8 @@ class Container
             $c->get(AuthService::class)
         ));
         $this->set(CourseController::class, fn($c) => new CourseController(
-            $c->get(CourseService::class),    
+            $c->get(CourseService::class),
+            $c->get(CourseSidebarBuilderService::class),
             $c->get(ProgressService::class),
             $c->get(QuizService::class),
             $c->get(ViewRenderer::class),

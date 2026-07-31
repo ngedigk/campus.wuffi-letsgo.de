@@ -4,6 +4,7 @@ class CourseController
 {
     public function __construct(
         private CourseService $courseService,
+        private CourseSidebarBuilderService $courseSidebarBuilderService,
         private ProgressService $progressService,
         private QuizService $quizService,
         private ViewRenderer $viewRenderer,
@@ -22,25 +23,20 @@ class CourseController
                 'pageTitle' => htmlspecialchars($result['course']->title),
                 'isLoggedIn' => $this->authService->isLoggedIn(),
                 'isAdmin' => $this->authService->isAdmin(),
+                'additionalCss' => ['/assets/css/course.css'],
+                'errors' => $errors,
                 'course' => $result['course'],
                 'slidesForModule' => $result['slidesForModule'],
                 'currentSlide' => $result['currentSlide'],
                 'currentSlideIndex' => $result['currentSlideIndex'],
-                'currentSlideQuestions' => $result['currentSlideQuestions'],
                 'choicesByQuestion' => $result['choicesByQuestion'],
                 'answers' => $result['answers'],
                 'quizResult' => $result['quizResult'],
-                'quizAttempted' => $result['quizAttempted'],
-                'quizPassed' => $result['quizPassed'],
-                'visitedSlideIds' => $result['visitedSlideIds'],
-                'allowedSlideIds' => $result['allowedSlideIds'],
                 'currentModule' => $result['currentModule'],
-                'allSlides' => $result['allSlides'],
                 'prevUrl' => $result['prevUrl'],
                 'nextUrl' => $result['nextUrl'],
                 'isLastSlide' => $result['isLastSlide'],
-                'additionalCss' => ['/assets/css/course.css'],
-                'errors' => $errors
+                'courseSidebar' => $result['courseSidebar']
             ];
 
             $this->viewRenderer->renderWithTemplate('course', $viewData);
@@ -51,45 +47,39 @@ class CourseController
         }
     }
 
-    private function processCourse(string $userUuid, string $courseUuid, int $moduleId, int $slideIndex): array
+    private function getCurrentModule(Course $course, int $moduleId): ?Module
     {
-        $course = $this->courseService->getWithDetailsForUser($userUuid, $courseUuid);
-        
-        // Resolve current module and slides using index instead of DB ID
         $modules = array_values($course->modules);
         $currentModule = $modules[$moduleId] ?? null;
-        
-        // Fallback to the first module if the index is out of bounds
+
         if (!$currentModule && !empty($modules)) {
             $currentModule = $modules[0];
             $moduleId = 0;
         }
+        return $currentModule;
+    }
 
-        $slidesForModule = $currentModule ? $currentModule->slides : [];
-        $currentSlide = $slidesForModule[$slideIndex] ?? null;
-        $currentSlideIndex = $slideIndex;
-        
-
-
-
-
-        // Quiz Handling using QuizService2
-        $quizResult = null;
-        if ($currentSlide && !empty($currentSlide->isQuiz)) {
-            $quizResult = $this->quizService->getQuizData((int)$currentSlide->id);
-
-            // Check if quiz was just submitted
-            if (isset($_POST['quiz_submit']) && !empty($_POST['answers'])) {
-                $quizResult = $this->quizService->submitQuiz($quizResult, $_POST['answers']);
-            }
+    private function getQuizResult(Slide $currentSlide): ?QuizResult
+    {
+        if (!$currentSlide || empty($currentSlide->isQuiz)) {
+            return null;
         }
 
-        $visitedSlideIds = $this->progressService->getVisitedSlideIds($userUuid, $courseUuid);
+        $quizResult = $this->quizService->getQuizData((int)$currentSlide->id);
 
-        $allSlidesGlobal = [];
+        if (isset($_POST['quiz_submit']) && !empty($_POST['answers'])) {
+            $quizResult = $this->quizService->submitQuiz($quizResult, $_POST['answers']);
+        }
+
+        return $quizResult;
+    }
+
+    private function getFlattenedSlides(Course $course): array
+    {
+        $flattenedSlides = [];
         foreach ($course->modules as $moduleIndex => $module) {
             foreach ($module->slides as $sIdx => $slide) {
-                $allSlidesGlobal[] = [
+                $flattenedSlides[] = [
                     'module' => $module,
                     'moduleIndex' => $moduleIndex,
                     'slide' => $slide,
@@ -97,33 +87,59 @@ class CourseController
                 ];
             }
         }
+        return $flattenedSlides;
+    }
 
-        // Find the index of the furthest visited slide
+    private function getFurthestVisitedSlideIndex(array $allSlides, array $visitedSlideIds): int
+    {
         $maxVisitedIndex = -1;
-        foreach ($allSlidesGlobal as $idx => $item) {
+        foreach ($allSlides as $idx => $item) {
             if (in_array($item['slide']->id, $visitedSlideIds)) {
                 $maxVisitedIndex = $idx;
             }
         }
+        return $maxVisitedIndex;
+    }
 
-        // Determine the next allowed slide index (next to the furthest visited)
+    private function getNextAllowedIndex(array $allSlides, int $maxVisitedIndex): int
+    {
         $nextAllowedIndex = $maxVisitedIndex + 1;
         
-        // If the user has visited all slides, they are at the end (allow access to the last one)
-        if ($nextAllowedIndex >= count($allSlidesGlobal)) {
-            $nextAllowedIndex = count($allSlidesGlobal) - 1;
+        if ($nextAllowedIndex >= count($allSlides)) {
+            $nextAllowedIndex = count($allSlides) - 1;
         }
 
-        // Find the global index of the currently requested slide
+        return $nextAllowedIndex;
+    }
+
+    private function getCurrentFlattenedSlideIndex(array $allSlides, int $moduleId, int $slideIndex): int
+    {
         $currentGlobalIndex = -1;
-        foreach ($allSlidesGlobal as $gIdx => $item) {
+        foreach ($allSlides as $index => $item) {
             if ($item['moduleIndex'] == $moduleId && $item['slideIndex'] == $slideIndex) {
-                $currentGlobalIndex = $gIdx;
+                $currentGlobalIndex = $index;
                 break;
             }
         }
 
-        // REDIRECT if the user is trying to skip slides
+        return $currentGlobalIndex;
+    }
+
+    private function processCourse(string $userUuid, string $courseUuid, int $moduleId, int $slideIndex): array
+    {
+        $course = $this->courseService->getWithDetailsForUser($userUuid, $courseUuid);
+        $currentModule = $this->getCurrentModule($course, $moduleId);
+
+        $slidesForModule = $currentModule ? $currentModule->slides : [];
+        $currentSlide = $slidesForModule[$slideIndex] ?? null;
+        $currentSlideIndex = $slideIndex;
+        $quizResult = $this->getQuizResult($currentSlide);
+        $visitedSlideIds = $this->progressService->getVisitedSlideIds($userUuid, $courseUuid);
+        $allSlidesGlobal = $this->getFlattenedSlides($course);
+        $maxVisitedIndex = $this->getFurthestVisitedSlideIndex($allSlidesGlobal, $visitedSlideIds);
+        $nextAllowedIndex = $this->getNextAllowedIndex($allSlidesGlobal, $maxVisitedIndex);
+        $currentGlobalIndex = $this->getCurrentFlattenedSlideIndex($allSlidesGlobal, $moduleId, $slideIndex);
+
         if ($currentGlobalIndex > $nextAllowedIndex) {
             $nextSlide = $allSlidesGlobal[$nextAllowedIndex];
             $redirectUrl = $this->courseService->buildCourseUrl($courseUuid, $nextSlide['moduleIndex'], $nextSlide['slideIndex']);
@@ -172,25 +188,26 @@ class CourseController
 
         $isLastSlide = ($currentIndexInAll === count($allSlides) - 1);
 
+        $sidebarItems = $this->courseSidebarBuilderService->build(
+            $course,
+            $currentModule,
+            $allowedSlideIds,
+            $visitedSlideIds
+        );
+
         return [
             'course' => $course,
             'currentModule' => $currentModule,
-            'allSlides' => $allSlides,
             'slidesForModule' => $slidesForModule,
             'currentSlide' => $currentSlide,
             'currentSlideIndex' => $currentSlideIndex,
             'quizResult' => $quizResult,
-            'quizAttempted' => $quizResult !== null && $quizResult->isSubmitted,
-            'quizPassed' => $quizResult !== null && $quizResult->passed,
-            'currentSlideQuestions' => $quizResult !== null ? $quizResult->questions : [],
             'choicesByQuestion' => $quizResult !== null ? $quizResult->choicesByQuestion : [],
             'answers' => $quizResult !== null ? ($quizResult->isSubmitted ? $quizResult->results : null) : null,
-            'visitedSlideIds' => $visitedSlideIds,
-            'allowedSlideIds' => $allowedSlideIds,
             'prevUrl' => $prevUrl,
             'nextUrl'=> $nextUrl,
             'isLastSlide' => $isLastSlide,
-            'courseService' => $this->courseService
+            'courseSidebar' => $sidebarItems
         ];
     }
 
