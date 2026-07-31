@@ -1,3 +1,7 @@
+<?php
+/** @var string $csrfToken */
+/** @var string $message */
+?>
 <section>
     <div class="container">
         <div class="row">

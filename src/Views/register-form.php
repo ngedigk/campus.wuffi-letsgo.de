@@ -1,3 +1,10 @@
+<?php
+/** @var string $csrfToken */
+/** @var string $success */
+/** @var string $error */
+/** @var string $registrationCode */
+/** @var string $email */
+?>
 <section>
     <div class="container">
         <div class="row">
@@ -86,9 +93,7 @@
 
                         <br><br>
 
-                        <label>
-                        Passwort bestätigen
-                        </label>
+                        <label>Passwort bestätigen</label>
 
                         <br>
 

@@ -1,3 +1,8 @@
+<?php
+/** @var string $csrfToken */
+/** @var string $success */
+/** @var string $error */
+?>
 <section>
     <div class="container">
         <div class="row">
