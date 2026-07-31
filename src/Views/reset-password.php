@@ -2,32 +2,62 @@
 /** @var string $csrfToken */
 /** @var string $success */
 /** @var string $error */
+/** @var string $userUuid */
 ?>
 <section>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1>Reset Password</h1>
-
-                <?php if (!empty($error)): ?>
-                <p><?= htmlspecialchars($error) ?></p>
-                <?php endif; ?>
 
                 <?php if (!empty($success)): ?>
-                <p><?= htmlspecialchars($success) ?></p>
-                <a href="index.php">Login</a>
+                    <h1>Passwort aktualisiert</h1>
+                    <p class="success"><?= htmlspecialchars($success) ?></p>
+                    <a href="index.php">Login</a>
                 <?php else: ?>
-                <form method="post">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <h1>Passwort zurücksetzen</h1>
 
-                    <label>New Password</label><br>
-                    <input type="password" name="password" required>
+                    <?php if (!empty($error)): ?>
+                        <p class="error"><?= htmlspecialchars($error) ?></p>
+                    <?php endif; ?>
 
-                    <br><br>
+                    <form method="post">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                        <input type="hidden" name="user_uuid" value="<?= htmlspecialchars($userUuid ?? '') ?>">
 
-                    <button type="submit">Update Password</button>
+                        <label>Neues Passwort</label><br>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="new-password"
+                            required
+                        >
 
-                </form>
+                        <div class="password-meter">
+                            <div class="password-bar">
+                                <div id="password-progress"></div>
+                            </div>
+                            <div id="password-label">Passwort eingeben</div>
+                        </div>
+
+                        <div id="password-hints">
+                            Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
+                        </div>
+
+                        <br><br>
+
+                        <label>Passwort bestätigen</label><br>
+                        <input
+                            type="password"
+                            name="password_confirm"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <br><br>
+
+                        <button type="submit">Passwort aktualisieren</button>
+                    </form>
                 <?php endif; ?>
             </div>
         </div>
