@@ -1,3 +1,9 @@
+<?php
+/** @var string $activePage */
+/** @var string $adminError */
+/** @var string $adminSuccess */
+/** @var string $content */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

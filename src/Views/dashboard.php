@@ -1,5 +1,6 @@
 <?php
 /** @var User $user */
+/** @var array $courses */
 /** @var string $redeemError */
 /** @var string $redeemSuccess */
 ?>
