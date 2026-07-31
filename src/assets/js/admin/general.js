@@ -1,3 +1,8 @@
+window.getCsrfToken = function() {
+    const meta = document.querySelector('meta[name="csrf-token"]');
+    return meta ? meta.content : '';
+};
+
 document.getElementById('courseSearch')?.addEventListener('input', function(e) {
     const searchTerm = e.target.value.toLowerCase();
     const coursesList = document.querySelectorAll('.course-item');

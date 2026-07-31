@@ -1,4 +1,5 @@
 <?php
+/** @var string $csrfToken */
 /** @var bool $isLoggedIn */
 /** @var bool $isAdmin */
 ?>
@@ -44,7 +45,7 @@
                                     <a href="admin.php">Admin Panel</a>
                                 <?php endif; ?>
                                 <form method="post" action="logout.php" style="margin: 0;">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                     <button type="submit">Abmelden</button>
                                 </form>
                             </div>

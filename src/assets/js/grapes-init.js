@@ -11,6 +11,8 @@ doc.querySelectorAll('style').forEach(style => {
     css += style.innerHTML;
 });
 
+const csrfToken = window.getCsrfToken();
+
 const editor = grapesjs.init({
     container: '#gjs',
     height: '500px',
@@ -27,7 +29,8 @@ const editor = grapesjs.init({
         assets: [],
 
         params: {
-            csrf_token: '<?= csrfToken() ?>'
+            action: 'upload_image',
+            csrf_token: csrfToken
         }
     },
 

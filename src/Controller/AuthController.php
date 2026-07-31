@@ -5,7 +5,8 @@ class AuthController
     
     public function __construct(
         private ViewRenderer $viewRenderer,
-        private AuthService $authService
+        private AuthService $authService,
+        private CsrfService $csrfService
     ) {}
 
     public function login(): void
@@ -15,7 +16,12 @@ class AuthController
             return;
         }
 
-        validateCsrf();
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token']);
+        } catch (Exception $e) {
+            $_SESSION['login_error'] = $e->getMessage();
+            return;
+        }
 
         $result = $this->authService->login(
             trim($_POST['email']),

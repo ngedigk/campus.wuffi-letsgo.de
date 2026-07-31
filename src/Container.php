@@ -65,6 +65,7 @@ class Container
         $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
             $c->get(CourseService::class)
         ));
+        $this->set(CsrfService::class, fn() => new CsrfService());
 
         // Helpers
         $this->set(ViewRenderer::class, fn() => new ViewRenderer(__DIR__));
@@ -77,22 +78,26 @@ class Container
             $c->get(SlideService::class),
             $c->get(ModuleService::class),
             $c->get(ViewRenderer::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(DashboardController::class, fn($c) => new DashboardController(
             $c->get(DashboardService::class),
             $c->get(ViewRenderer::class),
             $c->get(RedeemService::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(AuthController::class, fn($c) => new AuthController(
             $c->get(ViewRenderer::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(HomeController::class, fn($c) => new HomeController(
             $c->get(DashboardController::class),
             $c->get(AuthController::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(CourseController::class, fn($c) => new CourseController(
             $c->get(CourseService::class),

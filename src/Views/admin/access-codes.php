@@ -12,7 +12,7 @@
     method="post"
     action="admin.php?page=access-codes"
 >
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
     <input type="hidden" name="action" value="delete_access_code">
     <input type="hidden" id="delete-access-code-id" name="access_code_id" value="">
 </form>
@@ -75,7 +75,7 @@
             <span class="close" onclick="document.getElementById('createAccessCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=access-codes">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <input type="hidden" name="action" value="create_access_code">
             
             <div class="form-group">

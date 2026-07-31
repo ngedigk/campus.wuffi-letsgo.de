@@ -29,6 +29,11 @@ class UserService
         $this->userRepository->create($id, $email, $passwordHash, $isAdmin);
     }
 
+    public function setPassword(string $userUuid, string $passwordHash): void
+    {
+        $this->userRepository->setPassword($userUuid, $passwordHash);
+    }
+
     public function grantAdmin(string $email): void
     {
         $user = $this->userRepository->findByEmail($email);

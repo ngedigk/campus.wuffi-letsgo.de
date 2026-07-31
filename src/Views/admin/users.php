@@ -40,7 +40,7 @@
                                     method="post"
                                     action="admin.php?page=users"
                                 >
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                     <input type="hidden" name="action" value="manually_verify">
                                     <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                     <button class="btn btn-small btn-warn" type="submit">Manually Verify</button>
@@ -52,7 +52,7 @@
                                         method="post"
                                         action="admin.php?page=users"
                                     >
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                         <input type="hidden" name="action" value="grant_admin">
                                         <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                         <button class="btn btn-small" type="submit">Grant Admin</button>
@@ -63,7 +63,7 @@
                                         method="post"
                                         action="admin.php?page=users"
                                     >
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                         <input type="hidden" name="action" value="revoke_admin">
                                         <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                         <button class="btn btn-small btn-danger" type="submit">Revoke Admin</button>

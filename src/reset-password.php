@@ -1,31 +1,35 @@
 <?php
 
 require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/csrf.php';
 
 $token = $_GET['token'] ?? '';
 $error = '';
 $success = '';
 
-$pdo = Database::getInstance();
-$stmt = $pdo->prepare("
-    SELECT user_id
-    FROM password_resets
-    WHERE token = ?
-    AND expires_at > NOW()
-");
-$stmt->execute([$token]);
-$row = $stmt->fetch();
+$container = Container::getInstance();
 
-if (!$row) {
+$authService = $container->get(AuthService::class);
+$isLoggedIn = $authService->isLoggedIn();
+
+$csrfService = $container->get(CsrfService::class);
+$csrfToken = $csrfService->generateToken();
+
+$passwordResetsRepository = $container->get(PasswordResetsRepository::class);
+
+$userUuid = $passwordResetsRepository->getUserUuidByToken($token);
+
+if (!$userUuid) {
     exit("Invalid or expired token.");
 }
 
-$userUuid = $row['user_id'];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    validateCsrf(); 
+    try {
+        $this->csrfService->validateToken($_POST['token']);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+        return;
+    }
 
     $password = $_POST['password'];
 
@@ -35,18 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("
-            UPDATE users
-            SET password_hash = ?
-            WHERE id = ?
-        ");
-        $stmt->execute([$hash, $userUuid]);
+        $userService = $container->get(UserService::class);
+        $userService->setPassword($userUuid, $hash);
 
-        $stmt = $pdo->prepare("
-            DELETE FROM password_resets
-            WHERE user_id = ?
-        ");
-        $stmt->execute([$userUuid]);
+        $passwordResetsRepository->deleteRecord($userUuid);
 
         $success = "Password updated successfully.";
     }
@@ -63,7 +59,7 @@ ob_start();
 
 <?php if (!$success): ?>
 <form method="post">
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
 
     <label>New Password</label><br>
     <input type="password" name="password" required>
@@ -77,5 +73,5 @@ ob_start();
 <?php endif; ?>
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/template.php';
+require_once __DIR__ . '/Views/template.php';
 ?>

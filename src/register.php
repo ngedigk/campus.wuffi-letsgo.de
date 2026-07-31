@@ -1,10 +1,12 @@
 <?php
 
 require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/csrf.php';
 require_once __DIR__ . '/validation.php';
 
 $container = Container::getInstance();
+
+$csrfService = $container->get(CsrfService::class);
+$csrfToken = $csrfService->generateToken();
 
 $error = '';
 $success = '';
@@ -12,8 +14,13 @@ $email = '';
 $registrationCode = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-
-    validateCsrf();
+    
+    try {
+        $this->csrfService->validateToken($_POST['token']);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+        return;
+    }
 
     $email = strtolower(trim($_POST['email'] ?? ''));
     $registrationCode = trim($_POST['registration_code'] ?? '');

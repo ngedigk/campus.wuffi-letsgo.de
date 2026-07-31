@@ -6,7 +6,8 @@ class DashboardController
         private DashboardService $dashboardService,
         private ViewRenderer $viewRenderer,
         private RedeemService $redeemService,
-        private AuthService $authService
+        private AuthService $authService,
+        private CsrfService $csrfService
     ) {}
 
     public function index(array $context): void
@@ -35,7 +36,13 @@ class DashboardController
             exit;
         }
 
-        validateCsrf();
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token']);
+        } catch (Exception $e) {
+            $_SESSION['redeem_error'] = $e->getMessage();
+            header("Location: index.php");
+            return;
+        }
 
         $code = trim($_POST['code'] ?? '');
 

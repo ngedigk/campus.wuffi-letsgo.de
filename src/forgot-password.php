@@ -2,17 +2,27 @@
 
 require_once __DIR__ . '/bootstrap.php';
 require_once __DIR__ . '/mail.php';
-require_once __DIR__ . '/csrf.php';
+
+$container = Container::getInstance();
+
+$authService = $container->get(AuthService::class);
+$isLoggedIn = $authService->isLoggedIn();
+
+$csrfService = $container->get(CsrfService::class);
+$csrfToken = $csrfService->generateToken();
 
 $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    validateCsrf();
+    try {
+        $this->csrfService->validateToken($_POST['csrf_token']);
+    } catch (Exception $e) {
+        $error = $e->getMessage();
+        return;
+    }
 
     $email = trim($_POST['email']);
-
-    $container = Container::getInstance();
     $userRepository = $container->get(UserRepository::class);
     $user = $userRepository->findByEmail($email);
 
@@ -48,7 +58,7 @@ ob_start();
 
             <form method="post">
 
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
 
                 <label>Email</label><br>
                 <input type="email" name="email" required>
@@ -63,5 +73,5 @@ ob_start();
 </div>
 <?php
 $content = ob_get_clean();
-require_once __DIR__ . '/template.php';
+require_once __DIR__ . '/Views/template.php';
 ?>

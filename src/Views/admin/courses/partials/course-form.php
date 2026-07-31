@@ -7,7 +7,7 @@
     method="post"
     action="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>"
 >
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
     <input type="hidden" name="action" value="update_course">
     <input type="hidden" name="course_id" value="<?= htmlspecialchars($selectedCourse->uuid) ?>">
 

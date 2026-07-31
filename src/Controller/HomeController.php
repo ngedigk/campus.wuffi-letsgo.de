@@ -5,7 +5,8 @@ class HomeController
     public function __construct(
         private DashboardController $dashboardController,
         private AuthController $authController,
-        private AuthService $authService
+        private AuthService $authService,
+        private CsrfService $csrfService
     ) {}
 
     public function index(): void
@@ -33,6 +34,7 @@ class HomeController
     private function buildContext(): array
     {
         $context = [
+            'csrfToken' => $this->csrfService->generateToken(),
             'user' => $this->authService->currentUser(),
             'isLoggedIn' => $this->authService->isLoggedIn(),
             'isAdmin' => $this->authService->isAdmin(),

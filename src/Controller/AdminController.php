@@ -9,8 +9,30 @@ class AdminController
         private SlideService $slideService,
         private ModuleService $moduleService,
         private ViewRenderer $viewRenderer,
-        private AuthService $authService
+        private AuthService $authService,
+        private CsrfService $csrfService
     ) {}
+
+    private function buildContext(User $user): array
+    {
+        $context = [
+            'csrfToken' => $this->csrfService->generateToken(),
+            'user' => $user,
+            'isAdmin' => $this->authService->isAdmin(),
+            'adminError' => $_SESSION['admin_error'] ?? null,
+            'adminSuccess' => $_SESSION['admin_success'] ?? null,
+            'additionalCss' => ['/assets/css/admin.css'],
+            'additionalJs' => ['/assets/js/admin/general.js'],
+            'allCourses' => $this->courseService->getAll(),
+        ];
+
+        unset(
+            $_SESSION['admin_error'],
+            $_SESSION['admin_success']
+        );
+
+        return $context;
+    }
 
     public function handle(string $page): void
     {
@@ -22,22 +44,23 @@ class AdminController
 
         $page = $this->validatePage($page);
 
+        $context = $this->buildContext($user);
 
         switch ($page) {
             case 'dashboard':
-                $this->renderDashboard($user);
+                $this->renderDashboard($context);
                 break;
             case 'courses':
-                $this->renderCourses($user);
+                $this->renderCourses($context);
                 break;
             case 'access-codes':
-                $this->renderAccessCodes($user);
+                $this->renderAccessCodes($context);
                 break;
             case 'users':
-                $this->renderUsers($user);
+                $this->renderUsers($context);
                 break;
             default:
-                $this->renderDashboard($user);
+                $this->renderDashboard($context);
                 break;
         }
     }
@@ -294,7 +317,13 @@ class AdminController
             exit;
         }
 
-        validateCsrf();
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token']);
+        } catch (\Exception $e) {
+            http_response_code(403);
+            echo json_encode(['error' => 'CSRF token invalid']);
+            exit;
+        }
 
         if (!isset($_FILES['files'])) {
             http_response_code(400);
@@ -336,29 +365,21 @@ class AdminController
         return in_array($page, $validPages, true) ? $page : 'dashboard';
     }
 
-    private function renderDashboard(User $user): void
+    private function renderDashboard(array $context): void
     {
         $viewData = [
-            'user' => $user,
-            'isAdmin' => $this->authService->isAdmin(),
+            ...$context,
             'activePage' => 'dashboard',
             'breadcrumb' => [],
-            'adminError' => $_SESSION['admin_error'] ?? null,
-            'adminSuccess' => $_SESSION['admin_success'] ?? null,
-            'additionalCss' => ['/assets/css/admin.css'],
-            'additionalJs' => ['/assets/js/admin/general.js'],
             'accessCodes' => $this->accessCodeRepository->getAll(),
             'allUsers' => $this->userService->getAll(),
-            'allCourses' => $this->courseService->getAll(),
             'pageTitle' => 'Dashboard'
         ];
-
-        unset($_SESSION['admin_error'], $_SESSION['admin_success']);
 
         $this->viewRenderer->renderWithAdminTemplate('admin/dashboard', $viewData);
     }
 
-    private function renderCourses(User $user): void
+    private function renderCourses(array $context): void
     {
         $selectedCourse = null;
         $selectedCourseId = filter_input(INPUT_GET, 'course_id');
@@ -405,13 +426,18 @@ class AdminController
             }
         }
 
-        $additionalJs = ['https://unpkg.com/grapesjs', 'https://unpkg.com/grapesjs-blocks-basic'];
-        if ($selectedSlide) { $additionalJs[] = '/assets/js/grapes-init.js'; }
-        $additionalJs[] = '/assets/js/admin/courses.js';
+        $context['additionalJs'][] = 'https://unpkg.com/grapesjs';
+        $context['additionalJs'][] = 'https://unpkg.com/grapesjs-blocks-basic';
+
+        if ($selectedSlide) {
+            $context['additionalJs'][] = '/assets/js/grapes-init.js';
+        }
+        $context['additionalJs'][] = '/assets/js/admin/courses.js';
+
+        $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
 
         $viewData = [
-            'user' => $user,
-            'isAdmin' => $this->authService->isAdmin(),
+            ...$context,
             'activePage' => 'courses',
             'breadcrumb' => [
                 [
@@ -419,10 +445,6 @@ class AdminController
                     'title'=> 'Courses'
                 ],
             ],
-            'adminError' => $_SESSION['admin_error'] ?? null,
-            'adminSuccess' => $_SESSION['admin_success'] ?? null,
-            'additionalCss' => ['/assets/css/admin.css', 'https://unpkg.com/grapesjs/dist/css/grapes.min.css'],
-            'additionalJs' => $additionalJs,
             'selectedCourse' => $selectedCourse,
             'selectedCourseId' => $selectedCourseId,
             'selectedModule' => $selectedModule,
@@ -430,20 +452,18 @@ class AdminController
             'selectedSlide' => $selectedSlide,
             'selectedSlideId' => $selectedSlideId,
             'slideAssets' => $slideAssets,
-            'allCourses' => $this->courseService->getAll(),
             'pageTitle' => 'Courses'
         ];
-
-        unset($_SESSION['admin_error'], $_SESSION['admin_success']);
         
         $this->viewRenderer->renderWithAdminTemplate('admin/courses/index', $viewData);
     }
 
-    private function renderAccessCodes(User $user): void
+    private function renderAccessCodes(array $context): void
     {
+        $context['additionalJs'][] = '/assets/js/admin/access-codes.js';
+
         $viewData = [
-            'user' => $user,
-            'isAdmin' => $this->authService->isAdmin(),
+            ...$context,
             'activePage' => 'access-codes',
             'breadcrumb' => [
                 [
@@ -451,25 +471,17 @@ class AdminController
                     'title'=> 'Access Codes'
                 ],
             ],
-            'adminError' => $_SESSION['admin_error'] ?? null,
-            'adminSuccess' => $_SESSION['admin_success'] ?? null,
-            'additionalCss' => ['/assets/css/admin.css'],
-            'additionalJs' => ['/assets/js/admin/general.js', '/assets/js/admin/access-codes.js'],
             'accessCodes' => $this->accessCodeRepository->getAll(),
-            'allCourses' => $this->courseService->getAll(),
             'pageTitle' => 'Access Codes'
         ];
-
-        unset($_SESSION['admin_error'], $_SESSION['admin_success']);
 
         $this->viewRenderer->renderWithAdminTemplate('admin/access-codes', $viewData);
     }
 
-    private function renderUsers(User $user): void
+    private function renderUsers(array $context): void
     {
         $viewData = [
-            'user' => $user,
-            'isAdmin' => $this->authService->isAdmin(),
+            ...$context,
             'activePage' => 'users',
             'breadcrumb' => [
                 [
@@ -477,16 +489,9 @@ class AdminController
                     'title'=> 'Users'
                 ],
             ],
-            'adminError' => $_SESSION['admin_error'] ?? null,
-            'adminSuccess' => $_SESSION['admin_success'] ?? null,
-            'additionalCss' => ['/assets/css/admin.css'],
-            'additionalJs' => ['/assets/js/admin/general.js'],
             'allUsers' => $this->userService->getAll(),
-            'allCourses' => $this->courseService->getAll(),
             'pageTitle' => 'Users'
         ];
-
-        unset($_SESSION['admin_error'], $_SESSION['admin_success']);
 
         $this->viewRenderer->renderWithAdminTemplate('admin/users', $viewData);
     }

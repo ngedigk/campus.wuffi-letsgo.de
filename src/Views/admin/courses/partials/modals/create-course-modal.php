@@ -5,7 +5,7 @@
             <span class="close" onclick="document.getElementById('createCourseModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=courses">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <input type="hidden" name="action" value="create_course">
             
             <div class="form-group">

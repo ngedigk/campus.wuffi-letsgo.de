@@ -1,6 +1,5 @@
 <?php
 require __DIR__ . '/bootstrap.php';
-require __DIR__ . '/csrf.php';
 
 $container = Container::getInstance();
 $authService = $container->get(AuthService::class);

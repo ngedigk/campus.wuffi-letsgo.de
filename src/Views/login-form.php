@@ -1,4 +1,5 @@
 <?php
+/** @var string $csrfToken */
 /** @var string $loginError */
 ?>
 <div class="container">
@@ -16,7 +17,7 @@
                 <input
                     type="hidden"
                     name="csrf_token"
-                    value="<?= htmlspecialchars(csrfToken()) ?>"
+                    value="<?= htmlspecialchars($csrfToken) ?>"
                 >
 
                 <label>E-Mail</label>

@@ -64,6 +64,17 @@ class UserRepository
         return $row ? $this->createDto($row) : null;
     }
 
+    public function setPassword(string $id, string $passwordHash): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users
+            SET password_hash = ?
+            WHERE id = ?
+        ");
+
+        $stmt->execute([$passwordHash, $id]);
+    }
+
     public function setAdmin(string $id, bool $isAdmin): void
     {
         $stmt = $this->pdo->prepare("

@@ -8,7 +8,7 @@
         method="post"
         action="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>&module_id=<?= urlencode($selectedModule->id) ?>"
     >
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
         <input type="hidden" name="action" value="update_module">
         <input type="hidden" name="module_id" value="<?= htmlspecialchars($selectedModule->id) ?>">
 

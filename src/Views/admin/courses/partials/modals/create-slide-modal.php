@@ -5,7 +5,7 @@
             <span class="close" onclick="document.getElementById('createSlideModal').style.display='none'">&times;</span>
         </div>
         <form method="post" id="createSlideForm" action="">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
             <input type="hidden" name="action" value="create_slide">
             <input type="hidden" id="slide-course-id" name="course_id" value="">
             <input type="hidden" id="slide-module-id" name="module_id" value="">

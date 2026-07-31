@@ -1,4 +1,5 @@
 <?php
+/** @var string $csrfToken */
 /** @var string $activePage */
 /** @var string $adminError */
 /** @var string $adminSuccess */
@@ -11,6 +12,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($pageTitle ?? 'Admin') ?> - Admin Panel</title>
     <meta name="robots" content="noindex, nofollow">
+    <meta name="csrf-token" content="<?= htmlspecialchars($csrfToken) ?>">
     <link rel="stylesheet" href="/assets/css/style.css">
 
     <?php if (!empty($additionalCss)): ?>
