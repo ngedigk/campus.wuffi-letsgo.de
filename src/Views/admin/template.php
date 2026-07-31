@@ -61,11 +61,11 @@
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <?= strtoupper(substr($user['email'] ?? 'A', 0, 1)) ?>
+                        <?= strtoupper(substr($user->email ?? 'A', 0, 1)) ?>
                     </div>
                     <div class="user-details">
-                        <span class="user-name"><?= htmlspecialchars($user['email'] ?? 'Admin User') ?></span>
-                        <span class="user-email"><?= htmlspecialchars($user['email'] ?? 'admin@example.com') ?></span>
+                        <span class="user-name"><?= htmlspecialchars($user->email ?? 'Admin User') ?></span>
+                        <span class="user-email"><?= htmlspecialchars($user->email ?? 'admin@example.com') ?></span>
                     </div>
                 </div>
                 <a href="index.php" class="back-link">← Back to Site</a>

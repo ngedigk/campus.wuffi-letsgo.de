@@ -6,7 +6,7 @@ class UserService
         private UserRepository $userRepository
     ) {}
 
-    public function get(string $id): ?array
+    public function get(string $id): ?User
     {
         return $this->userRepository->findById($id);
     }
@@ -16,7 +16,7 @@ class UserService
         return $this->userRepository->getAll();
     }
 
-    public function findByEmail(string $email): ?array
+    public function findByEmail(string $email): ?User
     {
         return $this->userRepository->findByEmail($email);
     }
@@ -37,7 +37,7 @@ class UserService
             throw new \Exception('User not found.');
         }
 
-        $this->userRepository->setAdmin($user['id'], true);
+        $this->userRepository->setAdmin($user->id, true);
     }
 
     public function removeAdmin(string $email): void
@@ -48,7 +48,7 @@ class UserService
             throw new \Exception('User not found.');
         }
 
-        $this->userRepository->setAdmin($user['id'], false);
+        $this->userRepository->setAdmin($user->id, false);
     }
 
     public function verify(string $email): void
@@ -59,6 +59,6 @@ class UserService
             throw new \Exception('User not found.');
         }
 
-        $this->userRepository->verify($user['id']);
+        $this->userRepository->verify($user->id);
     }
 }

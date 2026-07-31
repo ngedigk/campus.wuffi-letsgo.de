@@ -35,8 +35,8 @@ class Container
         $this->set(AccessCodeRepository::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));
         $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class)));
         $this->set(AuthRepository::class, fn($c) => new AuthRepository($c->get(PDO::class)));
+        $this->set(PasswordResetsRepository::class, fn($c) => new PasswordResetsRepository($c->get(PDO::class)));
         
-
         // Services
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));

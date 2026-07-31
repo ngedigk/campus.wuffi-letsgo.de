@@ -12,14 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $email = trim($_POST['email']);
 
-    $pdo = Database::getInstance();
-    $stmt = $pdo->prepare("
-        SELECT id FROM users WHERE email = ?
-    ");
-
-    $stmt->execute([$email]);
-
-    $user = $stmt->fetch();
+    $container = Container::getInstance();
+    $userRepository = $container->get(UserRepository::class);
+    $user = $userRepository->findByEmail($email);
 
     $message = "If the email exists, a reset link was sent.";
 
@@ -27,13 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $token = bin2hex(random_bytes(32));
 
-        $stmt = $pdo->prepare("
-            INSERT INTO password_resets
-            (user_id, token, expires_at)
-            VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))
-        ");
-
-        $stmt->execute([$user['id'], $token]);
+        $passwordResetsRepository = $container->get(PasswordResetsRepository::class);
+        $passwordResetsRepository->recordReset($user->id, $token);
 
         $link = SITE_URL . "/reset-password.php?token=" . $token;
 

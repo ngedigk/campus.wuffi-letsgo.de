@@ -9,7 +9,7 @@ class DashboardController
 
     public function index(array $context): void
     {
-        $courses = $this->dashboardService->getUserDashboardData($context['user']['id']);
+        $courses = $this->dashboardService->getUserDashboardData($context['user']->id);
 
         $viewData = [
             'pageTitle' => 'Dashboard',

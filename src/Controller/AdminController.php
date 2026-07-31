@@ -113,7 +113,7 @@ class AdminController
         if ($email === '') throw new Exception('Please provide an email address.');
 
         $pdo = Database::getInstance();
-        if ($email === strtolower($this->authService->currentUser()['email'])) {
+        if ($email === strtolower($this->authService->currentUser()->email)) {
             throw new Exception("Can't remove your own admin.");
         }
         $this->userService->removeAdmin($email);
@@ -289,7 +289,7 @@ class AdminController
         return in_array($page, $validPages, true) ? $page : 'dashboard';
     }
 
-    private function renderDashboard(array $user): void
+    private function renderDashboard(User $user): void
     {
         $viewData = [
             'user' => $user,
@@ -311,7 +311,7 @@ class AdminController
         $this->viewRenderer->renderWithAdminTemplate('admin/dashboard', $viewData);
     }
 
-    private function renderCourses(array $user): void
+    private function renderCourses(User $user): void
     {
         $selectedCourse = null;
         $selectedCourseId = filter_input(INPUT_GET, 'course_id');
@@ -392,7 +392,7 @@ class AdminController
         $this->viewRenderer->renderWithAdminTemplate('admin/courses/index', $viewData);
     }
 
-    private function renderAccessCodes(array $user): void
+    private function renderAccessCodes(User $user): void
     {
         $viewData = [
             'user' => $user,
@@ -418,7 +418,7 @@ class AdminController
         $this->viewRenderer->renderWithAdminTemplate('admin/access-codes', $viewData);
     }
 
-    private function renderUsers(array $user): void
+    private function renderUsers(User $user): void
     {
         $viewData = [
             'user' => $user,

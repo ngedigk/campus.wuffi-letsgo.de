@@ -2,7 +2,7 @@
 
 class AuthService
 {
-    private ?array $userCache = null;
+    private ?User $userCache = null;
 
     public function __construct(
         private UserService $userService,
@@ -34,7 +34,7 @@ class AuthService
         }
     }
 
-    public function currentUser(): ?array
+    public function currentUser(): ?User
     {
         if ($this->userCache !== null) {
             return $this->userCache;
@@ -51,10 +51,10 @@ class AuthService
     public function isAdmin(): bool
     {
         $user = $this->currentUser();
-        return (bool)($user['is_admin'] ?? 0);
+        return $user?->isAdmin ?? false;
     }
 
-    public function authenticate(string $email, string $password): ?array
+    public function authenticate(string $email, string $password): ?User
     {
         $user = $this->userService->findByEmail($email);
 
@@ -62,7 +62,7 @@ class AuthService
             return null;
         }
 
-        if (!password_verify($password, $user['password_hash'])) {
+        if (!password_verify($password, $user->passwordHash)) {
             return null;
         }
 
@@ -80,7 +80,7 @@ class AuthService
 
         $user = $this->userService->findByEmail($email);
 
-        if (!$user || !password_verify($password, $user['password_hash'])) {
+        if (!$user || !password_verify($password, $user->passwordHash)) {
             $this->recordFailedLogin();
 
             return new AuthenticationResult(
@@ -89,7 +89,7 @@ class AuthService
             );
         }
 
-        if ((int)$user['email_verified'] !== 1) {
+        if ($user->emailVerified !== true) {
             $this->recordFailedLogin();
 
             return new AuthenticationResult(
@@ -100,8 +100,8 @@ class AuthService
 
         session_regenerate_id(true);
 
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['is_admin'] = (int)$user['is_admin'];
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['is_admin'] = (int)$user->isAdmin;
 
         $this->userCache = $user;
 

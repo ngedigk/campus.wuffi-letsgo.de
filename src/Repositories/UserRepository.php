@@ -6,17 +6,19 @@ class UserRepository
         private PDO $pdo
     ) {}
 
-    public function findById(string $id): ?array
+    public function findById(string $id): ?User
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, email, is_admin
+            SELECT id, email, is_admin, email_verified, created_at
             FROM users
             WHERE id = ?
         ");
 
         $stmt->execute([$id]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ? $this->createDto($row) : null;
     }
 
 
@@ -27,7 +29,9 @@ class UserRepository
             FROM users
         ");
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(fn($row) => $this->createDto($row), $rows);
     }
 
 
@@ -45,17 +49,19 @@ class UserRepository
     }
 
 
-    public function findByEmail(string $email): ?array
+    public function findByEmail(string $email): ?User
     {
         $stmt = $this->pdo->prepare("
-            SELECT *
+            SELECT id, email, is_admin, email_verified, created_at, password_hash
             FROM users
             WHERE email = ?
         ");
 
         $stmt->execute([$email]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $row ? $this->createDto($row) : null;
     }
 
     public function setAdmin(string $id, bool $isAdmin): void
@@ -136,6 +142,19 @@ class UserRepository
         $sql = "INSERT IGNORE INTO user_courses (user_id, course_id, access_code_id) VALUES " . implode(', ', $placeholders);
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($values);
+    }
+
+    private function createDto(array $row): User
+    {
+        return new User(
+            $row['id'],
+            $row['email'],
+            (bool)$row['is_admin'],
+            (bool)$row['email_verified'],
+            $row['created_at'] ?? null,
+            $row['password_hash'] ?? null,
+            $row['name'] ?? null,
+        );
     }
 }
 

@@ -1,5 +1,5 @@
 <?php
-/** @var array $courses */
+/** @var User $user */
 /** @var string $redeemError */
 /** @var string $redeemSuccess */
 ?>
@@ -16,7 +16,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <p>Campus für fachtheoretische Wissensvermittlung</p>
-                <h1>Herzlich Willkommen<?= !empty($user['name']) ? ' ' . htmlspecialchars($user['name']) : '' ?>!</h1>
+                <h1>Herzlich Willkommen<?= !empty($user->name) ? ' ' . htmlspecialchars($user->name) : '' ?>!</h1>
 
                 <ul id="breadcrumb">
                     <li>Startseite</li>

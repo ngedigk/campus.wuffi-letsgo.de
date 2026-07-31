@@ -1,9 +1,12 @@
-
+<?php
+/** @var array $allCourses */
+/** @var string $selectedCourseId */
+?>
 <div class="courses-list" id="coursesList">
     <?php foreach ($allCourses as $course): ?>
         <a
             href="admin.php?page=courses&course_id=<?= $course->uuid ?>"
-            class="course-item <?= $course->uuid === $selectedCourseId ? 'active' : '' ?>"
+            class="course-item <?= $course->uuid === ($selectedCourseId ?? '') ? 'active' : '' ?>"
             title="Edit Course"
         >
             <div class="course-info">
@@ -12,3 +15,4 @@
         </a>
     <?php endforeach; ?>
 </div>
+
