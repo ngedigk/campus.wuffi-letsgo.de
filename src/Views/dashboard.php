@@ -87,14 +87,11 @@
                     <p style="color: green; font-weight: bold;"><?= htmlspecialchars($redeemSuccess) ?></p>
                 <?php endif; ?>
 
-                <form method="post" action="redeem.php">
-
+                <form method="post" action="">
+                    <input type="hidden" name="_action" value="redeem">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-
                     <input type="text" name="code" placeholder="Freischaltcode" required>
-
                     <button type="submit" class="button-primary">Freischalten</button>
-
                 </form>
             </div>
         </div>

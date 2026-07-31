@@ -81,7 +81,9 @@ class Container
         ));
         $this->set(DashboardController::class, fn($c) => new DashboardController(
             $c->get(DashboardService::class),
-            $c->get(ViewRenderer::class)
+            $c->get(ViewRenderer::class),
+            $c->get(RedeemService::class),
+            $c->get(AuthService::class)
         ));
         $this->set(AuthController::class, fn($c) => new AuthController(
             $c->get(ViewRenderer::class),

@@ -4,7 +4,9 @@ class DashboardController
 {
     public function __construct(
         private DashboardService $dashboardService,
-        private ViewRenderer $viewRenderer
+        private ViewRenderer $viewRenderer,
+        private RedeemService $redeemService,
+        private AuthService $authService
     ) {}
 
     public function index(array $context): void
@@ -19,5 +21,41 @@ class DashboardController
         ];
 
         $this->viewRenderer->renderWithTemplate('dashboard', $viewData);
+    }
+
+    public function redeem(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: index.php");
+            exit;
+        }
+
+        if (!$this->authService->isLoggedIn()) {
+            header("Location: index.php");
+            exit;
+        }
+
+        validateCsrf();
+
+        $code = trim($_POST['code'] ?? '');
+
+        if ($code === '') {
+            $_SESSION['redeem_error'] = "Invalid code.";
+            header("Location: index.php");
+            exit;
+        }
+
+        try {
+            $this->redeemService->redeem($this->authService->getCurrentUserId(), $code);
+            $_SESSION['redeem_success'] = "Course redeemed successfully.";
+        } catch (RedeemException $e) {
+            $_SESSION['redeem_error'] = $e->getMessage();
+        } catch (Throwable $e) {
+            error_log($e);
+            $_SESSION['redeem_error'] = "Something went wrong. Please try again later.";
+        }
+
+        header("Location: index.php");
+        exit;
     }
 }

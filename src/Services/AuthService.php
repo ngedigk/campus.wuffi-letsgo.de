@@ -48,6 +48,11 @@ class AuthService
         return $this->userCache = $this->userService->get($id);
     }
 
+    public function getCurrentUserId(): ?string
+    {
+        return $_SESSION['user_id'] ?? null;
+    }
+
     public function isAdmin(): bool
     {
         $user = $this->currentUser();
