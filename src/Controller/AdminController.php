@@ -10,7 +10,8 @@ class AdminController
         private ModuleService $moduleService,
         private ViewRenderer $viewRenderer,
         private AuthService $authService,
-        private CsrfService $csrfService
+        private CsrfService $csrfService,
+        private UuidService $uuidService
     ) {}
 
     private function buildContext(User $user): array
@@ -165,7 +166,7 @@ class AdminController
         $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
 
         $this->courseService->create(new CourseInput(
-            uuid: generateUuid(),
+            uuid: $this->uuidService->generate(),
             title: $title,
             description: $description,
             prerequisiteCourseId: $prerequisiteCourseId,

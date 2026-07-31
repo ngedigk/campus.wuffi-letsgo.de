@@ -7,7 +7,8 @@ class RegistrationService
         private UserRepository $userRepository,
         private EmailVerificationRepository $emailVerificationRepository,
         private RegistrationCodeRepository $registrationCodeRepository,
-        private AccessCodeRepository $accessCodeRepository
+        private AccessCodeRepository $accessCodeRepository,
+        private UuidService $uuidService
     ) {}
 
     public function register(
@@ -33,7 +34,7 @@ class RegistrationService
             throw new Exception("Registration code has already been used.");
         }
 
-        $userId = generateUuid();
+        $userId = $this->uuidService->generate();
 
         $passwordHash = password_hash(
             $password,

@@ -38,6 +38,8 @@ class Container
         $this->set(PasswordResetsRepository::class, fn($c) => new PasswordResetsRepository($c->get(PDO::class)));
         
         // Services
+        $this->set(CsrfService::class, fn() => new CsrfService());
+        $this->set(UuidService::class, fn() => new UuidService());
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
@@ -60,12 +62,12 @@ class Container
             $c->get(UserRepository::class),
             $c->get(EmailVerificationRepository::class),
             $c->get(RegistrationCodeRepository::class),
-            $c->get(AccessCodeRepository::class)
+            $c->get(AccessCodeRepository::class),
+            $c->get(UuidService::class)
         ));
         $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
             $c->get(CourseService::class)
         ));
-        $this->set(CsrfService::class, fn() => new CsrfService());
 
         // Helpers
         $this->set(ViewRenderer::class, fn() => new ViewRenderer(__DIR__));
@@ -79,7 +81,8 @@ class Container
             $c->get(ModuleService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
-            $c->get(CsrfService::class)
+            $c->get(CsrfService::class),
+            $c->get(UuidService::class)
         ));
         $this->set(DashboardController::class, fn($c) => new DashboardController(
             $c->get(DashboardService::class),

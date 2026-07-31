@@ -16,7 +16,7 @@ $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
-        $this->csrfService->validateToken($_POST['csrf_token']);
+        $csrfService->validateToken($_POST['csrf_token']);
     } catch (Exception $e) {
         $error = $e->getMessage();
         return;
