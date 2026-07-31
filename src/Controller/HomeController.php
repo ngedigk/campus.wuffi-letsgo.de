@@ -16,13 +16,17 @@ class HomeController
             return;
         }
 
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['_action'] ?? null) === 'logout') {
+            $this->authController->logout();
+            return;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $this->authController->login();
             return;
         }
 
         $context = $this->buildContext();
-
         if ($this->authService->isLoggedIn()) {
             $this->dashboardController->index($context);
             return;

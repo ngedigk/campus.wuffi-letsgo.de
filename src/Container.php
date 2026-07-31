@@ -115,6 +115,21 @@ class Container
             $c->get(ViewRenderer::class),
             $c->get(MailerService::class)
         ));
+        $this->set(ForgotPasswordController::class, fn($c) => new ForgotPasswordController(
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class),
+            $c->get(UserRepository::class),
+            $c->get(PasswordResetsRepository::class),
+            $c->get(MailerService::class),
+            $c->get(ViewRenderer::class)
+        ));
+        $this->set(ResetPasswordController::class, fn($c) => new ResetPasswordController(
+            $c->get(PasswordResetsRepository::class),
+            $c->get(UserService::class),
+            $c->get(CsrfService::class),
+            $c->get(ViewRenderer::class),
+            $c->get(AuthService::class)
+        ));
         $this->set(CourseController::class, fn($c) => new CourseController(
             $c->get(CourseService::class),
             $c->get(CourseSidebarBuilderService::class),

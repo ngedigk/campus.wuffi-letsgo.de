@@ -13,14 +13,12 @@ class AuthController
     {
         if (!isset($_POST['email'], $_POST['password'])) {
             $_SESSION['login_error'] = 'Bitte füllen Sie alle Felder aus.';
-            return;
         }
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token']);
         } catch (Exception $e) {
             $_SESSION['login_error'] = $e->getMessage();
-            return;
         }
 
         $result = $this->authService->login(
@@ -30,7 +28,6 @@ class AuthController
 
         if (!$result->success) {
             $_SESSION['login_error'] = $result->error;
-            return;
         }
 
         header('Location: index.php');
@@ -45,5 +42,12 @@ class AuthController
         ];
 
         $this->viewRenderer->renderWithTemplate('login-form', $viewData);
+    }
+
+    public function logout(): void
+    {
+        $this->authService->logout();
+        header('Location: index.php');
+        exit;
     }
 }

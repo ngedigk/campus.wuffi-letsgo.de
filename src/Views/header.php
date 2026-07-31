@@ -44,7 +44,8 @@
                                 <?php if ($isAdmin): ?>
                                     <a href="admin.php">Admin Panel</a>
                                 <?php endif; ?>
-                                <form method="post" action="logout.php" style="margin: 0;">
+                                <form method="post" action="index.php" style="margin: 0;">
+                                    <input type="hidden" name="_action" value="logout">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                                     <button type="submit">Abmelden</button>
                                 </form>
