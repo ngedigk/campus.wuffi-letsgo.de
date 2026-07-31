@@ -2,64 +2,66 @@
 /** @var string $csrfToken */
 /** @var string $loginError */
 ?>
-<div class="container">
-    <div class="row">
-        <div class="col-sm-12">
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
 
-            <h1>Anmelden</h1>
+                <h1>Anmelden</h1>
 
-            <?php if($loginError): ?>
-            <p><?= htmlspecialchars($loginError) ?></p>
-            <?php endif; ?>
+                <?php if($loginError): ?>
+                <p><?= htmlspecialchars($loginError) ?></p>
+                <?php endif; ?>
 
-            <form method="post">
+                <form method="post">
 
-                <input
-                    type="hidden"
-                    name="csrf_token"
-                    value="<?= htmlspecialchars($csrfToken) ?>"
-                >
+                    <input
+                        type="hidden"
+                        name="csrf_token"
+                        value="<?= htmlspecialchars($csrfToken) ?>"
+                    >
 
-                <label>E-Mail</label>
+                    <label>E-Mail</label>
+                    <br>
+
+                    <input
+                        type="email"
+                        name="email"
+                        required
+                    >
+
+                    <br><br>
+
+                    <label>Passwort</label>
+                    <br>
+
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                    >
+
+                    <br><br>
+
+                    <button type="submit">
+                        Anmelden
+                    </button>
+
+                </form>
+
                 <br>
 
-                <input
-                    type="email"
-                    name="email"
-                    required
-                >
+                <a href="register.php">
+                Account erstellen
+                </a>
 
-                <br><br>
-
-                <label>Passwort</label>
                 <br>
 
-                <input
-                    type="password"
-                    name="password"
-                    required
-                >
+                <a href="forgot-password.php">
+                Passwort vergessen?
+                </a>
 
-                <br><br>
-
-                <button type="submit">
-                    Anmelden
-                </button>
-
-            </form>
-
-            <br>
-
-            <a href="register.php">
-            Account erstellen
-            </a>
-
-            <br>
-
-            <a href="forgot-password.php">
-            Passwort vergessen?
-            </a>
-
+            </div>
         </div>
     </div>
-</div>
+</section>

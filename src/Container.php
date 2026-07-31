@@ -40,6 +40,7 @@ class Container
         // Services
         $this->set(CsrfService::class, fn() => new CsrfService());
         $this->set(UuidService::class, fn() => new UuidService());
+        $this->set(MailerService::class, fn() => new MailerService());
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
@@ -67,6 +68,11 @@ class Container
         ));
         $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
             $c->get(CourseService::class)
+        ));
+        $this->set(EmailVerificationService::class, fn($c) => new EmailVerificationService(
+            $c->get(PDO::class),
+            $c->get(EmailVerificationRepository::class),
+            $c->get(UserRepository::class)
         ));
 
         // Helpers
@@ -101,6 +107,13 @@ class Container
             $c->get(AuthController::class),
             $c->get(AuthService::class),
             $c->get(CsrfService::class)
+        ));
+        $this->set(RegistrationController::class, fn($c) => new RegistrationController(
+            $c->get(RegistrationService::class),
+            $c->get(CsrfService::class),
+            $c->get(EmailVerificationService::class),
+            $c->get(ViewRenderer::class),
+            $c->get(MailerService::class)
         ));
         $this->set(CourseController::class, fn($c) => new CourseController(
             $c->get(CourseService::class),

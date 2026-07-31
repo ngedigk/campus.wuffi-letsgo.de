@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/bootstrap.php';
-require_once __DIR__ . '/mail.php';
 
 $container = Container::getInstance();
 
@@ -37,12 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $link = SITE_URL . "/reset-password.php?token=" . $token;
 
-        sendMail(
+        /*sendMail(
             $email,
             "Password Reset",
             "<p>Reset your password:</p>
              <a href='$link'>$link</a>"
-        );
+        );*/
     }
 }
 

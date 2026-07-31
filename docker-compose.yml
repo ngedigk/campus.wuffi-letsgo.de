@@ -9,18 +9,11 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html
-    environment:
-      DB_HOST: db
-      DB_NAME: app
-      DB_USER: appuser
-      DB_PASS: apppass
-      SITE_URL: http://localhost:8080
-      SMTP_HOST: ${SMTP_HOST}
-      SMTP_USER: ${SMTP_USER}
-      SMTP_PASS: ${SMTP_PASS}
-      MAIL_FROM: ${MAIL_FROM}
+    env_file:
+      - .env
     depends_on:
       - db
+      - mailhog
 
   db:
     image: mariadb:10.6
@@ -33,6 +26,16 @@ services:
     volumes:
       - db_data:/var/lib/mysql
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    restart: always
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      MH_STORAGE: maildir
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
