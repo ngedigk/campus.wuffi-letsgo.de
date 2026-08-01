@@ -8,7 +8,7 @@ class AdminAccessCodesController extends AdminPageController
 {
     public function render(array $context): void
     {
-        $context['additionalJs'][] = '/assets/js/admin/access-codes.js';
+        $context['additionalJs'][] = ['src' => '/assets/js/admin/access-codes.js'];
 
         $viewData = [
             ...$context,

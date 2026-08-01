@@ -108,7 +108,7 @@ class RegistrationController
         $context['csrfToken'] = $this->csrfService->generateToken();
         $context['pageTitle'] = 'Registrierung';
         $context['additionalCss'] = ['/assets/css/register.css'];
-        $context['additionalJs'] = ['/assets/js/password-meter.js'];
+        $context['additionalJs'] = [['src' => '/assets/js/password-meter.js']];
         $context['isLoggedIn'] = false;
 
         $this->viewRenderer->renderWithTemplate('register-form', $context);

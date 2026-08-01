@@ -46,7 +46,7 @@ abstract class AdminPageController
             'adminError' => $_SESSION['admin_error'] ?? null,
             'adminSuccess' => $_SESSION['admin_success'] ?? null,
             'additionalCss' => ['/assets/css/admin.css'],
-            'additionalJs' => ['/assets/js/admin/general.js'],
+            'additionalJs' => [['src' => '/assets/js/admin/general.js']],
             'allCourses' => $this->courseService->getAll(),
         ];
 

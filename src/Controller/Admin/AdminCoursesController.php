@@ -64,13 +64,16 @@ class AdminCoursesController extends AdminPageController
             }
         }
 
-        $context['additionalJs'][] = 'https://unpkg.com/grapesjs';
-        $context['additionalJs'][] = 'https://unpkg.com/grapesjs-blocks-basic';
+        $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs'];
+        $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs-blocks-basic'];
 
         if ($selectedSlide) {
-            $context['additionalJs'][] = '/assets/js/admin/grapes-init.js';
+            $context['additionalJs'][] = [
+                'src' => '/assets/js/admin/grapesjs/main.js',
+                'type' => 'module'
+            ];
         }
-        $context['additionalJs'][] = '/assets/js/admin/courses.js';
+        $context['additionalJs'][] = ['src' => '/assets/js/admin/courses.js'];
 
         $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
 

@@ -6,6 +6,7 @@
         id="slide-form"
         method="post"
         action="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($viewModel['selectedSlide']->id ?? '') ?>"
+        onkeydown="return preventFormEnterSubmit(event)"
     >
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
         <input type="hidden" name="action" value="update_slide">

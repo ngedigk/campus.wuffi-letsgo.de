@@ -107,7 +107,7 @@ class ProfileController
         $context['isLoggedIn'] = true;
         $context['isAdmin'] = $user->isAdmin;
         $context['user'] = $user;
-        $context['additionalJs'] = ['/assets/js/password-meter.js'];
+        $context['additionalJs'] = [['src' => '/assets/js/password-meter.js']];
         $context['additionalCss'] = ['/assets/css/register.css'];
 
         $this->viewRenderer->renderWithTemplate('profile', $context);

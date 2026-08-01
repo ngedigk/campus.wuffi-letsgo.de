@@ -8,7 +8,7 @@ class AdminRegistrationCodesController extends AdminPageController
 {
     public function render(array $context): void
     {
-        $context['additionalJs'][] = '/assets/js/admin/registration-codes.js';
+        $context['additionalJs'][] = ['src' => '/assets/js/admin/registration-codes.js'];
 
         $viewData = [
             ...$context,

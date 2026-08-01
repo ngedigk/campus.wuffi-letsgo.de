@@ -1,0 +1,84 @@
+.slide-panel {
+    border: 1px solid #ddd;
+    padding: 1.25rem;
+    background: var(--page-bg);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.slide-content h3 {
+    font-family: 'Asap', sans-serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--accent);
+    margin: 10px 0;
+}
+
+.gjs-dashed a,
+.slide-content a {
+    color: var(--primary);
+}
+
+.gjs-dashed a:hover,
+.slide-content a:hover {
+    text-decoration: underline;
+}
+
+.gjs-dashed h4,
+.slide-content h4 {
+    font-size: 20px;
+    color: var(--primary);
+    margin: 0;
+}
+
+.gjs-dashed img.rounded,
+.slide-content img.rounded {
+    border-radius: 15px;
+}
+
+.gjs-dashed ul,
+.slide-content ul {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 0.5em 0;
+}
+
+.gjs-dashed ul li,
+.slide-content ul li {
+    position: relative;
+    padding-left: 30px;
+    line-height: 1.2em;
+    margin: .5em 0;
+}
+
+.gjs-dashed ul li::before,
+.slide-content ul li::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 0.4em;
+    width: 15px;
+    height: 15px;
+
+    background-image: url('/assets/images/icons/paw-solid-full.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.slide-html,
+.slide-audio,
+.slide-quiz {
+    margin-bottom: 1.25rem;
+}
+
+.slide-audio {
+    display: flex;
+    justify-content: center;
+}

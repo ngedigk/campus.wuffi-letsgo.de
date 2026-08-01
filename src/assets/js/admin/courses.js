@@ -1,5 +1,21 @@
 let choiceIndex = 1;
 
+function preventFormEnterSubmit(event) {
+    if (event.key !== 'Enter') {
+        return true;
+    }
+
+    const target = event.target;
+    const targetTag = target && target.tagName ? target.tagName.toUpperCase() : '';
+
+    if (targetTag === 'BUTTON' || targetTag === 'TEXTAREA') {
+        return true;
+    }
+
+    event.preventDefault();
+    return false;
+}
+
 if (typeof editor !== 'undefined' && typeof existingAssets !== 'undefined') {
     editor.AssetManager.add(existingAssets);
 }

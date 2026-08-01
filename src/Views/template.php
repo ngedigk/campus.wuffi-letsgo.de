@@ -40,7 +40,7 @@
     <script type="text/javascript" src="assets/js/menu.js"></script>
     <?php if (!empty($viewModel['additionalJs'])): ?>
         <?php foreach ($viewModel['additionalJs'] as $jsFile): ?>
-            <script type="text/javascript" src="<?= htmlspecialchars($jsFile) ?>"></script>
+            <script type="<?= htmlspecialchars($jsFile['type'] ?? 'text/javascript') ?>" src="<?= htmlspecialchars($jsFile['src']) ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>
 </body>
