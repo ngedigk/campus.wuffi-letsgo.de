@@ -14,7 +14,6 @@
                 <tr>
                     <th>#</th>
                     <th>Titel</th>
-                    <th>Art</th>
                     <th>Audio</th>
                     <th>Reihenfolge</th>
                     <th>Aktionen</th>
@@ -30,7 +29,6 @@
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($slide->title) ?></td>
-                            <td><?= $slide->isQuiz ? 'Quiz' : 'Folie' ?></td>
                             <td><?= $slide->audioUrl ? 'Ja' : 'Nein' ?></td>
                             <td><?= $slide->sortOrder ?></td>
                             <td>

@@ -36,17 +36,16 @@
 
                 <!-- Slide Details Section -->
                 <?php if ($viewModel['selectedSlide'] ?? null): ?>
-                    <?php if (!$viewModel['selectedQuestion']): ?>
-                        <!-- Question Modals -->
-                        <?php require __DIR__ . '/partials/modals/create-question-modal.php'; ?>
-                        <?php require __DIR__ . '/partials/modals/edit-question-modal.php'; ?>
+                    
+                    <!-- Question Modals -->
+                    <?php require __DIR__ . '/partials/modals/create-question-modal.php'; ?>
+                    <?php require __DIR__ . '/partials/modals/edit-question-modal.php'; ?>
 
-                        <!-- Slide Details Section -->
-                        <?php require __DIR__ . '/partials/slide-form.php'; ?>
+                    <!-- Slide Details Section -->
+                    <?php require __DIR__ . '/partials/slide-form.php'; ?>
 
-                        <!-- Questions Section (navigation) -->
-                        <?php require __DIR__ . '/partials/questions-list.php'; ?>
-                    <?php endif; ?>
+                    <!-- Questions Section (navigation) -->
+                    <?php require __DIR__ . '/partials/questions-list.php'; ?>
                 <?php endif; ?>
             <?php endif; ?>
         <?php else: ?>

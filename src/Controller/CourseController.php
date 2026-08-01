@@ -7,7 +7,10 @@ use App\Services\CourseSidebarBuilderService;
 use App\Services\ProgressService;
 use App\Services\QuizService;
 use App\Services\AuthService;
+use App\Services\SlideService;
+
 use App\Helpers\ViewRenderer;
+
 use App\Dto\Course;
 use App\Dto\Module;
 use App\Dto\Slide;
@@ -22,7 +25,8 @@ class CourseController
         private ProgressService $progressService,
         private QuizService $quizService,
         private ViewRenderer $viewRenderer,
-        private AuthService $authService
+        private AuthService $authService,
+        private SlideService $slideService
     ) {}
 
     public function handle(string $id, int $moduleId, int $slideIndex): void
@@ -50,7 +54,8 @@ class CourseController
                 'prevUrl' => $result['prevUrl'],
                 'nextUrl' => $result['nextUrl'],
                 'isLastSlide' => $result['isLastSlide'],
-                'courseSidebar' => $result['courseSidebar']
+                'courseSidebar' => $result['courseSidebar'],
+                'hasQuiz' => $this->slideService->hasQuiz($result['currentSlide']->id)
             ];
 
             $this->viewRenderer->renderWithTemplate('course', $viewData);
@@ -75,7 +80,7 @@ class CourseController
 
     private function getQuizResult(?Slide $currentSlide): ?QuizResult
     {
-        if (!$currentSlide || empty($currentSlide->isQuiz)) {
+        if (!$currentSlide || !$this->slideService->hasQuiz($currentSlide->id)) {
             return null;
         }
 

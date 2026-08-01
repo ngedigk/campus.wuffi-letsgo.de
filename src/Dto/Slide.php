@@ -9,8 +9,6 @@ final class Slide
         public string $title,
         public string $htmlContent,
         public ?string $audioUrl,
-        public int $sortOrder,
-        public bool $isQuiz,
-        public ?array $questions = null,
+        public int $sortOrder
     ) {}
 }

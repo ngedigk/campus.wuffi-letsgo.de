@@ -26,7 +26,7 @@
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($viewModel['currentSlide']->isQuiz)): ?>
+        <?php if ($viewModel['hasQuiz']): ?>
             <div class="slide-quiz">
                 <h4>Quiz</h4>
                 <?php if ($viewModel['quizResult'] && $viewModel['quizResult']->isSubmitted): ?>

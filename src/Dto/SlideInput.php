@@ -9,7 +9,6 @@ final class SlideInput
         public string $title,
         public string $htmlContent,
         public ?string $audioUrl,
-        public int $sortOrder,
-        public bool $isQuiz,
+        public int $sortOrder
     ) {}
 }

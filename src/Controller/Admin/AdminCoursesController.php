@@ -76,7 +76,7 @@ class AdminCoursesController extends AdminPageController
 
         $quizQuestions = [];
         $quizChoicesByQuestion = [];
-        if ($selectedSlide && $selectedSlide->isQuiz) {
+        if ($selectedSlide && $this->slideService->hasQuiz($selectedSlide->id)) {
             $questions = $this->quizQuestionRepository->getBySlideId($selectedSlide->id);
             foreach ($questions as $question) {
                 $choices = $this->questionChoicesRepository->getByQuestionId($question->id);
@@ -272,8 +272,7 @@ class AdminCoursesController extends AdminPageController
             title: $title,
             audioUrl: $audioUrl,
             htmlContent: '',
-            sortOrder: $sortOrder,
-            isQuiz: false
+            sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = "Folie $slideId erstellt.";
     }
@@ -285,7 +284,6 @@ class AdminCoursesController extends AdminPageController
         $htmlContent = trim($_POST['html_content'] ?? '');
         $audioUrl = trim($_POST['audio_url'] ?? '');
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
-        $isQuiz = filter_var($_POST['is_quiz'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
         if ($title === '') {
             throw new Exception('Bitte geben Sie einen Folientitel an.');
@@ -296,8 +294,7 @@ class AdminCoursesController extends AdminPageController
             title: $title,
             htmlContent: $htmlContent,
             audioUrl: $audioUrl,
-            sortOrder: $sortOrder,
-            isQuiz: $isQuiz
+            sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = 'Folie aktualisiert.';
     }

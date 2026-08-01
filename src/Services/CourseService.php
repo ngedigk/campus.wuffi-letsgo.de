@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
-use App\Repositories\QuizQuestionRepository;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;
@@ -17,8 +16,7 @@ class CourseService
     public function __construct(
         private CourseRepository $courseRepository,
         private ModuleRepository $moduleRepository,
-        private SlideRepository $slideRepository,
-        private QuizQuestionRepository $quizQuestionRepository
+        private SlideRepository $slideRepository
     ) {}
 
     public function create(
@@ -83,23 +81,10 @@ class CourseService
         $modules = $this->moduleRepository->getByCourseId($courseUuid);
 
         foreach ($modules as $module) {
-            $module->slides = $this->loadSlides($module->id);
+            $module->slides = $this->slideRepository->getByModuleId($module->id);
         }
 
         return $modules;
-    }
-
-    private function loadSlides(int $moduleId): array
-    {
-        $slides = $this->slideRepository->getByModuleId($moduleId);
-
-        foreach ($slides as $slide) {
-            if ($slide->isQuiz) {
-                $slide->questions = $this->quizQuestionRepository->getBySlideId($slide->id);
-            }
-        }
-
-        return $slides;
     }
 
     public function getAll(): array {

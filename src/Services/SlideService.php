@@ -3,12 +3,15 @@
 namespace App\Services;
 
 use App\Repositories\SlideRepository;
+use App\Repositories\QuizQuestionRepository;
+
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
 class SlideService {
     public function __construct(
-        private SlideRepository $slideRepository
+        private SlideRepository $slideRepository,
+        private QuizQuestionRepository $quizQuestionRepository
     ) {}
 
     public function create(
@@ -32,5 +35,12 @@ class SlideService {
         int $id
     ): void {
         $this->slideRepository->delete($id);
+    }
+
+    public function hasQuiz(
+        int $slideId
+    ): bool {
+        $questions = $this->quizQuestionRepository->getBySlideId($slideId);
+        return !empty($questions);
     }
 }

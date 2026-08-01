@@ -26,6 +26,7 @@ use App\Services\MailerService;
 use App\Services\CourseSidebarBuilderService;
 use App\Services\ProgressService;
 use App\Services\QuizService;
+use App\Services\SlideService;
 
 use App\Helpers\ViewRenderer;
 
@@ -79,7 +80,8 @@ trait ApplicationControllersBindings
             $c->get(ProgressService::class),
             $c->get(QuizService::class),
             $c->get(ViewRenderer::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(SlideService::class)
         ));
         $this->set(ProfileController::class, fn($c) => new ProfileController(
             $c->get(AuthService::class),

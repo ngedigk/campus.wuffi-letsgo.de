@@ -51,8 +51,8 @@ class SlideRepository
     public function create(SlideInput $slide): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides
-            (module_id, title, html_content, audio_url, sort_order, is_quiz)
-            VALUES (:moduleId, :title, :htmlContent, :audioUrl, :sortOrder, :isQuiz)
+            (module_id, title, html_content, audio_url, sort_order)
+            VALUES (:moduleId, :title, :htmlContent, :audioUrl, :sortOrder)
         ");
 
         $stmt->execute([
@@ -60,8 +60,7 @@ class SlideRepository
             'title' => $slide->title,
             'htmlContent' => $slide->htmlContent,
             'audioUrl' => $slide->audioUrl,
-            'sortOrder' => $slide->sortOrder,
-            'isQuiz' => (int) $slide->isQuiz
+            'sortOrder' => $slide->sortOrder
         ]);
 
         return (int)$this->pdo->lastInsertId();
@@ -71,7 +70,7 @@ class SlideRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE module_slides
-            SET title = :title, html_content = :htmlContent, audio_url = :audioUrl, sort_order = :sortOrder, is_quiz = :isQuiz
+            SET title = :title, html_content = :htmlContent, audio_url = :audioUrl, sort_order = :sortOrder
             WHERE id = :slideId
         ");
         $stmt->execute([
@@ -79,7 +78,6 @@ class SlideRepository
             'htmlContent' => $slide->htmlContent,
             'audioUrl' => $slide->audioUrl,
             'sortOrder' => $slide->sortOrder,
-            'isQuiz' => (int) $slide->isQuiz,
             'slideId' => $slide->id
         ]);
     }
@@ -95,8 +93,7 @@ class SlideRepository
             title: $row['title'],
             htmlContent: $row['html_content'],
             audioUrl: $row['audio_url'],
-            sortOrder: $row['sort_order'],
-            isQuiz: (bool) $row['is_quiz']
+            sortOrder: $row['sort_order']
         );
     }
 }

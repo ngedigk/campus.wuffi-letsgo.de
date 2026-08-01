@@ -48,11 +48,13 @@ trait ServicesBindings
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(CourseRepository::class),
             $c->get(ModuleRepository::class),
+            $c->get(SlideRepository::class)
+        ));
+        $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepository::class)));
+        $this->set(SlideService::class, fn($c) => new SlideService(
             $c->get(SlideRepository::class),
             $c->get(QuizQuestionRepository::class)
         ));
-        $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepository::class)));
-        $this->set(SlideService::class, fn($c) => new SlideService($c->get(SlideRepository::class)));
         $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepository::class)));
         $this->set(QuizQuestionService::class, fn($c) => new QuizQuestionService(
             $c->get(QuizQuestionRepository::class),

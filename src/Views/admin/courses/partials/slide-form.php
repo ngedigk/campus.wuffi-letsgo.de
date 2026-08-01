@@ -81,19 +81,6 @@
                     min="0"
                 >
             </div>
-
-            <div class="form-group">
-                <label>
-                    <input
-                        type="checkbox"
-                        id="slide-is-quiz"
-                        name="is_quiz"
-                        value="1"
-                        <?= $viewModel['selectedSlide']->isQuiz ?? false ? 'checked' : '' ?>
-                    >
-                    Quiz Folie
-                </label>
-            </div>
         </div>
     </form>
 </div>
