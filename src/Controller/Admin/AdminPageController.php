@@ -14,7 +14,7 @@ use App\Services\UserService;
 use App\Services\QuizQuestionService;
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoicesRepository;
+use App\Repositories\QuestionChoiceRepository;
 use App\Helpers\ViewRenderer;
 use App\Dto\User;
 
@@ -32,7 +32,7 @@ abstract class AdminPageController
         protected UuidService $uuidService,
         protected RegistrationCodeService $registrationCodeService,
         protected QuizQuestionRepository $quizQuestionRepository,
-        protected QuestionChoicesRepository $questionChoicesRepository,
+        protected QuestionChoiceRepository $questionChoicesRepository,
         protected QuizService $quizService,
         protected QuizQuestionService $quizQuestionService
     ) {}

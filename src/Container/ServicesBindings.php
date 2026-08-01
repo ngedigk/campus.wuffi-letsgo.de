@@ -19,6 +19,7 @@ use App\Services\SlideService;
 use App\Services\UserService;
 use App\Services\UuidService;
 use App\Services\QuizQuestionService;
+use App\Services\QuestionChoiceService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -26,6 +27,7 @@ use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\QuizQuestionRepository;
+use App\Repositories\QuestionChoiceRepository;
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
@@ -53,6 +55,7 @@ trait ServicesBindings
         $this->set(SlideService::class, fn($c) => new SlideService($c->get(SlideRepository::class)));
         $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepository::class)));
         $this->set(QuizQuestionService::class, fn($c) => new QuizQuestionService($c->get(QuizQuestionRepository::class)));
+        $this->set(QuestionChoiceService::class, fn($c) => new QuestionChoiceService($c->get(QuestionChoiceRepository::class)));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(PDO::class),

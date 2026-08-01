@@ -11,7 +11,7 @@ use App\Repositories\ModuleRepository;
 use App\Repositories\PasswordResetsRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoicesRepository;
+use App\Repositories\QuestionChoiceRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\UserCourseRepository;
@@ -25,7 +25,7 @@ trait RepositoriesBindings
         $this->set(ModuleRepository::class, fn($c) => new ModuleRepository($c->get(PDO::class)));
         $this->set(SlideRepository::class, fn($c) => new SlideRepository($c->get(PDO::class)));
         $this->set(QuizQuestionRepository::class, fn($c) => new QuizQuestionRepository($c->get(PDO::class)));
-        $this->set(QuestionChoicesRepository::class, fn($c) => new QuestionChoicesRepository($c->get(PDO::class)));
+        $this->set(QuestionChoiceRepository::class, fn($c) => new QuestionChoiceRepository($c->get(PDO::class)));
         $this->set(ProgressRepository::class, fn($c) => new ProgressRepository($c->get(PDO::class)));
         $this->set(UserRepository::class, fn($c) => new UserRepository($c->get(PDO::class)));
         $this->set(RegistrationCodeRepository::class, fn($c) => new RegistrationCodeRepository($c->get(PDO::class)));

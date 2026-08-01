@@ -15,7 +15,7 @@ use App\Services\QuizQuestionService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoicesRepository;
+use App\Repositories\QuestionChoiceRepository;
 
 use App\Controller\Admin\AdminPageController;
 use App\Controller\Admin\AdminDashboardController;
@@ -42,7 +42,7 @@ class AdminController extends AdminPageController
         UuidService $uuidService,
         RegistrationCodeService $registrationCodeService,
         QuizQuestionRepository $quizQuestionRepository,
-        QuestionChoicesRepository $questionChoicesRepository,
+        QuestionChoiceRepository $questionChoicesRepository,
         QuizService $quizService,
         QuizQuestionService $quizQuestionService,
         private AdminDashboardController $dashboardController,

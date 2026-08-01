@@ -11,7 +11,7 @@ use App\Controller\AdminController;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoicesRepository;
+use App\Repositories\QuestionChoiceRepository;
 
 use App\Services\AuthService;
 use App\Services\CourseService;
@@ -43,7 +43,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
@@ -59,7 +59,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
@@ -75,7 +75,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
@@ -91,7 +91,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
@@ -107,7 +107,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
@@ -123,7 +123,7 @@ trait AdminControllersBindings
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
             $c->get(QuizQuestionRepository::class),
-            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class),
             $c->get(AdminDashboardController::class),

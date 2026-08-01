@@ -3,9 +3,10 @@
 namespace App\Repositories;
 
 use App\Dto\QuestionChoice;
+use App\Dto\QuestionChoiceInput;
 use PDO;
 
-class QuestionChoicesRepository {
+class QuestionChoiceRepository {
 
     public function __construct(
         private PDO $pdo
@@ -19,7 +20,7 @@ class QuestionChoicesRepository {
         return array_map(fn($row) => $this->createDto($row), $rows);
     }
 
-    public function create(QuestionChoice $questionChoice): int {
+    public function create(QuestionChoiceInput $questionChoice): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO question_choices (question_id, choice_text, is_correct)
             VALUES (:questionId, :choiceText, :isCorrect)
