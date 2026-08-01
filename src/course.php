@@ -1,5 +1,5 @@
 <?php
-use App\Container;
+use App\Container\Container;
 use App\Services\AuthService;
 use App\Controller\CourseController;
 

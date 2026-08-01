@@ -1,5 +1,5 @@
 <?php
-use App\Container;
+use App\Container\Container;
 use App\Controller\RegistrationController;
 
 require __DIR__ . '/bootstrap.php';
