@@ -140,12 +140,12 @@ class CourseRepository
 
     private function createDto(array $row): Course {
         return new Course(
-            $row['id'],
-            $row['title'],
-            $row['description'],
-            $row['prerequisite_course_id'],
-            $row['sort_order'],
-            null
+            uuid: $row['id'],
+            title: $row['title'],
+            description: $row['description'],
+            prerequisiteCourseId: $row['prerequisite_course_id'],
+            sortOrder: $row['sort_order'],
+            modules: null
         );
     }
 }

@@ -40,7 +40,6 @@
                             </div>
                             <div class="dropdown-menu">
                                 <a href="profile.php">Profil</a>
-                                <a href="settings.php">Einstellungen</a>
                                 <?php if ($isAdmin): ?>
                                     <a href="admin.php">Admin Panel</a>
                                 <?php endif; ?>

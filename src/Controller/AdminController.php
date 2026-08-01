@@ -11,7 +11,8 @@ class AdminController
         private ViewRenderer $viewRenderer,
         private AuthService $authService,
         private CsrfService $csrfService,
-        private UuidService $uuidService
+        private UuidService $uuidService,
+        private RegistrationCodeService $registrationCodeService
     ) {}
 
     private function buildContext(User $user): array
@@ -60,6 +61,9 @@ class AdminController
             case 'users':
                 $this->renderUsers($context);
                 break;
+            case 'registration-codes':
+                $this->renderRegistrationCodes($context);
+                break;
             default:
                 $this->renderDashboard($context);
                 break;
@@ -90,6 +94,9 @@ class AdminController
                 case 'create_access_code':
                     $this->handleCreateAccessCode();
                     break;
+                case 'update_access_code':
+                    $this->handleUpdateAccessCode();
+                    break;
                 case 'delete_access_code':
                     $this->handleDeleteAccessCode();
                     break;
@@ -116,6 +123,15 @@ class AdminController
                     break;
                 case 'upload_image':
                     $this->handleUploadImage();
+                    break;
+                case 'create_registration_code':
+                    $this->handleCreateRegistrationCode();
+                    break;
+                case 'update_courses_to_registration_code_assignment':
+                    $this->handleUpdateCoursesToRegistrationCode();
+                    break;
+                case 'delete_registration_code':
+                    $this->handleDeleteRegistrationCode();
                     break;
                 default:
                     throw new Exception('Unsupported admin action.');
@@ -205,6 +221,20 @@ class AdminController
 
         $this->accessCodeRepository->create($code, $courseId);
         $_SESSION['admin_success'] = 'Access code created.';
+    }
+
+    private function handleUpdateAccessCode(): void
+    {
+        $accessCodeId = trim($_POST['access_code_id'] ?? '');
+        $code = trim($_POST['code'] ?? '');
+        $courseId = trim($_POST['course_id'] ?? '');
+
+        if ($accessCodeId === '') throw new Exception('Please provide a valid access code ID.');
+        if ($code === '' || $courseId === '') throw new Exception('Please provide both an access code and a course.');
+        if ($this->accessCodeRepository->existsByCode($code)) throw new Exception('That access code already exists.');
+
+        $this->accessCodeRepository->update($accessCodeId, $code, $courseId);
+        $_SESSION['admin_success'] = 'Access code updated.';
     }
 
     private function handleDeleteAccessCode(): void
@@ -362,7 +392,7 @@ class AdminController
 
     private function validatePage(string $page): string
     {
-        $validPages = ['dashboard', 'courses', 'access-codes', 'users'];
+        $validPages = ['dashboard', 'courses', 'access-codes', 'users', 'registration-codes'];
         return in_array($page, $validPages, true) ? $page : 'dashboard';
     }
 
@@ -496,4 +526,72 @@ class AdminController
 
         $this->viewRenderer->renderWithAdminTemplate('admin/users', $viewData);
     }
+
+    private function renderRegistrationCodes(array $context): void
+    {
+        $context['additionalJs'][] = '/assets/js/admin/registration-codes.js';
+
+        $viewData = [
+            ...$context,
+            'activePage' => 'registration-codes',
+            'breadcrumb' => [
+                [
+                    'url' => '',
+                    'title'=> 'Registration Codes'
+                ],
+            ],
+            'registrationCodes' => $this->registrationCodeService->getAll(),
+            'allCourses' => $this->courseService->getAll(),
+            'pageTitle' => 'Registration Codes'
+        ];
+
+        $this->viewRenderer->renderWithAdminTemplate('admin/registration-codes', $viewData);
+    }
+
+    private function handleCreateRegistrationCode(): void
+    {
+        $code = trim($_POST['code'] ?? '');
+        $courseIds = $_POST['course_ids'] ?? [];
+
+        if ($code === '') {
+            throw new Exception('Please provide a registration code.');
+        }
+
+        $this->registrationCodeService->create($code, $courseIds);
+        $_SESSION['admin_success'] = 'Registration code created.';
+    }
+
+    private function handleUpdateCoursesToRegistrationCode(): void
+    {
+        $registrationCodeId = (int)trim($_POST['registration_code_id'] ?? '');
+        $courseIds = $_POST['course_ids'] ?? [];
+
+        if ($registrationCodeId === 0) {
+            throw new Exception('Please provide a valid registration code ID.');
+        }
+
+        $this->registrationCodeService->removeAllCourses($registrationCodeId);
+
+        if (empty($courseIds)) {
+            $_SESSION['admin_success'] = 'Courses assignment removed.';
+            return;
+        }
+
+        $this->registrationCodeService->addCourses($registrationCodeId, $courseIds);
+
+        $_SESSION['admin_success'] = 'Courses assignment updated.';
+    }
+
+    private function handleDeleteRegistrationCode(): void
+    {
+        $registrationCodeId = (int)trim($_POST['registration_code_id'] ?? '');
+
+        if ($registrationCodeId === 0) {
+            throw new Exception('Please provide a valid registration code ID.');
+        }
+
+        $this->registrationCodeService->delete($registrationCodeId);
+        $_SESSION['admin_success'] = 'Registration code deleted.';
+    }
 }
+

@@ -74,6 +74,10 @@ class Container
             $c->get(EmailVerificationRepository::class),
             $c->get(UserRepository::class)
         ));
+        $this->set(RegistrationCodeService::class, fn($c) => new RegistrationCodeService(
+            $c->get(RegistrationCodeRepository::class),
+            $c->get(CourseRepository::class)
+        ));
 
         // Helpers
         $this->set(ViewRenderer::class, fn() => new ViewRenderer(__DIR__));
@@ -88,7 +92,8 @@ class Container
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
-            $c->get(UuidService::class)
+            $c->get(UuidService::class),
+            $c->get(RegistrationCodeService::class)
         ));
         $this->set(DashboardController::class, fn($c) => new DashboardController(
             $c->get(DashboardService::class),
@@ -137,6 +142,12 @@ class Container
             $c->get(QuizService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class)
+        ));
+        $this->set(ProfileController::class, fn($c) => new ProfileController(
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class),
+            $c->get(UserService::class),
+            $c->get(ViewRenderer::class)
         ));
     }
 

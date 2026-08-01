@@ -55,11 +55,17 @@ class RegistrationCodeRepository
         $id = (int)$this->pdo->lastInsertId();
 
         if (!empty($courseIds)) {
-            $placeholders = implode(',', array_fill(0, count($courseIds), '?'));
+            $placeholders = [];
+            $values = [];
+            foreach ($courseIds as $courseId) {
+                $placeholders[] = '(?, ?)';
+                $values[] = $id;
+                $values[] = $courseId;
+            }
+            
             $stmt = $this->pdo->prepare(
-                "INSERT INTO registration_code_courses (registration_code_id, course_id) VALUES " . $placeholders
+                "INSERT INTO registration_code_courses (registration_code_id, course_id) VALUES " . implode(',', $placeholders)
             );
-            $values = array_merge([$id], $courseIds);
             $stmt->execute($values);
         }
     }
@@ -101,4 +107,36 @@ class RegistrationCodeRepository
         );
         $stmt->execute(array_merge([$registrationCodeId], $courseIds));
     }
+
+    public function removeAllCourses(int $registrationCodeId): void
+    {
+        $stmt = $this->pdo->prepare(
+            "DELETE FROM registration_code_courses WHERE registration_code_id = ?"
+        );
+        $stmt->execute([$registrationCodeId]);
+    }
+
+    public function getAll(): array
+    {
+        $stmt = $this->pdo->query("
+            SELECT
+                rc.id,
+                rc.code,
+                rc.used_by_user_id,
+                rc.used_at,
+                GROUP_CONCAT(rcc.course_id) as course_ids
+            FROM registration_codes rc
+            LEFT JOIN registration_code_courses rcc
+                ON rc.id = rcc.registration_code_id
+            GROUP BY rc.id, rc.code, rc.used_by_user_id, rc.used_at
+        ");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function delete(int $id): void
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM registration_codes WHERE id = ?");
+        $stmt->execute([$id]);
+    }
 }
+

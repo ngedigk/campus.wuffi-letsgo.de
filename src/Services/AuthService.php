@@ -78,8 +78,8 @@ class AuthService
     {
         if ($this->isIpBlocked()) {
             return new AuthenticationResult(
-                false,
-                'Zu viele Anmeldeversuche. Bitte versuchen Sie es später nochmal.'
+                success: false,
+                error: 'Zu viele Anmeldeversuche. Bitte versuchen Sie es später nochmal.'
             );
         }
 
@@ -89,8 +89,8 @@ class AuthService
             $this->recordFailedLogin();
 
             return new AuthenticationResult(
-                false,
-                'E-Mail oder Passwort ungültig'
+                success: false,
+                error: 'E-Mail oder Passwort ungültig'
             );
         }
 
@@ -98,8 +98,8 @@ class AuthService
             $this->recordFailedLogin();
 
             return new AuthenticationResult(
-                false,
-                'Bestätigen Sie bitte erst Ihre E-Mail Adresse.'
+                success: false,
+                error: 'Bestätigen Sie bitte erst Ihre E-Mail Adresse.'
             );
         }
 

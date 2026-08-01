@@ -47,6 +47,16 @@ class AccessCodeRepository
         $stmt->execute([$code, $courseUuid]);
     }
 
+    public function update(string $code, string $courseUuid): void
+    {
+        $stmt = $this->pdo->prepare("
+           UPDATE access_codes
+            SET course_id = ?
+            WHERE code = ?
+        ");
+        $stmt->execute([$courseUuid, $code]);
+    }
+
     public function createForRegistration(int $registrationCodeId, string $userId, string $courseId): int
     {
         $accessCode = bin2hex(random_bytes(16));

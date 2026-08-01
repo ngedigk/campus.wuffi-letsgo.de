@@ -78,10 +78,10 @@ class ModuleRepository
 
     private function createDto(array $row): Module {
         return new Module(
-            $row['id'],
-            $row['title'],
-            $row['sort_order'],
-            null
+            id: $row['id'],
+            title: $row['title'],
+            sortOrder: $row['sort_order'],
+            slides: null
         );
     }
 }

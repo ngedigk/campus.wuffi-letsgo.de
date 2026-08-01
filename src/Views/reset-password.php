@@ -24,37 +24,37 @@
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
                         <input type="hidden" name="user_uuid" value="<?= htmlspecialchars($userUuid ?? '') ?>">
 
-                        <label>Neues Passwort</label><br>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            autocomplete="new-password"
-                            required
-                        >
+                        <label>Neues Passwort<br>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                autocomplete="new-password"
+                                required
+                            >
+                        </label>
+
+                        <br>
+
+                        <label>Passwort bestätigen<br>
+                            <input
+                                type="password"
+                                name="password_confirm"
+                                autocomplete="new-password"
+                                required
+                            >
+                        </label>
 
                         <div class="password-meter">
                             <div class="password-bar">
                                 <div id="password-progress"></div>
                             </div>
                             <div id="password-label">Passwort eingeben</div>
+                            <div id="password-hints">
+                                Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
+                            </div>
+                            <div class="pw-status"></div>
                         </div>
-
-                        <div id="password-hints">
-                            Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
-                        </div>
-
-                        <br><br>
-
-                        <label>Passwort bestätigen</label><br>
-                        <input
-                            type="password"
-                            name="password_confirm"
-                            autocomplete="new-password"
-                            required
-                        >
-
-                        <br><br>
 
                         <button type="submit">Passwort aktualisieren</button>
                     </form>

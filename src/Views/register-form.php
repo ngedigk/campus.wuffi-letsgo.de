@@ -31,84 +31,65 @@
                         
                     <form method="post">
 
-                        <input
-                            type="hidden"
-                            name="csrf_token"
-                            value="<?= htmlspecialchars($csrfToken) ?>"
-                        >
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
 
-                        <label>Registrierungscode</label>
+                        <label>Registrierungscode<br>
+                            <input
+                                type="text"
+                                name="registration_code"
+                                value="<?= htmlspecialchars($registrationCode) ?>"
+                                autocomplete="off"
+                                required
+                            >
+                        </label>
+
                         <br>
 
-                        <input
-                            type="text"
-                            name="registration_code"
-                            value="<?= htmlspecialchars($registrationCode) ?>"
-                            autocomplete="off"
-                            required
-                        >
+                        <label>E-Mail<br>
+                            <input
+                                type="email"
+                                name="email"
+                                value="<?= htmlspecialchars($email) ?>"
+                                autocomplete="email"
+                                required
+                            >
+                        </label>
 
-                        <br><br>
-
-                        <label>E-Mail</label>
                         <br>
 
-                        <input
-                            type="email"
-                            name="email"
-                            value="<?= htmlspecialchars($email) ?>"
-                            autocomplete="email"
-                            required
-                        >
+                        <label>Passwort<br>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                autocomplete="new-password"
+                                required
+                            >
+                        </label>
 
-                        <br><br>
-
-                        <label>Passwort</label>
                         <br>
 
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-
-                            autocomplete="new-password"
-                            required
-                        >
+                        <label>Passwort bestätigen<br>
+                            <input
+                                type="password"
+                                name="password_confirm"
+                                autocomplete="new-password"
+                                required
+                            >
+                        </label>
 
                         <div class="password-meter">
-
                             <div class="password-bar">
                                 <div id="password-progress"></div>
                             </div>
-
-                            <div id="password-label">
-                                Passwort eingeben
+                            <div id="password-label">Passwort eingeben</div>
+                            <div id="password-hints">
+                                Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
                             </div>
-
+                            <div class="pw-status"></div>
                         </div>
 
-                        <div id="password-hints">
-                            Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
-                        </div>
-
-                        <br><br>
-
-                        <label>Passwort bestätigen</label>
-
-                        <br>
-
-                        <input
-                            type="password"
-                            name="password_confirm"
-                            autocomplete="new-password"
-                            required
-                        >
-
-                        <br><br>
-
-                        <button type="submit">
-                            Registrieren
-                        </button>
+                        <button type="submit">Registrieren</button>
 
                     </form>
                     <a href="index.php">

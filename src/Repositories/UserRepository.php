@@ -9,7 +9,7 @@ class UserRepository
     public function findById(string $id): ?User
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, email, is_admin, email_verified, created_at
+            SELECT *
             FROM users
             WHERE id = ?
         ");
@@ -25,7 +25,7 @@ class UserRepository
     public function getAll(): array
     {
         $stmt = $this->pdo->query("
-            SELECT id, email, is_admin, email_verified, created_at
+            SELECT *
             FROM users
         ");
 
@@ -52,7 +52,7 @@ class UserRepository
     public function findByEmail(string $email): ?User
     {
         $stmt = $this->pdo->prepare("
-            SELECT id, email, is_admin, email_verified, created_at, password_hash
+            SELECT *
             FROM users
             WHERE email = ?
         ");
@@ -68,22 +68,28 @@ class UserRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE users
-            SET password_hash = ?
-            WHERE id = ?
+            SET password_hash = :passwordHash
+            WHERE id = :id
         ");
 
-        $stmt->execute([$passwordHash, $id]);
+        $stmt->execute([
+            'passwordHash' => $passwordHash,
+            'id' => $id
+        ]);
     }
 
     public function setAdmin(string $id, bool $isAdmin): void
     {
         $stmt = $this->pdo->prepare("
             UPDATE users
-            SET is_admin = ?
-            WHERE id = ?
+            SET is_admin = :isAdmin
+            WHERE id = :id
         ");
 
-        $stmt->execute([(int)$isAdmin, $id]);
+        $stmt->execute([
+            'isAdmin' => (int)$isAdmin,
+            'id' => $id
+        ]);
     }
 
     public function hasAnyAdmin(): bool
@@ -104,11 +110,29 @@ class UserRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE users
-            SET email_verified = ?
-            WHERE id = ?
+            SET email_verified = :emailVerified
+            WHERE id = :id
         ");
 
-        $stmt->execute([true, $id]);
+        $stmt->execute([
+            'emailVerified' => (int)true,
+            'id' => $id
+        ]);
+    }
+    
+    public function update(string $id, string $email, string $name): void
+    {
+        $stmt = $this->pdo->prepare("
+            UPDATE users
+            SET name = :name, email = :email
+            WHERE id = :id
+        ");
+
+        $stmt->execute([
+            'name' => $name,
+            'email' => $email,
+            'id' => $id
+        ]);
     }
 
     public function create(
@@ -119,21 +143,15 @@ class UserRepository
     ): void {
 
         $stmt = $this->pdo->prepare("
-            INSERT INTO users
-            (
-                id,
-                email,
-                password_hash,
-                is_admin
-            )
-            VALUES (?, ?, ?, ?)
+            INSERT INTO users (id, email, password_hash, is_admin )
+            VALUES (:id, :email, :passwordHash, :isAdmin)
         ");
 
         $stmt->execute([
-            $id,
-            $email,
-            $passwordHash,
-            (int)$isAdmin
+            'id' => $id,
+            'email' => $email,
+            'passwordHash' => $passwordHash,
+            'isAdmin' => (int)$isAdmin
         ]);
     }
 
@@ -158,13 +176,13 @@ class UserRepository
     private function createDto(array $row): User
     {
         return new User(
-            $row['id'],
-            $row['email'],
-            (bool)$row['is_admin'],
-            (bool)$row['email_verified'],
-            $row['created_at'] ?? null,
-            $row['password_hash'] ?? null,
-            $row['name'] ?? null,
+            id: $row['id'],
+            email: $row['email'],
+            isAdmin: (bool)$row['is_admin'],
+            emailVerified: (bool)$row['email_verified'],
+            createdAt: $row['created_at'] ?? null,
+            passwordHash: $row['password_hash'] ?? null,
+            name: $row['name'] ?? null,
         );
     }
 }

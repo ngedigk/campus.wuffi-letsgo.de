@@ -21,6 +21,12 @@ class UserService
         return $this->userRepository->findByEmail($email);
     }
 
+    public function update(string $id, string $email, string $name): void
+    {
+        $this->userRepository->update($id, $email, $name);
+    }
+
+
     public function create(string $id, string $email, string $passwordHash): void
     {
         $hasAdmin = $this->userRepository->hasAnyAdmin();
