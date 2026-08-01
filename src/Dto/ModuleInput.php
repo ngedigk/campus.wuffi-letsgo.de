@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Dto;
+
 final class ModuleInput
 {
     public function __construct(

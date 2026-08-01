@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Dto;
+
 final class QuizQuestion
 {
     public function __construct(

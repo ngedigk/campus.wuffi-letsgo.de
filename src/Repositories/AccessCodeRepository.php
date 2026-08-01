@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Repositories;
+
+use PDO;
+
 class AccessCodeRepository
 {
     public function __construct(

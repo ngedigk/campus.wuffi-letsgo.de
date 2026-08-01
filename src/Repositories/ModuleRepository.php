@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Dto\Module;
+use App\Dto\ModuleInput;
+use PDO;
+
 class ModuleRepository
 {
     public function __construct(

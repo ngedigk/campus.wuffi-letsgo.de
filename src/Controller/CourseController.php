@@ -1,5 +1,19 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\CourseService;
+use App\Services\CourseSidebarBuilderService;
+use App\Services\ProgressService;
+use App\Services\QuizService;
+use App\Services\AuthService;
+use App\Helpers\ViewRenderer;
+use App\Dto\Course;
+use App\Dto\Module;
+use App\Dto\Slide;
+use App\Dto\QuizResult;
+use Exception;
+
 class CourseController
 {
     public function __construct(

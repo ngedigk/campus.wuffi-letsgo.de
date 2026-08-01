@@ -1,5 +1,7 @@
 <?php
 
+namespace App\ViewModels;
+
 class CourseSidebarSlideItem
 {
     public function __construct(

@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\SlideRepository;
+use App\Dto\Slide;
+use App\Dto\SlideInput;
+
 class SlideService {
     public function __construct(
         private SlideRepository $slideRepository

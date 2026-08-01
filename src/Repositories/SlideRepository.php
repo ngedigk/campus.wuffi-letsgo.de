@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Dto\Slide;
+use App\Dto\SlideInput;
+use PDO;
+
 class SlideRepository
 {
     public function __construct(
@@ -94,4 +100,3 @@ class SlideRepository
         );
     }
 }
-

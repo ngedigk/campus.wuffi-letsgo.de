@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Dto;
+
 final class Slide
 {
     public function __construct(

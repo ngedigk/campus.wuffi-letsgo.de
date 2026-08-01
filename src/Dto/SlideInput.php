@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Dto;
+
 final class SlideInput
 {
     public function __construct(

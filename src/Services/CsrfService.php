@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Services;
+
+use Exception;
+
 class CsrfService
 {
     public function generateToken(): string

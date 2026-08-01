@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Dto;
+
 final class User
 {
     public function __construct(

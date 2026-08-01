@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\ProgressRepository;
+
 class ProgressService
 {
     public function __construct(

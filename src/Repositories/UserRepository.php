@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Repositories;
+
+use PDO;
+use App\Dto\User;
+
 class UserRepository
 {
     public function __construct(
@@ -186,4 +191,3 @@ class UserRepository
         );
     }
 }
-

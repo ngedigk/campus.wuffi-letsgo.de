@@ -1,5 +1,15 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\AuthService;
+use App\Services\CsrfService;
+use App\Services\UserService;
+use App\Helpers\ViewRenderer;
+use App\Dto\User;
+use Exception;
+use Throwable;
+
 class ProfileController
 {
     public function __construct(
@@ -19,7 +29,6 @@ class ProfileController
         $user = $this->authService->currentUser();
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            // Check which form was submitted
             if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
                 $this->handleChangePassword($user);
                 return;
@@ -104,5 +113,3 @@ class ProfileController
         $this->viewRenderer->renderWithTemplate('profile', $context);
     }
 }
-
-

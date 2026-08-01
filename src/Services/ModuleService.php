@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\ModuleRepository;
+use App\Dto\Module;
+use App\Dto\ModuleInput;
+
 class ModuleService {
     public function __construct(
         private ModuleRepository $moduleRepository

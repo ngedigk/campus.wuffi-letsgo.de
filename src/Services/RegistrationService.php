@@ -1,5 +1,15 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\UserRepository;
+use App\Repositories\EmailVerificationRepository;
+use App\Repositories\RegistrationCodeRepository;
+use App\Repositories\AccessCodeRepository;
+use PDO;
+use Exception;
+use Throwable;
+
 class RegistrationService
 {
     public function __construct(

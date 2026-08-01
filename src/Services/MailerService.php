@@ -1,14 +1,19 @@
 <?php
 
+namespace App\Services;
+
+use \PHPMailer\PHPMailer\PHPMailer;
+use Exception;
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 class MailerService
 {
-    private \PHPMailer\PHPMailer\PHPMailer $mailer;
+    private PHPMailer $mailer;
 
     public function __construct()
     {
-        $this->mailer = new \PHPMailer\PHPMailer\PHPMailer(true);
+        $this->mailer = new PHPMailer(true);
         $this->configureSMTP();
         $this->configureDefaults();
     }
@@ -31,10 +36,10 @@ class MailerService
             $this->mailer->Username = getenv('SMTP_USER') ?: '';
             $this->mailer->Password = getenv('SMTP_PASS') ?: '';
             
-            $this->mailer->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_STARTTLS;
+            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             
             if ($port === 465) {
-                $this->mailer->SMTPSecure = \PHPMailer\PHPMailer\PHPMailer::ENCRYPTION_SMTPS;
+                $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             }
         }
         
@@ -58,9 +63,9 @@ class MailerService
 
         try {
             $this->mailer->send();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log("Mailer Error: " . $e->getMessage());
-            throw new \Exception("Email sending failed.");
+            throw new Exception("Email sending failed.");
         }
     }
 }

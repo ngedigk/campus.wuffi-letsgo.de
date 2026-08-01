@@ -1,5 +1,15 @@
 <?php
 
+namespace App\Controller;
+
+use App\Repositories\PasswordResetsRepository;
+use App\Services\CsrfService;
+use App\Services\UserService;
+use App\Services\AuthService;
+use App\Helpers\ViewRenderer;
+use Exception;
+use Throwable;
+
 class ResetPasswordController
 {
     public function __construct(
@@ -69,4 +79,3 @@ class ResetPasswordController
         $this->viewRenderer->renderWithTemplate('reset-password', $context);
     }
 }
-

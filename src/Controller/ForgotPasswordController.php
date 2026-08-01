@@ -1,5 +1,15 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\AuthService;
+use App\Services\CsrfService;
+use App\Services\MailerService;
+use App\Repositories\UserRepository;
+use App\Repositories\PasswordResetsRepository;
+use App\Helpers\ViewRenderer;
+use Exception;
+
 class ForgotPasswordController
 {
     public function __construct(
@@ -49,7 +59,7 @@ class ForgotPasswordController
 
         try {
             $this->mailerService->send($email, 'Password Reset', $htmlBody);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log("Reset email failed: " . $e->getMessage());
         }
     }

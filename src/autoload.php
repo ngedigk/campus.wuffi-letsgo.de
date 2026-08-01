@@ -1,25 +1,21 @@
 <?php
 
-require_once __DIR__ . '/vendor/autoload.php';
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
+}
 
 spl_autoload_register(function ($class) {
+    $prefix = 'App\\';
+    $baseDir = __DIR__ . '/';
 
-    $folders = [
-        __DIR__.'/Controller/',
-        __DIR__.'/Controller/Admin/',
-        __DIR__.'/Services/',
-        __DIR__.'/Repositories/',
-        __DIR__.'/Helpers/',
-        __DIR__.'/ViewModels/',
-        __DIR__.'/dto/',
-    ];
+    if (strncmp($prefix, $class, strlen($prefix)) !== 0) {
+        return;
+    }
 
-    foreach ($folders as $folder) {
-        $file = $folder . $class . '.php';
+    $relativeClass = substr($class, strlen($prefix));
+    $file = $baseDir . str_replace('\\', '/', $relativeClass) . '.php';
 
-        if (file_exists($file)) {
-            require_once $file;
-            return;
-        }
+    if (file_exists($file)) {
+        require_once $file;
     }
 });

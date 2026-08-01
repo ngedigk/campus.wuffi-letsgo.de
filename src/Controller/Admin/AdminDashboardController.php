@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Controller\Admin;
+
 class AdminDashboardController extends AdminPageController
 {
     public function render(array $context): void

@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\RegistrationCodeRepository;
+use App\Repositories\CourseRepository;
+
 class RegistrationCodeService
 {
     public function __construct(
@@ -63,4 +68,3 @@ class RegistrationCodeService
         $this->registrationCodeRepository->delete($id);
     }
 }
-

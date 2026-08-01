@@ -1,5 +1,14 @@
 <?php
 
+namespace App\Controller\Admin;
+
+use App\Dto\CourseInput;
+use App\Dto\ModuleInput;
+use App\Dto\Module;
+use App\Dto\SlideInput;
+use App\Dto\Slide;
+use Exception;
+
 class AdminCoursesController extends AdminPageController
 {
     public function render(array $context): void

@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Repositories;
+
+use PDO;
+
 class RegistrationCodeRepository
 {
     public function __construct(
@@ -139,4 +143,3 @@ class RegistrationCodeRepository
         $stmt->execute([$id]);
     }
 }
-

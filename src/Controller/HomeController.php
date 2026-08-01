@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\AuthService;
+use App\Services\CsrfService;
+
 class HomeController
 {
     public function __construct(

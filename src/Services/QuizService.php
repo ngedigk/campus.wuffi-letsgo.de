@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\QuizRepository;
+use App\Dto\QuizResult;
+
 class QuizService
 {
     public function __construct(private readonly QuizRepository $quizRepository) {}

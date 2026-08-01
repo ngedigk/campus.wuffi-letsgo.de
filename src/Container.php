@@ -1,4 +1,52 @@
 <?php
+
+namespace App;
+
+use PDO;
+use App\Repositories\CourseRepository;
+use App\Repositories\ModuleRepository;
+use App\Repositories\SlideRepository;
+use App\Repositories\QuizRepository;
+use App\Repositories\ProgressRepository;
+use App\Repositories\UserRepository;
+use App\Repositories\RegistrationCodeRepository;
+use App\Repositories\EmailVerificationRepository;
+use App\Repositories\AccessCodeRepository;
+use App\Repositories\UserCourseRepository;
+use App\Repositories\AuthRepository;
+use App\Repositories\PasswordResetsRepository;
+use App\Services\CsrfService;
+use App\Services\UuidService;
+use App\Services\MailerService;
+use App\Services\UserService;
+use App\Services\AuthService;
+use App\Services\CourseService;
+use App\Services\ModuleService;
+use App\Services\SlideService;
+use App\Services\QuizService;
+use App\Services\ProgressService;
+use App\Services\RedeemService;
+use App\Services\DashboardService;
+use App\Services\RegistrationService;
+use App\Services\CourseSidebarBuilderService;
+use App\Services\EmailVerificationService;
+use App\Services\RegistrationCodeService;
+use App\Controller\Admin\AdminDashboardController;
+use App\Controller\Admin\AdminCoursesController;
+use App\Controller\Admin\AdminAccessCodesController;
+use App\Controller\Admin\AdminUsersController;
+use App\Controller\Admin\AdminRegistrationCodesController;
+use App\Controller\AdminController;
+use App\Controller\DashboardController;
+use App\Controller\AuthController;
+use App\Controller\HomeController;
+use App\Controller\RegistrationController;
+use App\Controller\ForgotPasswordController;
+use App\Controller\ResetPasswordController;
+use App\Controller\CourseController;
+use App\Controller\ProfileController;
+use App\Helpers\ViewRenderer;
+
 class Container
 {
     private static ?Container $instance = null;
@@ -216,22 +264,40 @@ class Container
         ));
     }
 
+    private function normalizeAbstract(string $abstract): string
+    {
+        if ($abstract === '' || str_contains($abstract, '\\')) {
+            return $abstract;
+        }
+
+        $namespaced = 'App\\' . $abstract;
+
+        if (class_exists($namespaced)) {
+            return $namespaced;
+        }
+
+        return $abstract;
+    }
+
     public function set(string $abstract, callable $concrete): void
     {
-        $this->bindings[$abstract] = $concrete;
+        $normalized = $this->normalizeAbstract($abstract);
+        $this->bindings[$normalized] = $concrete;
     }
 
     public function get(string $abstract)
     {
-        if (isset($this->instances[$abstract])) {
-            return $this->instances[$abstract];
+        $normalized = $this->normalizeAbstract($abstract);
+
+        if (isset($this->instances[$normalized])) {
+            return $this->instances[$normalized];
         }
 
-        if (!isset($this->bindings[$abstract])) {
+        if (!isset($this->bindings[$normalized])) {
             throw new \Exception("Binding not found for {$abstract}");
         }
 
-        $this->instances[$abstract] = $this->bindings[$abstract]($this);
-        return $this->instances[$abstract];
+        $this->instances[$normalized] = $this->bindings[$normalized]($this);
+        return $this->instances[$normalized];
     }
 }

@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\UserRepository;
+use App\Dto\User;
+use Exception;
+
 class UserService
 {
     public function __construct(
@@ -45,7 +51,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new \Exception('User not found.');
+            throw new Exception('User not found.');
         }
 
         $this->userRepository->setAdmin($user->id, true);
@@ -56,7 +62,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new \Exception('User not found.');
+            throw new Exception('User not found.');
         }
 
         $this->userRepository->setAdmin($user->id, false);
@@ -67,7 +73,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new \Exception('User not found.');
+            throw new Exception('User not found.');
         }
 
         $this->userRepository->verify($user->id);

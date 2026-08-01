@@ -1,5 +1,15 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\RegistrationService;
+use App\Services\CsrfService;
+use App\Services\EmailVerificationService;
+use App\Services\MailerService;
+use App\Helpers\ViewRenderer;
+use Exception;
+use Throwable;
+
 class RegistrationController
 {
     public function __construct(
@@ -117,4 +127,3 @@ class RegistrationController
         }
     }
 }
-

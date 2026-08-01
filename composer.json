@@ -2,6 +2,11 @@
     "require": {
         "phpmailer/phpmailer": "^7.1"
     },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
     "config": {
         "vendor-dir": "src/vendor"
     }

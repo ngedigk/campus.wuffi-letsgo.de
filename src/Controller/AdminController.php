@@ -1,5 +1,26 @@
 <?php
 
+namespace App\Controller;
+
+use App\Services\AuthService;
+use App\Services\CsrfService;
+use App\Services\CourseService;
+use App\Services\SlideService;
+use App\Services\ModuleService;
+use App\Services\RegistrationCodeService;
+use App\Services\UuidService;
+use App\Services\UserService;
+use App\Repositories\AccessCodeRepository;
+use App\Controller\Admin\AdminPageController;
+use App\Controller\Admin\AdminDashboardController;
+use App\Controller\Admin\AdminCoursesController;
+use App\Controller\Admin\AdminAccessCodesController;
+use App\Controller\Admin\AdminUsersController;
+use App\Controller\Admin\AdminRegistrationCodesController;
+use App\Helpers\ViewRenderer;
+use Exception;
+use Throwable;
+
 class AdminController extends AdminPageController
 {
     public function __construct(
@@ -112,4 +133,3 @@ class AdminController extends AdminPageController
         return in_array($page, $validPages, true) ? $page : 'dashboard';
     }
 }
-

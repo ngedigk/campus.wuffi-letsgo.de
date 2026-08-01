@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Services;
+
 class UuidService
 {
     public function generate(): string

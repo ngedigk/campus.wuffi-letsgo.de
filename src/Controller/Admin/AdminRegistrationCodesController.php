@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Controller\Admin;
+
+use Exception;
+
 class AdminRegistrationCodesController extends AdminPageController
 {
     public function render(array $context): void

@@ -1,5 +1,11 @@
 <?php
 
+namespace App;
+
+use PDO;
+use PDOException;
+use RuntimeException;
+
 require_once __DIR__ . '/config.php';
 
 class Database

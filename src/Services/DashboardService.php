@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Services;
+
+use App\Dto\CourseCard;
+
 class DashboardService
 {
     public function __construct(

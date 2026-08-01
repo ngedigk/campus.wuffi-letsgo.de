@@ -1,4 +1,7 @@
 <?php
+
+namespace App\Helpers;
+
 class ViewRenderer
 {
     public function __construct(private string $basePath) {}

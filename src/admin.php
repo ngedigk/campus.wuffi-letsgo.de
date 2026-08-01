@@ -1,4 +1,8 @@
 <?php
+use App\Container;
+use App\Services\AuthService;
+use App\Controller\AdminController;
+
 require __DIR__ . '/bootstrap.php';
 
 $container = Container::getInstance();

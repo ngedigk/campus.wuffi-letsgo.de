@@ -1,5 +1,11 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Dto\CourseInput;
+use App\Dto\Course;
+use PDO;
+
 class CourseRepository
 {
     public function __construct(
@@ -149,5 +155,3 @@ class CourseRepository
         );
     }
 }
-
-

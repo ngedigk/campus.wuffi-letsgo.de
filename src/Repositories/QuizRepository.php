@@ -1,5 +1,10 @@
 <?php
 
+namespace App\Repositories;
+
+use App\Dto\QuizQuestion;
+use PDO;
+
 class QuizRepository {
 
     public function __construct(
@@ -39,10 +44,6 @@ class QuizRepository {
         $stmt->execute([$id]);
     }
 
-    /**
-     * Fetches all questions and their choices for a given slide.
-     * Returns an associative array keyed by question_id with questions and choices.
-     */
     public function getQuizDataForSlide(int $slideId): array
     {
         $stmt = $this->pdo->prepare("
@@ -95,5 +96,3 @@ class QuizRepository {
         );
     }
 }
-
-?>

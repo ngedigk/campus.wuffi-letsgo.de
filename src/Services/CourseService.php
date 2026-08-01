@@ -1,5 +1,14 @@
 <?php
 
+namespace App\Services;
+
+use App\Repositories\CourseRepository;
+use App\Repositories\ModuleRepository;
+use App\Repositories\SlideRepository;
+use App\Dto\Course;
+use App\Dto\CourseInput;
+use RuntimeException;
+
 class CourseService
 {
     public function __construct(
@@ -97,4 +106,3 @@ class CourseService
         );
     }
 }
-

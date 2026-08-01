@@ -1,5 +1,19 @@
 <?php
 
+namespace App\Controller\Admin;
+
+use App\Services\AuthService;
+use App\Services\CsrfService;
+use App\Services\CourseService;
+use App\Services\SlideService;
+use App\Services\ModuleService;
+use App\Services\RegistrationCodeService;
+use App\Services\UuidService;
+use App\Services\UserService;
+use App\Repositories\AccessCodeRepository;
+use App\Helpers\ViewRenderer;
+use App\Dto\User;
+
 abstract class AdminPageController
 {
     public function __construct(
