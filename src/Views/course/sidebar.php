@@ -10,7 +10,7 @@
                 <?php if ($module->isLocked): ?>
                     <span class="module-title"><?= htmlspecialchars($module->title) ?></span>
                 <?php else: ?>
-                    <a href="<?= htmlspecialchars($module->url) ?>">
+                    <a href="<?= htmlspecialchars($module->url) . "#course-main-marker"?>">
                         <?= htmlspecialchars($module->title) ?>
                     </a>
                 <?php endif; ?>
@@ -24,7 +24,7 @@
                                     <span class="slide-title"><?= htmlspecialchars($slide->title) ?></span>
                                 <?php else: ?>
                                     <img src="assets/images/icons/paw-solid-full.svg" aria-hidden="true" width="15" height="15">
-                                    <a href="<?= htmlspecialchars($slide->url) ?>">
+                                    <a href="<?= htmlspecialchars($slide->url) . "#course-main-marker" ?>">
                                         <?= htmlspecialchars($slide->title) ?>
                                         <?php if ($slide->isVisited): ?>
                                             <span class="visited-indicator">
