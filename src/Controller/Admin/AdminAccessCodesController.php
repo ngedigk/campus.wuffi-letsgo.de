@@ -58,21 +58,14 @@ class AdminAccessCodesController extends AdminPageController
 
     private function handleUpdateAccessCode(): void
     {
-        $accessCodeId = trim($_POST['access_code_id'] ?? '');
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
-        if ($accessCodeId === '') {
-            throw new Exception('Please provide a valid access code ID.');
-        }
         if ($code === '' || $courseId === '') {
             throw new Exception('Please provide both an access code and a course.');
         }
-        if ($this->accessCodeRepository->existsByCode($code)) {
-            throw new Exception('That access code already exists.');
-        }
 
-        $this->accessCodeRepository->update($accessCodeId, $code, $courseId);
+        $this->accessCodeRepository->update($code, $courseId);
         $_SESSION['admin_success'] = 'Access code updated.';
     }
 
