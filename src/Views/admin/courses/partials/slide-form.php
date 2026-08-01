@@ -27,8 +27,8 @@
 
                 <button
                     type="submit"
+                    id="save-slide"
                     class="btn btn-primary btn-small"
-                    onclick="prepareSlideContent()"
                 >
                     Folie speichern
                 </button>

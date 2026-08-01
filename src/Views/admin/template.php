@@ -130,6 +130,11 @@
         <?php require __DIR__ . '/courses/partials/modals/create-course-modal.php'; ?>
     
     </div>
+    <?php if (!empty($viewModel['slideAssets'])): ?>
+        <script>
+        window.existingAssets = <?= json_encode($viewModel['slideAssets'] ?? []) ?>;
+        </script>
+    <?php endif; ?>
     <?php if (!empty($viewModel['additionalJs'])): ?>
         <?php foreach ($viewModel['additionalJs'] as $jsFile): ?>
             <script type="<?= htmlspecialchars($jsFile['type'] ?? 'text/javascript') ?>" src="<?= htmlspecialchars($jsFile['src']) ?>"></script>

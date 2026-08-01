@@ -35,7 +35,3 @@
         </form>
     </div>
 </div>
-
-<script>
-const existingAssets = <?= json_encode($viewModel['slideAssets'] ?? []) ?>;
-</script>

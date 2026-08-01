@@ -1,4 +1,5 @@
 export default function initEditor(options = {}) {
+
     const existingContent = document.querySelector('#slide-content').value;
 
     const parser = new DOMParser();
@@ -26,8 +27,6 @@ export default function initEditor(options = {}) {
         assetManager: {
             upload: '/admin.php',
             uploadName: 'files',
-
-            assets: [],
 
             params: {
                 action: 'upload_image',

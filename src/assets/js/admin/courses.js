@@ -16,10 +16,6 @@ function preventFormEnterSubmit(event) {
     return false;
 }
 
-if (typeof editor !== 'undefined' && typeof existingAssets !== 'undefined') {
-    editor.AssetManager.add(existingAssets);
-}
-
 function addModule(courseId) {
     document.getElementById('module-course-id').value = courseId;
     document.getElementById('createModuleModal').style.display = 'flex';
@@ -143,15 +139,6 @@ function deleteModule(moduleId) {
 
     document.getElementById('delete-module-id').value = moduleId;
     document.getElementById('delete-module-form').submit();
-}
-
-function prepareSlideContent() {
-
-    document.getElementById('slide-content').value =
-        editor.getHtml() +
-        '<style>' +
-        editor.getCss() +
-        '</style>';
 }
 
 function deleteSlide(slideId) {
