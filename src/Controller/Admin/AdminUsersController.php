@@ -14,11 +14,11 @@ class AdminUsersController extends AdminPageController
             'breadcrumb' => [
                 [
                     'url' => '',
-                    'title' => 'Users'
+                    'title' => 'Benutzer'
                 ],
             ],
             'allUsers' => $this->userService->getAll(),
-            'pageTitle' => 'Users'
+            'pageTitle' => 'Benutzer'
         ];
 
         $this->viewRenderer->renderWithAdminTemplate('admin/users', $viewData);
