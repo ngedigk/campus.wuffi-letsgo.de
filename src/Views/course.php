@@ -54,11 +54,12 @@
                     <div class="course-layout">
                         <?php require __DIR__ . '/course/sidebar.php'; ?>
 
-                        <main class="course-main">
+                        <main id="course-main">
+                            <div id="course-main-marker"></div>
                             <div class="slide-panel">
                                 <div class="slide-navigation">
                                     <?php if ($viewModel['prevUrl'] ?? ''): ?>
-                                        <a href="<?= htmlspecialchars($viewModel['prevUrl'] ?? '') ?>" class="btn prev-slide">
+                                        <a href="<?= htmlspecialchars($viewModel['prevUrl'] . "#course-main-marker" ?? '') ?>" class="btn prev-slide">
                                             <img src="assets/images/icons/chevron-left-solid-full.svg" width="28" height="28">
                                         </a>
                                     <?php endif; ?>
@@ -68,7 +69,7 @@
                                     <?php endif; ?>
 
                                     <?php if ($viewModel['nextUrl'] ?? ''): ?>
-                                        <a href="<?= htmlspecialchars($viewModel['nextUrl'] ?? '') ?>" class="btn next-slide">
+                                        <a href="<?= htmlspecialchars($viewModel['nextUrl'] . "#course-main-marker" ?? '') ?>" class="btn next-slide">
                                             <img src="assets/images/icons/angle-right-solid-full.svg" width="28" height="28">
                                         </a>
                                     <?php elseif ($viewModel['isLastSlide'] ?? false): ?>

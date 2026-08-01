@@ -1,5 +1,11 @@
-.course-main {
+#course-main {
     border-top: 10px solid var(--primary);
+    position: relative;
+}
+
+#course-main-marker {
+    position: absolute;
+    top: -120px;
 }
 
 .course-sidebar {
@@ -20,7 +26,7 @@
         height: fit-content;
         margin-left: calc(-370px - 1.5rem);
     }
-    .course-main {
+    #course-main {
         flex: 1;
     }
 }
