@@ -9,6 +9,8 @@ use App\Dto\SlideInput;
 use App\Dto\Slide;
 use App\Dto\QuizQuestionInput;
 use App\Dto\QuizQuestion;
+use App\Dto\QuestionChoiceInput;
+
 use Exception;
 
 class AdminCoursesController extends AdminPageController
@@ -329,10 +331,39 @@ class AdminCoursesController extends AdminPageController
             throw new Exception('Bitte geben Sie einen Fragen-Text an.');
         }
 
+        $choices = $_POST['choices'] ?? [];
+        
+        if (empty($choices)) {
+            throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
+        }
+        
+        $hasCorrect = false;
+        foreach ($choices as $choice) {
+            if (trim($choice['text'] ?? '') === '') {
+                throw new Exception('Antwort Text darf nicht leer sein.');
+            }
+            if (!empty($choice['is_correct'])) {
+                $hasCorrect = true;
+            }
+        }
+        
+        if (!$hasCorrect) {
+            throw new Exception('Bitte markieren Sie mindestens eine korrekte Antwort.');
+        }
+
         $questionId = $this->quizQuestionService->create(new QuizQuestionInput(
             slideId: $slideId,
             questionText: $questionText
         ));
+
+        foreach ($choices as $choiceData) {
+            $this->questionChoicesRepository->create(new QuestionChoiceInput(
+                questionId: $questionId,
+                choiceText: trim($choiceData['text']),
+                isCorrect: !empty($choiceData['is_correct'])
+            ));
+        }
+
         $_SESSION['admin_success'] = "Frage $questionId erstellt.";
     }
 

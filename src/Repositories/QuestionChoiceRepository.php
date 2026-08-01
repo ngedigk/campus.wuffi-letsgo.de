@@ -28,7 +28,7 @@ class QuestionChoiceRepository {
         $stmt->execute([
             'questionId' => $questionChoice->questionId,
             'choiceText' => $questionChoice->choiceText,
-            'isCorrect' => $questionChoice->isCorrect
+            'isCorrect' => (int)$questionChoice->isCorrect
         ]);
 
         return (int)$this->pdo->lastInsertId();

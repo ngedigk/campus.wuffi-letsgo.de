@@ -17,6 +17,54 @@ function addQuestion(slideId) {
     document.getElementById('createQuestionModal').style.display = 'flex';
 }
 
+let choiceIndex = 1;
+function addChoice() {
+    const container = document.getElementById('choices-container');
+    const row = document.createElement('div');
+    row.className = 'choice-row';
+    row.innerHTML = `
+        <input type="text" name="choices[${choiceIndex}][text]" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
+        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" unchecked> Korrekt</label>
+        <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeChoice(this)">&times;</button>
+    `;
+    container.appendChild(row);
+    choiceIndex++;
+}
+
+function removeChoice(btn) {
+    const rows = document.querySelectorAll('.choice-row');
+    if (rows.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert('Mindestens eine Antwort muss vorhanden sein.');
+    }
+}
+
+function validateQuestionForm() {
+    const choices = document.querySelectorAll('.choice-row');
+    let hasCorrect = false;
+    
+    for (let row of choices) {
+        const input = row.querySelector('input[name="choices[][text]"]');
+        if (input && input.value.trim() === '') {
+            alert('Bitte füllen Sie alle Antwortfelder aus.');
+            return false;
+        }
+        
+        const checkbox = row.querySelector('input[name="choices[][is_correct]"]');
+        if (checkbox && checkbox.checked) {
+            hasCorrect = true;
+        }
+    }
+
+    if (!hasCorrect) {
+        alert('Bitte markieren Sie mindestens eine korrekte Antwort.');
+        return false;
+    }
+    
+    return true;
+}
+
 function deleteCourse(courseId) {
     if (!confirm('Sind Sie sicher, dass Sie diesen Kurs löschen möchten? Dies wird auch alle Untermodule und Folien innerhalb des Kurses löschen.')) {
         return;
