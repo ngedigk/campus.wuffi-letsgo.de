@@ -51,12 +51,17 @@
                 <div class="cell actions-cell">
                     <div class="cell actions-cell">
                         <button class="btn btn-small"
-                                onclick="editAccessCode('<?= $code['id'] ?>')"
+                                data-action="edit-access-code"
+                                data-access-code-id="<?= $code['id'] ?>"
                                 data-course-id="<?= htmlspecialchars($code['course_id']) ?>"
                                 data-code="<?= htmlspecialchars($code['code']) ?>">
                             Bearbeiten
                         </button>
-                        <button class="btn btn-small btn-danger" onclick="deleteAccessCode('<?= $code['id'] ?>')">Löschen</button>
+                        <button
+                            class="btn btn-small btn-danger"
+                            data-action="delete-access-code"
+                            data-access-code-id="<?= $code['id'] ?>"
+                        >Löschen</button>
                     </div>
                 </div>
             </div>

@@ -8,7 +8,10 @@ class AdminAccessCodesController extends AdminPageController
 {
     public function render(array $context): void
     {
-        $context['additionalJs'][] = ['src' => '/assets/js/admin/access-codes.js'];
+        $context['additionalJs'][] = [
+            'src' => '/assets/js/admin/access-codes.js',
+            'type' => 'module'
+        ];
 
         $viewData = [
             ...$context,
@@ -62,6 +65,7 @@ class AdminAccessCodesController extends AdminPageController
 
     private function handleUpdateAccessCode(): void
     {
+        $accessCodeId = trim($_POST['access_code_id'] ?? '');
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
@@ -69,7 +73,7 @@ class AdminAccessCodesController extends AdminPageController
             throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
-        $this->accessCodeRepository->update($code, $courseId);
+        $this->accessCodeRepository->update($accessCodeId, $code, $courseId);
         $_SESSION['admin_success'] = 'Access Code aktualisiert.';
     }
 

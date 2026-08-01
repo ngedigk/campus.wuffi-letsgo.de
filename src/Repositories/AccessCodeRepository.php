@@ -54,16 +54,17 @@ class AccessCodeRepository
         ]);
     }
 
-    public function update(string $code, string $courseUuid): void
+    public function update(int $id, string $code, string $courseUuid): void
     {
         $stmt = $this->pdo->prepare("
            UPDATE access_codes
-            SET course_id = :courseUuid
-            WHERE code = :code
+            SET code = :code, course_id = :courseUuid
+            WHERE id = :id
         ");
         $stmt->execute([
+            'code' => $code,
             'courseUuid' => $courseUuid,
-            'code' => $code
+            'id' => $id
         ]);
     }
 
