@@ -45,17 +45,6 @@ class AdminCoursesController extends AdminPageController
             }
         }
 
-        $selectedQuestion = null;
-        $selectedQuestionId = filter_input(INPUT_GET, 'question_id', FILTER_VALIDATE_INT);
-        if ($selectedSlide && $selectedQuestionId) {
-            foreach ($selectedSlide->questions as $question) {
-                if ($question->id === $selectedQuestionId) {
-                    $selectedQuestion = $question;
-                    break;
-                }
-            }
-        }
-
         $assetDir = __DIR__ . '/../../assets/images/slides/';
         $assetUrl = '/assets/images/slides/';
         $slideAssets = [];
@@ -121,13 +110,6 @@ class AdminCoursesController extends AdminPageController
             ];
             $pageTitle = 'Folie bearbeiten: ' . $selectedSlide->title;
         }
-        if ($selectedQuestion) {
-            $breadcrumb[] = [
-                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}&question_id={$selectedQuestion->id}",
-                'title' => "Frage: " . $selectedQuestion->questionText
-            ];
-            $pageTitle = 'Frage bearbeiten: ' . $selectedQuestion->questionText;
-        }
 
         $viewData = [
             ...$context,
@@ -139,8 +121,6 @@ class AdminCoursesController extends AdminPageController
             'selectedModuleId' => $selectedModuleId,
             'selectedSlide' => $selectedSlide,
             'selectedSlideId' => $selectedSlideId,
-            'selectedQuestion' => $selectedQuestion,
-            'selectedQuestionId' => $selectedQuestionId,
             'slideAssets' => $slideAssets,
             'pageTitle' => $pageTitle
         ];
@@ -369,12 +349,32 @@ class AdminCoursesController extends AdminPageController
 
     private function handleUpdateQuestion(): void
     {
-        $slideId = (int)trim($_POST['slide_id'] ?? '');
         $questionId = (int)trim($_POST['question_id'] ?? '');
+        $slideId = (int)trim($_POST['slide_id'] ?? '');
         $questionText = trim($_POST['question_text'] ?? '');
 
         if ($questionId === 0 || $questionText === '') {
-            throw new Exception('Bitte geben Sie einen Fragen-Text an.');
+            throw new Exception('Bitte geben Sie einen gültigen Fragen-Text an.');
+        }
+
+        $choices = $_POST['choices'] ?? [];
+        
+        if (empty($choices)) {
+            throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
+        }
+        
+        $hasCorrect = false;
+        foreach ($choices as $choice) {
+            if (trim($choice['text'] ?? '') === '') {
+                throw new Exception('Antwort Text darf nicht leer sein.');
+            }
+            if (!empty($choice['is_correct'])) {
+                $hasCorrect = true;
+            }
+        }
+        
+        if (!$hasCorrect) {
+            throw new Exception('Bitte markieren Sie mindestens eine korrekte Antwort.');
         }
 
         $this->quizQuestionService->update(new QuizQuestion(
@@ -382,6 +382,20 @@ class AdminCoursesController extends AdminPageController
             slideId: $slideId,
             questionText: $questionText
         ));
+
+        try {
+            $this->questionChoicesRepository->deleteByQuestionId($questionId);
+            foreach ($choices as $choiceData) {
+                $this->questionChoicesRepository->create(new QuestionChoiceInput(
+                    questionId: $questionId,
+                    choiceText: trim($choiceData['text']),
+                    isCorrect: !empty($choiceData['is_correct'])
+                ));
+            }
+        } catch (\Exception $e) {
+             throw new Exception("Fehler beim Aktualisieren der Antworten: " . $e->getMessage());
+        }
+
         $_SESSION['admin_success'] = 'Frage aktualisiert.';
     }
 

@@ -3,13 +3,32 @@
 namespace App\Services;
 
 use App\Repositories\QuizQuestionRepository;
+
+use App\Services\QuestionChoiceService;
+
 use App\Dto\QuizQuestion;
 use App\Dto\QuizQuestionInput;
 
 class QuizQuestionService {
     public function __construct(
-        private QuizQuestionRepository $quizQuestionRepository
+        private QuizQuestionRepository $quizQuestionRepository,
+        private QuestionChoiceService $questionChoiceService
     ) {}
+
+    public function getWithChoices(
+        int $id
+    ): ?QuizQuestion {
+        $quizQuestion = $this->quizQuestionRepository->getById($id);
+        if (!$quizQuestion) {
+            return null;
+        }
+
+        $choices = $this->questionChoiceService->getByQuestionId($id);
+        $quizQuestion->choices = $choices;
+
+        return $quizQuestion;
+
+    }
 
     public function create(
         QuizQuestionInput $quizQuestion

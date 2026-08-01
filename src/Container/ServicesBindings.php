@@ -54,7 +54,10 @@ trait ServicesBindings
         $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepository::class)));
         $this->set(SlideService::class, fn($c) => new SlideService($c->get(SlideRepository::class)));
         $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepository::class)));
-        $this->set(QuizQuestionService::class, fn($c) => new QuizQuestionService($c->get(QuizQuestionRepository::class)));
+        $this->set(QuizQuestionService::class, fn($c) => new QuizQuestionService(
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoiceService::class)
+        ));
         $this->set(QuestionChoiceService::class, fn($c) => new QuestionChoiceService($c->get(QuestionChoiceRepository::class)));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(

@@ -12,6 +12,24 @@ class QuizQuestionRepository {
         private PDO $pdo
     ) {}
 
+    public function getById(int $id): ?QuizQuestion {
+        $stmt = $this->pdo->prepare("
+            SELECT
+                qq.*
+            FROM quiz_questions qq
+            WHERE qq.id = :id
+        ");
+
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null;
+        }
+
+        return $this->createDto($row);
+    }
+
     public function getBySlideId(int $slideId): array {
         $stmt = $this->pdo->prepare("
             SELECT

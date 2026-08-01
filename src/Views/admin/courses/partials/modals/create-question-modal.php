@@ -7,7 +7,7 @@
             <h3>Neue Frage erstellen</h3>
             <span class="close" onclick="document.getElementById('createQuestionModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="createQuestionForm">
+        <form method="post" id="createQuestionForm" onsubmit="return validateQuestionForm(this)">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="create_question">
             <input type="hidden" id="question-slide-id" name="slide_id" value="">
@@ -22,7 +22,7 @@
                 <div id="choices-container">
                     <div class="choice-row">
                         <input type="text" name="choices[0][text]" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
-                        <label><input type="checkbox" name="choices[0][is_correct]" unchecked> Korrekt</label>
+                        <label><input type="checkbox" name="choices[0][is_correct]" value="1"> Korrekt</label>
                         <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeChoice(this)" style="display:none;">&times;</button>
                     </div>
                 </div>

@@ -16,13 +16,7 @@
                     <span class="question-number"><?= $index + 1 ?>.</span>
                     <span class="question-title"><?= htmlspecialchars($question->questionText) ?></span>
                     <div class="question-actions">
-                        <a
-                            href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id) ?>&slide_id=<?= urlencode($viewModel['selectedSlideId'] ?? 0) ?>&question_id=<?= urlencode($question->id) ?>"
-                            class="btn btn-small"
-                            title="Frage bearbeiten"
-                        >
-                            ✏️
-                        </a>
+                        <button onclick='editQuestion(<?= $question->id ?>, "<?= htmlspecialchars($question->questionText) ?>",<?= json_encode($viewModel["quizChoicesByQuestion"][$question->id] ?? []) ?>)''>✏️</button>
                         <button onclick="deleteQuestion(<?= $question->id ?>)">🗑</button>
                     </div>
                 </div>

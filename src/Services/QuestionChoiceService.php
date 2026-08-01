@@ -11,6 +11,12 @@ class QuestionChoiceService {
         private QuestionChoiceRepository $questionChoiceRepository
     ) {}
 
+    public function getByQuestionId(
+        int $questionId
+    ): array {
+        return $this->questionChoiceRepository->getByQuestionId($questionId);
+    }
+
     public function create(
         QuestionChoiceInput $questionChoice
     ): int {

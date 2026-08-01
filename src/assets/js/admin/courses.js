@@ -1,3 +1,5 @@
+let choiceIndex = 1;
+
 if (typeof editor !== 'undefined' && typeof existingAssets !== 'undefined') {
     editor.AssetManager.add(existingAssets);
 }
@@ -13,18 +15,18 @@ function addSlide(moduleId) {
 }
 
 function addQuestion(slideId) {
+    choiceIndex = 1;
     document.getElementById('question-slide-id').value = slideId;
     document.getElementById('createQuestionModal').style.display = 'flex';
 }
 
-let choiceIndex = 1;
 function addChoice() {
     const container = document.getElementById('choices-container');
     const row = document.createElement('div');
     row.className = 'choice-row';
     row.innerHTML = `
         <input type="text" name="choices[${choiceIndex}][text]" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
-        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" unchecked> Korrekt</label>
+        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" value="1"> Korrekt</label>
         <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeChoice(this)">&times;</button>
     `;
     container.appendChild(row);
@@ -40,18 +42,18 @@ function removeChoice(btn) {
     }
 }
 
-function validateQuestionForm() {
-    const choices = document.querySelectorAll('.choice-row');
+function validateQuestionForm(form) {
+    const choices = form.querySelectorAll('.choice-row');
     let hasCorrect = false;
     
     for (let row of choices) {
-        const input = row.querySelector('input[name="choices[][text]"]');
+        const input = row.querySelector('input[name^="choices"][name$="[text]"]');
         if (input && input.value.trim() === '') {
             alert('Bitte füllen Sie alle Antwortfelder aus.');
             return false;
         }
         
-        const checkbox = row.querySelector('input[name="choices[][is_correct]"]');
+        const checkbox = row.querySelector('input[name^="choices"][name$="[is_correct]"]');
         if (checkbox && checkbox.checked) {
             hasCorrect = true;
         }
@@ -63,6 +65,51 @@ function validateQuestionForm() {
     }
     
     return true;
+}
+
+function editQuestion(questionId, questionText, choicesJson) {
+    choiceIndex = 1;
+    document.getElementById('edit-question-id').value = questionId;
+    document.getElementById('edit-question-slide-id').value = document.getElementById('question-slide-id').value;
+    document.getElementById('edit-question-text').value = questionText;
+
+    populateEditModal(questionId, choicesJson);
+    document.getElementById('editQuestionModal').style.display = 'flex';
+}
+
+function populateEditModal(questionId, choicesJson) {
+    const container = document.getElementById('edit-choices-container');
+    container.innerHTML = '';
+
+    if (choicesJson.length === 0) {
+        addEditChoice(); 
+    } else {
+        choicesJson.forEach(choice => {
+            addEditChoice(choice.choiceText, choice.isCorrect);
+        });
+    }
+}
+
+function addEditChoice(text = '', isCorrect = false) {
+    const container = document.getElementById('edit-choices-container');
+    const row = document.createElement('div');
+    row.className = 'choice-row';
+    row.innerHTML = `
+        <input type="text" name="choices[${choiceIndex}][text]" value="${text}" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
+        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" value="1" ${isCorrect ? 'checked' : ''}> Korrekt</label>
+        <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeEditChoice(this)">&times;</button>
+    `;
+    container.appendChild(row);
+    choiceIndex++;
+}
+
+function removeEditChoice(btn) {
+    const rows = document.querySelectorAll('#edit-choices-container .choice-row');
+    if (rows.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert('Mindestens eine Antwort muss vorhanden sein.');
+    }
 }
 
 function deleteCourse(courseId) {

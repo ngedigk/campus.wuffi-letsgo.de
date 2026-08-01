@@ -52,6 +52,11 @@ class QuestionChoiceRepository {
         $stmt->execute(['id' => $id]);
     }
 
+    public function deleteByQuestionId(int $questionId): void {
+        $stmt = $this->pdo->prepare("DELETE FROM question_choices WHERE question_id = :questionId");
+        $stmt->execute(['questionId' => $questionId]);
+    }
+
     private function createDto(array $row): QuestionChoice {
         return new QuestionChoice(
             id: $row['id'],
