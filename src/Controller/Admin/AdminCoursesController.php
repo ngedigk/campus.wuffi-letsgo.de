@@ -76,7 +76,7 @@ class AdminCoursesController extends AdminPageController
             'breadcrumb' => [
                 [
                     'url' => '',
-                    'title' => 'Courses'
+                    'title' => $selectedCourse->title ?? 'Courses'
                 ],
             ],
             'selectedCourse' => $selectedCourse,
