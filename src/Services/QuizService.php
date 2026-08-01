@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use App\Repositories\QuizQuestionsRepository;
+use App\Repositories\QuizQuestionRepository;
 use App\Dto\QuizResult;
 
 class QuizService
 {
-    public function __construct(private readonly QuizQuestionsRepository $quizRepository) {}
+    public function __construct(private readonly QuizQuestionRepository $quizQuestionRepository) {}
 
     public function getQuizData(int $slideId): QuizResult
     {
-        $data = $this->quizRepository->getQuizDataForSlide($slideId);
+        $data = $this->quizQuestionRepository->getQuizDataForSlide($slideId);
 
         if (empty($data['questions'])) {
             return new QuizResult();

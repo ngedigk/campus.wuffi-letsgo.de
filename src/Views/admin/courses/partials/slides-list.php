@@ -27,7 +27,7 @@
                     </tr>
                 <?php else:
                     foreach ($selectedModule->slides as $index => $slide): ?>
-                        <tr class="<?= $viewModel['selectedSlide'] ?? null && $viewModel['selectedSlide'] ?? null->id == $slide->id ? 'active' : '' ?>">
+                        <tr>
                             <td><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($slide->title) ?></td>
                             <td><?= $slide->isQuiz ? 'Quiz' : 'Slide' ?></td>

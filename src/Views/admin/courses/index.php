@@ -8,6 +8,7 @@
             <?php require __DIR__ . '/partials/course-form-delete.php'; ?>
             <?php require __DIR__ . '/partials/module-form-delete.php'; ?>
             <?php require __DIR__ . '/partials/slide-form-delete.php'; ?>
+            <?php require __DIR__ . '/partials/question-form-delete.php'; ?>
             
             <?php if (!$viewModel['selectedModule']): ?>
                 <!-- Create Module Modal -->
@@ -23,7 +24,6 @@
             <!-- Module & Slide Context -->
             <?php if ($viewModel['selectedModule'] ?? null): ?>
                 <?php if (!$viewModel['selectedSlide']): ?>
-
                     <!-- Create Slide Modal -->
                     <?php require __DIR__ . '/partials/modals/create-slide-modal.php'; ?>
 
@@ -36,7 +36,22 @@
 
                 <!-- Slide Details Section -->
                 <?php if ($viewModel['selectedSlide'] ?? null): ?>
-                    <?php require __DIR__ . '/partials/slide-form.php'; ?>
+                    <?php if (!$viewModel['selectedQuestion']): ?>
+                        <!-- Create Question Modal -->
+                        <?php require __DIR__ . '/partials/modals/create-question-modal.php'; ?>
+
+                        <!-- Slide Details Section -->
+                        <?php require __DIR__ . '/partials/slide-form.php'; ?>
+
+                        <!-- Questions Section (navigation) -->
+                        <?php require __DIR__ . '/partials/questions-list.php'; ?>
+                    <?php endif; ?>
+
+                    <!-- Question Details Section -->
+                    <?php if ($viewModel['selectedQuestion'] ?? null): ?>
+                        <!-- Question Details Section -->
+                        <?php require __DIR__ . '/partials/question-form.php'; ?>
+                    <?php endif; ?>
                 <?php endif; ?>
             <?php endif; ?>
         <?php else: ?>

@@ -8,9 +8,13 @@ use App\Services\CourseService;
 use App\Services\SlideService;
 use App\Services\ModuleService;
 use App\Services\RegistrationCodeService;
+use App\Services\QuizService;
 use App\Services\UuidService;
 use App\Services\UserService;
+use App\Services\QuizQuestionService;
 use App\Repositories\AccessCodeRepository;
+use App\Repositories\QuizQuestionRepository;
+use App\Repositories\QuestionChoicesRepository;
 use App\Helpers\ViewRenderer;
 use App\Dto\User;
 
@@ -26,7 +30,11 @@ abstract class AdminPageController
         protected AuthService $authService,
         protected CsrfService $csrfService,
         protected UuidService $uuidService,
-        protected RegistrationCodeService $registrationCodeService
+        protected RegistrationCodeService $registrationCodeService,
+        protected QuizQuestionRepository $quizQuestionRepository,
+        protected QuestionChoicesRepository $questionChoicesRepository,
+        protected QuizService $quizService,
+        protected QuizQuestionService $quizQuestionService
     ) {}
 
     protected function buildContext(User $user): array

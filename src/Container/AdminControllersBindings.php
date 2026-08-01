@@ -10,6 +10,8 @@ use App\Controller\Admin\AdminUsersController;
 use App\Controller\AdminController;
 
 use App\Repositories\AccessCodeRepository;
+use App\Repositories\QuizQuestionRepository;
+use App\Repositories\QuestionChoicesRepository;
 
 use App\Services\AuthService;
 use App\Services\CourseService;
@@ -19,6 +21,8 @@ use App\Services\RegistrationCodeService;
 use App\Services\SlideService;
 use App\Services\UuidService;
 use App\Services\UserService;
+use App\Services\QuizService;
+use App\Services\QuizQuestionService;
 
 use App\Helpers\ViewRenderer;
 
@@ -37,7 +41,11 @@ trait AdminControllersBindings
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
-            $c->get(RegistrationCodeService::class)
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class)
         ));
         $this->set(AdminCoursesController::class, fn($c) => new AdminCoursesController(
             $c->get(CourseService::class),
@@ -49,7 +57,11 @@ trait AdminControllersBindings
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
-            $c->get(RegistrationCodeService::class)
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class)
         ));
         $this->set(AdminAccessCodesController::class, fn($c) => new AdminAccessCodesController(
             $c->get(CourseService::class),
@@ -61,7 +73,11 @@ trait AdminControllersBindings
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
-            $c->get(RegistrationCodeService::class)
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class)
         ));
         $this->set(AdminUsersController::class, fn($c) => new AdminUsersController(
             $c->get(CourseService::class),
@@ -73,7 +89,11 @@ trait AdminControllersBindings
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
-            $c->get(RegistrationCodeService::class)
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class)
         ));
         $this->set(AdminRegistrationCodesController::class, fn($c) => new AdminRegistrationCodesController(
             $c->get(CourseService::class),
@@ -85,7 +105,11 @@ trait AdminControllersBindings
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
-            $c->get(RegistrationCodeService::class)
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class)
         ));
         $this->set(AdminController::class, fn($c) => new AdminController(
             $c->get(CourseService::class),
@@ -98,6 +122,10 @@ trait AdminControllersBindings
             $c->get(CsrfService::class),
             $c->get(UuidService::class),
             $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoicesRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class),
             $c->get(AdminDashboardController::class),
             $c->get(AdminCoursesController::class),
             $c->get(AdminAccessCodesController::class),

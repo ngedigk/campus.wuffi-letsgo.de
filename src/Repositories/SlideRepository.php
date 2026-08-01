@@ -27,7 +27,7 @@ class SlideRepository
         return $this->createDto($row);
     }
 
-    public function getByModule(int $moduleId): array {
+    public function getByModuleId(int $moduleId): array {
         $stmt = $this->pdo->prepare("
             SELECT
                 ms.*

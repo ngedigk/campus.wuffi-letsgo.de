@@ -11,8 +11,7 @@
     <div class="modules-list" id="modulesList">
         <?php if (!empty($viewModel['selectedCourse']->modules ?? [])): ?>
             <?php foreach ($viewModel['selectedCourse']->modules ?? [] as $index => $module): ?>
-                <div class="module-item <?= $module->id === $viewModel['selectedModuleId'] ?? '' ? 'active' : '' ?>" 
-                     data-module-id="<?= htmlspecialchars($module->id) ?>">
+                <div class="module-item" data-module-id="<?= htmlspecialchars($module->id) ?>">
                     <span class="module-number"><?= $index + 1 ?>.</span>
                     <span class="module-title"><?= htmlspecialchars($module->title) ?></span>
                     <div class="module-actions">

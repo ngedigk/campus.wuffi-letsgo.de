@@ -7,6 +7,8 @@ use App\Dto\ModuleInput;
 use App\Dto\Module;
 use App\Dto\SlideInput;
 use App\Dto\Slide;
+use App\Dto\QuizQuestionInput;
+use App\Dto\QuizQuestion;
 use Exception;
 
 class AdminCoursesController extends AdminPageController
@@ -41,6 +43,17 @@ class AdminCoursesController extends AdminPageController
             }
         }
 
+        $selectedQuestion = null;
+        $selectedQuestionId = filter_input(INPUT_GET, 'question_id', FILTER_VALIDATE_INT);
+        if ($selectedSlide && $selectedQuestionId) {
+            foreach ($selectedSlide->questions as $question) {
+                if ($question->id === $selectedQuestionId) {
+                    $selectedQuestion = $question;
+                    break;
+                }
+            }
+        }
+
         $assetDir = __DIR__ . '/../../assets/images/slides/';
         $assetUrl = '/assets/images/slides/';
         $slideAssets = [];
@@ -70,15 +83,48 @@ class AdminCoursesController extends AdminPageController
 
         $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
 
+        $quizQuestions = [];
+        $quizChoicesByQuestion = [];
+        if ($selectedSlide && $selectedSlide->isQuiz) {
+            $questions = $this->quizQuestionRepository->getBySlideId($selectedSlide->id);
+            foreach ($questions as $question) {
+                $choices = $this->questionChoicesRepository->getByQuestionId($question->id);
+                $quizChoicesByQuestion[$question->id] = $choices;
+            }
+            $quizQuestions = $questions;
+        }
+        $context['quizQuestions'] = $quizQuestions;
+        $context['quizChoicesByQuestion'] = $quizChoicesByQuestion;
+
         $breadcrumb = [];
+        $pageTitle = '';
         if ($selectedCourse) {
-            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}", 'title' => $selectedCourse->title];
+            $breadcrumb[] = [
+                'url' => "?page=courses&course_id={$selectedCourse->uuid}",
+                'title' => "Kurs: " . $selectedCourse->title
+            ];
+            $pageTitle = 'Kurs bearbeiten: ' . $selectedCourse->title;
         }
         if ($selectedModule) {
-            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}", 'title' => $selectedModule->title];
+            $breadcrumb[] = [
+                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}",
+                'title' => "Modul: " . $selectedModule->title
+            ];
+            $pageTitle = 'Modul bearbeiten: ' . $selectedModule->title;
         }
         if ($selectedSlide) {
-            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}", 'title' => $selectedSlide->title];
+            $breadcrumb[] = [
+                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}",
+                'title' => "Folie: " . $selectedSlide->title
+            ];
+            $pageTitle = 'Folie bearbeiten: ' . $selectedSlide->title;
+        }
+        if ($selectedQuestion) {
+            $breadcrumb[] = [
+                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}&question_id={$selectedQuestion->id}",
+                'title' => "Frage: " . $selectedQuestion->questionText
+            ];
+            $pageTitle = 'Frage bearbeiten: ' . $selectedQuestion->questionText;
         }
 
         $viewData = [
@@ -91,8 +137,10 @@ class AdminCoursesController extends AdminPageController
             'selectedModuleId' => $selectedModuleId,
             'selectedSlide' => $selectedSlide,
             'selectedSlideId' => $selectedSlideId,
+            'selectedQuestion' => $selectedQuestion,
+            'selectedQuestionId' => $selectedQuestionId,
             'slideAssets' => $slideAssets,
-            'pageTitle' => 'Courses'
+            'pageTitle' => $pageTitle
         ];
 
         $this->viewRenderer->renderWithAdminTemplate('admin/courses/index', $viewData);
@@ -118,6 +166,15 @@ class AdminCoursesController extends AdminPageController
                 break;
             case 'update_slide':
                 $this->handleUpdateSlide();
+                break;
+            case 'create_question':
+                $this->handleCreateQuestion();
+                break;
+            case 'update_question':
+                $this->handleUpdateQuestion();
+                break;
+            case 'delete_question':
+                $this->handleDeleteQuestion();
                 break;
             case 'delete_slide':
                 $this->handleDeleteSlide();
@@ -261,6 +318,47 @@ class AdminCoursesController extends AdminPageController
             isQuiz: $isQuiz
         ));
         $_SESSION['admin_success'] = 'Slide updated.';
+    }
+    
+    private function handleCreateQuestion(): void
+    {
+        $slideId = (int)trim($_POST['slide_id'] ?? '');
+        $questionText = trim($_POST['question_text'] ?? '');
+        
+        if ($questionText === '') {
+            throw new Exception('Please provide a question text.');
+        }
+
+        $questionId = $this->quizQuestionService->create(new QuizQuestionInput(
+            slideId: $slideId,
+            questionText: $questionText
+        ));
+        $_SESSION['admin_success'] = "Question $questionId created.";
+    }
+
+    private function handleUpdateQuestion(): void
+    {
+        $slideId = (int)trim($_POST['slide_id'] ?? '');
+        $questionId = (int)trim($_POST['question_id'] ?? '');
+        $questionText = trim($_POST['question_text'] ?? '');
+
+        if ($questionId === 0 || $questionText === '') {
+            throw new Exception('Please provide a valid question ID and text.');
+        }
+
+        $this->quizQuestionService->update(new QuizQuestion(
+            id: $questionId,
+            slideId: $slideId,
+            questionText: $questionText
+        ));
+        $_SESSION['admin_success'] = 'Question updated.';
+    }
+
+    private function handleDeleteQuestion(): void
+    {
+        $questionId = (int)trim($_POST['question_id'] ?? '');
+        $this->quizQuestionService->delete($questionId);
+        $_SESSION['admin_success'] = 'Question deleted.';
     }
 
     private function handleDeleteSlide(): void

@@ -11,5 +11,6 @@ final class Slide
         public ?string $audioUrl,
         public int $sortOrder,
         public bool $isQuiz,
+        public ?array $questions = null,
     ) {}
 }

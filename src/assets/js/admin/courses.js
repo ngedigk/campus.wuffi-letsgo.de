@@ -12,6 +12,11 @@ function addSlide(moduleId) {
     document.getElementById('createSlideModal').style.display = 'flex';
 }
 
+function addQuestion(slideId) {
+    document.getElementById('question-slide-id').value = slideId;
+    document.getElementById('createQuestionModal').style.display = 'flex';
+}
+
 function deleteCourse(courseId) {
     if (!confirm('Are you sure you want to delete this course? This will also delete all submodules and slides within it.')) {
         return;
@@ -46,3 +51,13 @@ function deleteSlide(slideId) {
     document.getElementById('delete-slide-id').value = slideId;
     document.getElementById('delete-slide-form').submit();
 }
+
+function deleteQuestion(questionId) {
+    if (!confirm('Are you sure you want to delete this question?')) {
+        return;
+    }
+
+    document.getElementById('delete-question-id').value = questionId;
+    document.getElementById('delete-question-form').submit();
+}
+

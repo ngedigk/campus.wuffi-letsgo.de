@@ -10,13 +10,20 @@ use App\Services\ModuleService;
 use App\Services\RegistrationCodeService;
 use App\Services\UuidService;
 use App\Services\UserService;
+use App\Services\QuizService;
+use App\Services\QuizQuestionService;
+
 use App\Repositories\AccessCodeRepository;
+use App\Repositories\QuizQuestionRepository;
+use App\Repositories\QuestionChoicesRepository;
+
 use App\Controller\Admin\AdminPageController;
 use App\Controller\Admin\AdminDashboardController;
 use App\Controller\Admin\AdminCoursesController;
 use App\Controller\Admin\AdminAccessCodesController;
 use App\Controller\Admin\AdminUsersController;
 use App\Controller\Admin\AdminRegistrationCodesController;
+
 use App\Helpers\ViewRenderer;
 use Exception;
 use Throwable;
@@ -34,6 +41,10 @@ class AdminController extends AdminPageController
         CsrfService $csrfService,
         UuidService $uuidService,
         RegistrationCodeService $registrationCodeService,
+        QuizQuestionRepository $quizQuestionRepository,
+        QuestionChoicesRepository $questionChoicesRepository,
+        QuizService $quizService,
+        QuizQuestionService $quizQuestionService,
         private AdminDashboardController $dashboardController,
         private AdminCoursesController $coursesController,
         private AdminAccessCodesController $accessCodesController,
@@ -50,7 +61,11 @@ class AdminController extends AdminPageController
             $authService,
             $csrfService,
             $uuidService,
-            $registrationCodeService
+            $registrationCodeService,
+            $quizQuestionRepository,
+            $questionChoicesRepository,
+            $quizService,
+            $quizQuestionService
         );
     }
 
@@ -103,6 +118,9 @@ class AdminController extends AdminPageController
                 case 'update_module':
                 case 'create_slide':
                 case 'update_slide':
+                case 'create_question':
+                case 'update_question':
+                case 'delete_question':
                 case 'delete_slide':
                 case 'delete_module':
                 case 'delete_course':
