@@ -1,3 +1,6 @@
+<?php
+/** @var array $viewModel */
+?>
 <div id="createModuleModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -5,7 +8,7 @@
             <span class="close" onclick="document.getElementById('createModuleModal').style.display='none'">&times;</span>
         </div>
         <form method="post" id="createModuleForm" action="">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="create_module">
             <input type="hidden" id="module-course-id" name="course_id" value="">
             

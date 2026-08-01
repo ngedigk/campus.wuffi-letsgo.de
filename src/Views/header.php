@@ -1,7 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var bool $isLoggedIn */
-/** @var bool $isAdmin */
+/** @var array $viewModel */
 ?>
 <header class="header">
     <div class="header-top">
@@ -33,19 +31,19 @@
                 <div class="header-spacer col-md-8 col-sm-8 col-xs-8">
                 </div>
                 <div class="header-menu col-md-2 col-sm-2 col-xs-4">
-                    <?php if ($isLoggedIn): ?>
+                    <?php if (!empty($viewModel['isLoggedIn'])): ?>
                         <div class="profile-container" id="profileContainer">
                             <div class="profile-icon" onclick="toggleDropdown()">
                                 <img src="assets/images/icons/user-solid-full.svg" alt="Benutzer Menu öffnen" width="40px" height="40px">
                             </div>
                             <div class="dropdown-menu">
                                 <a href="profile.php">Profil</a>
-                                <?php if ($isAdmin): ?>
+                                <?php if (!empty($viewModel['isAdmin'])): ?>
                                     <a href="admin.php">Admin Panel</a>
                                 <?php endif; ?>
                                 <form method="post" action="index.php" style="margin: 0;">
                                     <input type="hidden" name="_action" value="logout">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
                                     <button type="submit">Abmelden</button>
                                 </form>
                             </div>

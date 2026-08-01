@@ -1,10 +1,10 @@
 <?php
-/** @var CourseSidebarItem $courseSidebar */
+/** @var array $viewModel */
 ?>
 <aside class="course-sidebar">
     <h2>Kursmodule</h2>
     <ul class="module-list">
-        <?php foreach ($courseSidebar as $module): ?>
+        <?php foreach ($viewModel['courseSidebar'] ?? [] as $module): ?>
 
             <li class="module-item<?= $module->isActive ? ' active' : '' ?><?php if ($module->isLocked) echo ' locked'; ?>">
                 <?php if ($module->isLocked): ?>

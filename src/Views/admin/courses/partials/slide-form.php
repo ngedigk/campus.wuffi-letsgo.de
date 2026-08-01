@@ -1,18 +1,16 @@
 <?php
-/** @var Course $selectedCourse */
-/** @var Module $selectedModule */
-/** @var Slide $selectedSlide */
+/** @var array $viewModel */
 ?>
 <div class="slide-details-section">
     <form
         id="slide-form"
         method="post"
-        action="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>&module_id=<?= urlencode($selectedModule->id) ?>&slide_id=<?= urlencode($selectedSlide->id) ?>"
+        action="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($viewModel['selectedSlide']->id ?? '') ?>"
     >
-        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
         <input type="hidden" name="action" value="update_slide">
-        <input type="hidden" name="slide_id" value="<?= htmlspecialchars($selectedSlide->id) ?>">
-        <input type="hidden" name="module_id" value="<?= htmlspecialchars($selectedModule->id) ?>">
+        <input type="hidden" name="slide_id" value="<?= htmlspecialchars($viewModel['selectedSlide']->id ?? '') ?>">
+        <input type="hidden" name="module_id" value="<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>">
 
         <div class="section-header">
             <h3>Slide Details</h3>
@@ -21,7 +19,7 @@
                 <button
                     type="button"
                     class="btn btn-danger btn-small"
-                    onclick="deleteSlide(<?= $selectedSlide->id ?>)"
+                    onclick="deleteSlide(<?= $viewModel['selectedSlide']->id ?? '' ?>)"
                 >
                     Delete Slide
                 </button>
@@ -43,7 +41,7 @@
                     type="text"
                     id="slide-title"
                     name="title"
-                    value="<?= htmlspecialchars($selectedSlide->title) ?>"
+                    value="<?= htmlspecialchars($viewModel['selectedSlide']->title ?? '') ?>"
                 >
             </div>
 
@@ -53,14 +51,14 @@
                 <div id="blocks"></div>
 
                 <div id="gjs">
-                    <?= $selectedSlide->htmlContent ?>
+                    <?= $viewModel['selectedSlide']->htmlContent ?? '' ?>
                 </div>
 
                 <textarea
                     id="slide-content"
                     name="html_content"
                     style="display:none"
-                ><?= htmlspecialchars($selectedSlide->htmlContent) ?></textarea>
+                ><?= htmlspecialchars($viewModel['selectedSlide']->htmlContent ?? '') ?></textarea>
             </div>
 
             <div class="form-group">
@@ -69,7 +67,7 @@
                     type="text"
                     id="slide-audio-url"
                     name="audio_url"
-                    value="<?= htmlspecialchars($selectedSlide->audioUrl) ?>"
+                    value="<?= htmlspecialchars($viewModel['selectedSlide']->audioUrl ?? '') ?>"
                 >
             </div>
 
@@ -79,7 +77,7 @@
                     type="number"
                     id="slide-sort"
                     name="sort_order"
-                    value="<?= htmlspecialchars($selectedSlide->sortOrder) ?>"
+                    value="<?= htmlspecialchars($viewModel['selectedSlide']->sortOrder ?? 0) ?>"
                     min="0"
                 >
             </div>
@@ -91,7 +89,7 @@
                         id="slide-is-quiz"
                         name="is_quiz"
                         value="1"
-                        <?= $selectedSlide->isQuiz ? 'checked' : '' ?>
+                        <?= $viewModel['selectedSlide']->isQuiz ?? false ? 'checked' : '' ?>
                     >
                     Quiz Slide
                 </label>

@@ -1,12 +1,11 @@
 <?php
-/** @var array $allCourses */
-/** @var string $selectedCourseId */
+/** @var array $viewModel */
 ?>
 <div class="courses-list" id="coursesList">
-    <?php foreach ($allCourses as $course): ?>
+    <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
         <a
             href="admin.php?page=courses&course_id=<?= $course->uuid ?>"
-            class="course-item <?= $course->uuid === ($selectedCourseId ?? '') ? 'active' : '' ?>"
+            class="course-item <?= $course->uuid === ($viewModel['selectedCourseId'] ?? '' ?? '') ? 'active' : '' ?>"
             title="Edit Course"
         >
             <div class="course-info">

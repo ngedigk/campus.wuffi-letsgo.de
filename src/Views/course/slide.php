@@ -1,21 +1,20 @@
 <?php
-/** @var Slide $currentSlide */
-/** @var QuizResult $quizResult */
+/** @var array $viewModel */
 ?>
-<?php if (!$currentSlide): ?>
+<?php if (!$viewModel['currentSlide']): ?>
     <p>No slide available for this module.</p>
 <?php else: ?>
     <article class="slide-content">
-        <h3><?= htmlspecialchars($currentSlide->title ?? 'Untitled Slide') ?></h3>
+        <h3><?= htmlspecialchars($viewModel['currentSlide']->title ?? 'Untitled Slide') ?></h3>
 
-        <?php if (!empty($currentSlide->htmlContent)): ?>
+        <?php if (!empty($viewModel['currentSlide']->htmlContent)): ?>
             <div class="slide-html">
-                <?= $currentSlide->htmlContent ?>
+                <?= $viewModel['currentSlide']->htmlContent ?>
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($currentSlide->audioUrl)):
-            $audioFile = basename(trim((string)$currentSlide->audioUrl));
+        <?php if (!empty($viewModel['currentSlide']->audioUrl)):
+            $audioFile = basename(trim((string)$viewModel['currentSlide']->audioUrl));
             $audioFile = preg_replace('/\.mp3$/i', '', $audioFile);
             $audioSrc = '/assets/audio/' . rawurlencode($audioFile) . '.mp3';
         ?>
@@ -27,17 +26,17 @@
             </div>
         <?php endif; ?>
 
-        <?php if (!empty($currentSlide->isQuiz)): ?>
+        <?php if (!empty($viewModel['currentSlide']->isQuiz)): ?>
             <div class="slide-quiz">
                 <h4>Quiz</h4>
-                <?php if ($quizResult && $quizResult->isSubmitted): ?>
+                <?php if ($viewModel['quizResult'] && $viewModel['quizResult']->isSubmitted): ?>
                     <div class="quiz-results">
-                        <p class="quiz-<?= htmlspecialchars($quizResult->feedbackType) ?>-message">
-                            <?= htmlspecialchars($quizResult->feedbackMessage) ?>
+                        <p class="quiz-<?= htmlspecialchars($viewModel['quizResult']->feedbackType) ?>-message">
+                            <?= htmlspecialchars($viewModel['quizResult']->feedbackMessage) ?>
                         </p>
-                        <?php foreach ($quizResult->questions as $question):
+                        <?php foreach ($viewModel['quizResult']->questions ?? [] as $question):
                             $qId = $question['id'];
-                            $result = $quizResult->results[$qId] ?? null;
+                            $result = $viewModel['quizResult']->results[$qId] ?? null;
                             $isQuestionCorrect = $result && $result['is_correct'];
                         ?>
                             <fieldset>
@@ -46,8 +45,8 @@
                                         <?= $isQuestionCorrect ? '✓ Correct' : '✗ Incorrect' ?>
                                     </span>
                                 </legend>
-                                <?php foreach ($quizResult->results[$qId]['choices'] ?? $quizResult->choicesByQuestion[$qId] ?? [] as $choice):
-                                    $labelSuffix = $quizResult->getChoiceLabel($choice);
+                                <?php foreach ($viewModel['quizResult']->results[$qId]['choices'] ?? $viewModel['quizResult']->choicesByQuestion[$qId] ?? [] as $choice):
+                                    $labelSuffix = $viewModel['quizResult']->getChoiceLabel($choice);
                                     $isChosen = $choice['was_chosen'] ?? false;
                                     $isCorrect = $choice['is_correct'] ?? false;
                                     $labelClass = 'answer-choice';
@@ -72,17 +71,17 @@
                     </div>
                 <?php else: ?>
                     <form method="post">
-                        <?php foreach ($quizResult->questions as $question): ?>
+                        <?php foreach ($viewModel['quizResult']->questions ?? [] as $question): ?>
                             <fieldset>
                                 <legend><?= htmlspecialchars($question['question_text']) ?></legend>
 
-                                <?php foreach ($quizResult->choicesByQuestion[$question['id']] ?? [] as $choice): ?>
+                                <?php foreach ($viewModel['quizResult']->choicesByQuestion[$question['id']] ?? [] as $choice): ?>
                                     <?php
                                         $qid = (string)$question['id'];
                                         $checked = '';
-                                        // Check if there was a previous submission
-                                        if ($quizResult && $quizResult->isSubmitted && isset($quizResult->results[$qid])) {
-                                            if (in_array((string)$choice['id'], $quizResult->results[$qid]['submitted'], true)) {
+                                        
+                                        if ($viewModel['quizResult'] && $viewModel['quizResult']->isSubmitted && isset($viewModel['quizResult']->results[$qid])) {
+                                            if (in_array((string)$choice['id'], $viewModel['quizResult']->results[$qid]['submitted'], true)) {
                                                 $checked = 'checked';
                                             }
                                         }

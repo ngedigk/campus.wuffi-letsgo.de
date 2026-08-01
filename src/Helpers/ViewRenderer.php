@@ -5,7 +5,12 @@ class ViewRenderer
 
     public function render(string $viewFile, array $data): string
     {
-        extract($data, EXTR_SKIP);
+        $viewModel = $data;
+        foreach ($data as $key => $value) {
+            if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $key)) {
+                ${$key} = $value;
+            }
+        }
 
         ob_start();
         require $this->basePath . '/Views/' . $viewFile . '.php';
@@ -16,7 +21,12 @@ class ViewRenderer
     {
         $content = $this->render($viewFile, $data);
         
-        extract($data, EXTR_SKIP);
+        $viewModel = $data;
+        foreach ($data as $key => $value) {
+            if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $key)) {
+                ${$key} = $value;
+            }
+        }
 
         require $this->basePath . '/Views/template.php';
     }
@@ -25,7 +35,12 @@ class ViewRenderer
     {
         $content = $this->render($viewFile, $data);
         
-        extract($data, EXTR_SKIP);
+        $viewModel = $data;
+        foreach ($data as $key => $value) {
+            if (preg_match('/^[A-Za-z_][A-Za-z0-9_]*$/', $key)) {
+                ${$key} = $value;
+            }
+        }
 
         require $this->basePath . '/Views/admin/template.php';
     }

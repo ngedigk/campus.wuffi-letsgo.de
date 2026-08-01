@@ -1,6 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var string $message */
+/** @var array $viewModel */
 ?>
 <section>
     <div class="container">
@@ -8,11 +7,11 @@
             <div class="col-sm-12">
                 <h1>Forgot Password</h1>
 
-                <p><?= htmlspecialchars($message ?? '') ?></p>
+                <p><?= htmlspecialchars($viewModel['message'] ?? '') ?></p>
 
                 <form method="post">
 
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
                     <label>Email</label><br>
                     <input type="email" name="email" required>

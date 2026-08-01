@@ -8,7 +8,7 @@ class CourseSidebarBuilderService
 
     public function build(
         Course $course,
-        Module $currentModule,
+        ?Module $currentModule,
         array $allowedSlideIds,
         array $visitedSlideIds
     ): array {
@@ -24,7 +24,7 @@ class CourseSidebarBuilderService
 
             $slides = [];
 
-            if ($module->id === $currentModule->id) {
+            if ($currentModule !== null && $module->id === $currentModule->id) {
 
                 foreach ($module->slides as $slideIndex => $slide) {
 
@@ -62,7 +62,7 @@ class CourseSidebarBuilderService
                         0
                     )
                     : null,
-                isActive: $module->id === $currentModule->id,
+                isActive: $currentModule !== null && $module->id === $currentModule->id,
                 slides: $slides
             );
         }

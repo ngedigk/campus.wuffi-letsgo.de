@@ -1,19 +1,15 @@
 <?php
-/** @var string $csrfToken */
-/** @var string $success */
-/** @var string $error */
-/** @var string $registrationCode */
-/** @var string $email */
+/** @var array $viewModel */
 ?>
 <section>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
 
-                <?php if ($success): ?>
+                <?php if (!empty($viewModel['success'])): ?>
                     <h1>Account erstellt</h1>
                     <p class="success">
-                        <?= htmlspecialchars($success) ?>
+                        <?= htmlspecialchars($viewModel['success']) ?>
                     </p>
                     <a href="index.php">
                         Zur Anmeldung
@@ -21,23 +17,23 @@
                 <?php else: ?>
                     <h1>Account erstellen</h1>
 
-                    <?php if ($error): ?>
+                    <?php if (!empty($viewModel['error'])): ?>
 
                         <p class="error">
-                            <?= htmlspecialchars($error) ?>
+                            <?= htmlspecialchars($viewModel['error']) ?>
                         </p>
 
                     <?php endif; ?>
                         
                     <form method="post">
 
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
                         <label>Registrierungscode<br>
                             <input
                                 type="text"
                                 name="registration_code"
-                                value="<?= htmlspecialchars($registrationCode) ?>"
+                                value="<?= htmlspecialchars($viewModel['registrationCode'] ?? '') ?>"
                                 autocomplete="off"
                                 required
                             >
@@ -49,7 +45,7 @@
                             <input
                                 type="email"
                                 name="email"
-                                value="<?= htmlspecialchars($email) ?>"
+                                value="<?= htmlspecialchars($viewModel['email'] ?? '') ?>"
                                 autocomplete="email"
                                 required
                             >

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? 'Home') ?></title>
+    <title><?= htmlspecialchars($viewModel['pageTitle'] ?? 'Home') ?></title>
     <meta name="robots" content="noindex, nofollow">
     <link rel="icon" href="/assets/images/favicon/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/favicon/favicon-48x48.png">
@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="assets/css/style.css">
     
 
-    <?php if (!empty($additionalCss)): ?>
-        <?php foreach ($additionalCss as $cssFile): ?>
+    <?php if (!empty($viewModel['additionalCss'])): ?>
+        <?php foreach ($viewModel['additionalCss'] as $cssFile): ?>
             <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>">
         <?php endforeach; ?>
     <?php endif; ?>
@@ -34,8 +34,8 @@
 
     <script type="text/javascript" src="assets/js/sticky-header.js"></script>
     <script type="text/javascript" src="assets/js/menu.js"></script>
-    <?php if (!empty($additionalJs)): ?>
-        <?php foreach ($additionalJs as $jsFile): ?>
+    <?php if (!empty($viewModel['additionalJs'])): ?>
+        <?php foreach ($viewModel['additionalJs'] as $jsFile): ?>
             <script type="text/javascript" src="<?= htmlspecialchars($jsFile) ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>

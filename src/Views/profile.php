@@ -1,8 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var User $user */
-/** @var string $success */
-/** @var string $error */
+/** @var array $viewModel */
 ?>
 <section>
     <div class="container">
@@ -10,22 +7,22 @@
             <div class="col-sm-12">
                 <h1>Mein Profil</h1>
 
-                <?php if (!empty($success)): ?>
-                    <p class="success"><?= htmlspecialchars($success) ?></p>
+                <?php if (!empty($viewModel['success'])): ?>
+                    <p class="success"><?= htmlspecialchars($viewModel['success']) ?></p>
                 <?php endif; ?>
 
-                <?php if (!empty($error)): ?>
-                    <p class="error"><?= htmlspecialchars($error) ?></p>
+                <?php if (!empty($viewModel['error'])): ?>
+                    <p class="error"><?= htmlspecialchars($viewModel['error']) ?></p>
                 <?php endif; ?>
 
                 <form method="post">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
                     <label>Name<br>
                         <input
                             type="text"
                             name="name"
-                            value="<?= htmlspecialchars($user->name ?? '') ?>"
+                            value="<?= htmlspecialchars($viewModel['user']->name ?? '') ?>"
                             placeholder="Ihr Name"
                         >
                     </label>
@@ -36,7 +33,7 @@
                         <input
                             type="email"
                             name="email"
-                            value="<?= htmlspecialchars($user->email) ?>"
+                            value="<?= htmlspecialchars($viewModel['user']->email ?? '') ?>"
                             required
                         >
                     </label>
@@ -52,7 +49,7 @@
 
                 <form method="post">
                     <input type="hidden" name="action" value="change_password">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
                     <label>Neues Passwort<br>
                         <input

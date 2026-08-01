@@ -1,20 +1,23 @@
+<?php
+/** @var array $viewModel */
+?>
 <div class="modules-section">
     <div class="section-header">
         <h3>Modules</h3>
-        <button class="btn btn-primary btn-small" onclick="addModule('<?= htmlspecialchars($selectedCourse->uuid) ?>')">
+        <button class="btn btn-primary btn-small" onclick="addModule('<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>')">
             + Add Module
         </button>
     </div>
     <div class="modules-list" id="modulesList">
-        <?php if (!empty($selectedCourse->modules)): ?>
-            <?php foreach ($selectedCourse->modules as $index => $module): ?>
-                <div class="module-item <?= $module->id === $selectedModuleId ? 'active' : '' ?>" 
+        <?php if (!empty($viewModel['selectedCourse']->modules ?? [])): ?>
+            <?php foreach ($viewModel['selectedCourse']->modules ?? [] as $index => $module): ?>
+                <div class="module-item <?= $module->id === $viewModel['selectedModuleId'] ?? '' ? 'active' : '' ?>" 
                      data-module-id="<?= htmlspecialchars($module->id) ?>">
                     <span class="module-number"><?= $index + 1 ?>.</span>
                     <span class="module-title"><?= htmlspecialchars($module->title) ?></span>
                     <div class="module-actions">
                         <a
-                            href="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>&module_id=<?= urlencode($module->id) ?>"
+                            href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($module->id) ?>"
                             class="btn btn-small"
                             title="Edit Module"
                         >

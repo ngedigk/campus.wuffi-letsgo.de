@@ -1,18 +1,14 @@
 <?php
-/** @var string $csrfToken */
-/** @var string $activePage */
-/** @var string $adminError */
-/** @var string $adminSuccess */
-/** @var string $content */
+/** @var array $viewModel */
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($pageTitle ?? 'Admin') ?> - Admin Panel</title>
+    <title><?= htmlspecialchars($viewModel['pageTitle'] ?? 'Admin') ?> - Admin Panel</title>
     <meta name="robots" content="noindex, nofollow">
-    <meta name="csrf-token" content="<?= htmlspecialchars($csrfToken) ?>">
+    <meta name="csrf-token" content="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
     <link rel="icon" href="/assets/images/favicon/favicon.ico" sizes="any">
     <link rel="icon" type="image/png" sizes="48x48" href="/assets/images/favicon/favicon-48x48.png">
     <link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon/favicon-96x96.png">
@@ -23,11 +19,11 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
     <link rel="stylesheet" href="/assets/css/style.css">
 
-    <?php if (!empty($additionalCss)): ?>
-        <?php foreach ($additionalCss as $cssFile): ?>
+    <?php if (!empty($viewModel['additionalCss'])): ?>
+        <?php foreach ($viewModel['additionalCss'] as $cssFile): ?>
             <link rel="stylesheet" href="<?= htmlspecialchars($cssFile) ?>">
         <?php endforeach; ?>
-            <?php endif; ?>
+    <?php endif; ?>
 </head>
 <body class="admin-page">
     <div class="admin-layout">
@@ -38,7 +34,7 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="admin.php?page=dashboard" class="<?= $activePage === 'dashboard' ? 'active' : '' ?>">
+                        <a href="admin.php?page=dashboard" class="<?= ($viewModel['activePage'] ?? '') === 'dashboard' ? 'active' : '' ?>">
                             <span>Dashboard</span>
                         </a>
                     </li>
@@ -58,17 +54,17 @@
                         </div>
                     </li>
                     <li>
-                        <a href="admin.php?page=users" class="<?= $activePage === 'users' ? 'active' : '' ?>">
+                        <a href="admin.php?page=users" class="<?= ($viewModel['activePage'] ?? '') === 'users' ? 'active' : '' ?>">
                             <span>Users</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin.php?page=registration-codes" class="<?= $activePage === 'registration-codes' ? 'active' : '' ?>">
+                        <a href="admin.php?page=registration-codes" class="<?= ($viewModel['activePage'] ?? '') === 'registration-codes' ? 'active' : '' ?>">
                             <span>Registration Codes</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin.php?page=access-codes" class="<?= $activePage === 'access-codes' ? 'active' : '' ?>">
+                        <a href="admin.php?page=access-codes" class="<?= ($viewModel['activePage'] ?? '') === 'access-codes' ? 'active' : '' ?>">
                             <span>Access Codes</span>
                         </a>
                     </li>
@@ -77,11 +73,11 @@
             <div class="sidebar-footer">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <?= strtoupper(substr($user->email ?? 'A', 0, 1)) ?>
+                        <?= strtoupper(substr($viewModel['user']->email ?? 'A', 0, 1)) ?>
                     </div>
                     <div class="user-details">
-                        <span class="user-name"><?= htmlspecialchars($user->email ?? 'Admin User') ?></span>
-                        <span class="user-email"><?= htmlspecialchars($user->email ?? 'admin@example.com') ?></span>
+                        <span class="user-name"><?= htmlspecialchars($viewModel['user']->email ?? 'Admin User') ?></span>
+                        <span class="user-email"><?= htmlspecialchars($viewModel['user']->email ?? 'admin@example.com') ?></span>
                     </div>
                 </div>
                 <a href="index.php" class="back-link">← Back to Site</a>
@@ -89,10 +85,10 @@
         </aside>
 
         <main class="admin-content">
-            <?php if (isset($breadcrumb)): ?>
+            <?php if (!empty($viewModel['breadcrumb'])): ?>
             <div class="breadcrumb">
                 <a href="admin.php?page=dashboard">Dashboard</a>
-                <?php foreach ($breadcrumb as $crumb): ?>
+                <?php foreach ($viewModel['breadcrumb'] as $crumb): ?>
                     <?php if (isset($crumb['url'])): ?>
                         <span>/</span>
                         <a href="<?= htmlspecialchars($crumb['url']) ?>"><?= htmlspecialchars($crumb['title']) ?></a>
@@ -105,17 +101,17 @@
             <?php endif; ?>
 
             <div class="content-wrapper">
-                <?php if ($adminError): ?>
+                <?php if (!empty($viewModel['adminError'])): ?>
                     <div class="alert alert-error">
                         <span class="alert-icon"></span>
-                        <?= htmlspecialchars($adminError) ?>
+                        <?= htmlspecialchars($viewModel['adminError']) ?>
                     </div>
                 <?php endif; ?>
 
-                <?php if ($adminSuccess): ?>
+                <?php if (!empty($viewModel['adminSuccess'])): ?>
                     <div class="alert alert-success">
                         <span class="alert-icon"></span>
-                        <?= htmlspecialchars($adminSuccess) ?>
+                        <?= htmlspecialchars($viewModel['adminSuccess']) ?>
                     </div>
                 <?php endif; ?>
 
@@ -133,8 +129,8 @@
         <?php require __DIR__ . '/courses/partials/modals/create-course-modal.php'; ?>
     
     </div>
-    <?php if (!empty($additionalJs)): ?>
-        <?php foreach ($additionalJs as $jsFile): ?>
+    <?php if (!empty($viewModel['additionalJs'])): ?>
+        <?php foreach ($viewModel['additionalJs'] as $jsFile): ?>
             <script type="text/javascript" src="<?= htmlspecialchars($jsFile) ?>"></script>
         <?php endforeach; ?>
     <?php endif; ?>

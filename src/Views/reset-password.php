@@ -1,28 +1,25 @@
 <?php
-/** @var string $csrfToken */
-/** @var string $success */
-/** @var string $error */
-/** @var string $userUuid */
+/** @var array $viewModel */
 ?>
 <section>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
 
-                <?php if (!empty($success)): ?>
+                <?php if (!empty($viewModel['success'])): ?>
                     <h1>Passwort aktualisiert</h1>
-                    <p class="success"><?= htmlspecialchars($success) ?></p>
+                    <p class="success"><?= htmlspecialchars($viewModel['success']) ?></p>
                     <a href="index.php">Login</a>
                 <?php else: ?>
                     <h1>Passwort zurücksetzen</h1>
 
-                    <?php if (!empty($error)): ?>
-                        <p class="error"><?= htmlspecialchars($error) ?></p>
+                    <?php if (!empty($viewModel['error'])): ?>
+                        <p class="error"><?= htmlspecialchars($viewModel['error']) ?></p>
                     <?php endif; ?>
 
                     <form method="post">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
-                        <input type="hidden" name="user_uuid" value="<?= htmlspecialchars($userUuid ?? '') ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
+                        <input type="hidden" name="user_uuid" value="<?= htmlspecialchars($viewModel['userUuid'] ?? '') ?>">
 
                         <label>Neues Passwort<br>
                             <input

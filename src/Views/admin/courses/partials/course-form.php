@@ -1,15 +1,14 @@
 <?php
-/** @var Course $selectedCourse */
-/** @var array $allCourses */
+/** @var array $viewModel */
 ?>
 <form
     id="course-form"
     method="post"
-    action="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>"
+    action="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>"
 >
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
     <input type="hidden" name="action" value="update_course">
-    <input type="hidden" name="course_id" value="<?= htmlspecialchars($selectedCourse->uuid) ?>">
+    <input type="hidden" name="course_id" value="<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>">
 
     <div class="panel-header">
         <h3>Course Details</h3>
@@ -17,7 +16,7 @@
             <button
                 type="button"
                 class="btn btn-danger btn-small"
-                onclick="deleteCourse('<?= $selectedCourse->uuid ?>')"
+                onclick="deleteCourse('<?= $viewModel['selectedCourse']->uuid ?? '' ?>')"
             >
                 Delete Course
             </button>
@@ -31,16 +30,16 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="course-title">Title *</label>
-                <input type="text" id="course-title" name="title" value="<?= htmlspecialchars($selectedCourse->title) ?>">
+                <input type="text" id="course-title" name="title" value="<?= htmlspecialchars($viewModel['selectedCourse']->title ?? '') ?>">
             </div>
             <div class="form-group">
                 <label for="prerequisite">Prerequisite Course</label>
                 <select id="prerequisite" name="prerequisite_course_id">
                     <option value="">Select a prerequisite course (optional)</option>
-                    <?php foreach ($allCourses as $course): ?>
-                        <?php if ($course->uuid !== $selectedCourse->uuid): ?>
+                    <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
+                        <?php if ($course->uuid !== $viewModel['selectedCourse']->uuid ?? ''): ?>
                             <option value="<?= htmlspecialchars($course->uuid) ?>"
-                                <?= ($selectedCourse->prerequisiteCourseId ?? '') === $course->uuid ? 'selected' : '' ?>>
+                                <?= (($viewModel['selectedCourse']->prerequisiteCourseId ?? '') ?? '') === $course->uuid ? 'selected' : '' ?>>
                                 <?= htmlspecialchars($course->title) ?>
                             </option>
                         <?php endif; ?>
@@ -50,11 +49,11 @@
         </div>
         <div class="form-group">
             <label for="course-description">Description</label>
-            <textarea id="course-description" name="description" rows="3"><?= htmlspecialchars($selectedCourse->description ?? '') ?></textarea>
+            <textarea id="course-description" name="description" rows="3"><?= htmlspecialchars($viewModel['selectedCourse']->description ?? '' ?? '') ?></textarea>
         </div>
         <div class="form-group">
             <label for="course-sort">Sort Order</label>
-            <input type="number" id="course-sort" name="sort_order" value="<?= htmlspecialchars($selectedCourse->sortOrder) ?>" min="0">
+            <input type="number" id="course-sort" name="sort_order" value="<?= htmlspecialchars($viewModel['selectedCourse']->sortOrder ?? 0) ?>" min="0">
         </div>
     </div>
 </form>

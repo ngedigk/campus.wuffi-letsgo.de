@@ -1,6 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var string $loginError */
+/** @var array $viewModel */
 ?>
 <section>
     <div class="container">
@@ -9,8 +8,8 @@
 
                 <h1>Anmelden</h1>
 
-                <?php if($loginError): ?>
-                <p><?= htmlspecialchars($loginError) ?></p>
+                <?php if (!empty($viewModel['loginError'])): ?>
+                <p><?= htmlspecialchars($viewModel['loginError']) ?></p>
                 <?php endif; ?>
 
                 <form method="post">
@@ -18,7 +17,7 @@
                     <input
                         type="hidden"
                         name="csrf_token"
-                        value="<?= htmlspecialchars($csrfToken) ?>"
+                        value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>"
                     >
 
                     <label>E-Mail</label>

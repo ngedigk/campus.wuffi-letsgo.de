@@ -1,3 +1,6 @@
+<?php
+/** @var array $viewModel */
+?>
 <div id="createCourseModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
@@ -5,7 +8,7 @@
             <span class="close" onclick="document.getElementById('createCourseModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=courses">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="create_course">
             
             <div class="form-group">
@@ -22,7 +25,7 @@
                 <label for="new-course-prerequisite">Prerequisite Course</label>
                 <select id="new-course-prerequisite" name="prerequisite_course_id">
                     <option value="">No prerequisite</option>
-                    <?php foreach ($allCourses as $course): ?>
+                    <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <option value="<?= htmlspecialchars($course->uuid) ?>">
                             <?= htmlspecialchars($course->title) ?>
                         </option>

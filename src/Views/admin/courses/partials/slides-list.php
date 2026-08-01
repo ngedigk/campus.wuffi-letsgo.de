@@ -1,7 +1,10 @@
+<?php
+/** @var array $viewModel */
+?>
 <div class="slides-section">
     <div class="section-header">
         <h3>Slides</h3>
-        <button class="btn btn-primary btn-small" onclick="addSlide('<?= htmlspecialchars($selectedModule->id) ?>')">
+        <button class="btn btn-primary btn-small" onclick="addSlide('<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>')">
             + Add Slide
         </button>
     </div>
@@ -24,7 +27,7 @@
                     </tr>
                 <?php else:
                     foreach ($selectedModule->slides as $index => $slide): ?>
-                        <tr class="<?= $selectedSlide && $selectedSlide->id == $slide->id ? 'active' : '' ?>">
+                        <tr class="<?= $viewModel['selectedSlide'] ?? null && $viewModel['selectedSlide'] ?? null->id == $slide->id ? 'active' : '' ?>">
                             <td><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($slide->title) ?></td>
                             <td><?= $slide->isQuiz ? 'Quiz' : 'Slide' ?></td>
@@ -32,7 +35,7 @@
                             <td><?= $slide->sortOrder ?></td>
                             <td>
                                 <a
-                                    href="admin.php?page=courses&course_id=<?= urlencode($selectedCourse->uuid) ?>&module_id=<?= urlencode($selectedModule->id) ?>&slide_id=<?= urlencode($slide->id) ?>"
+                                    href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($slide->id) ?>"
                                     class="btn btn-small"
                                     title="Edit Slide"
                                 >

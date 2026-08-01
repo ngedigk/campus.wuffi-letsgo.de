@@ -1,7 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var array $registrationCodes */
-/** @var array $allCourses */
+/** @var array $viewModel */
 ?>
 <div class="page-actions">
     <button class="btn btn-primary" onclick="document.getElementById('createRegistrationCodeModal').style.display='flex'">
@@ -14,7 +12,7 @@
     method="post"
     action="admin.php?page=registration-codes"
 >
-    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
     <input type="hidden" name="action" value="delete_registration_code">
     <input type="hidden" id="delete-registration-code-id" name="registration_code_id" value="">
 </form>
@@ -27,10 +25,10 @@
         <div class="cell used-at-cell">Used At</div>
         <div class="cell actions-cell">Actions</div>
     </div>
-    <?php if (empty($registrationCodes)): ?>
+    <?php if (empty($viewModel['registrationCodes'] ?? [])): ?>
         <div class="empty-state" style="grid-column: 1 / -1;">No registration codes found. Create your first registration code!</div>
     <?php else: ?>
-        <?php foreach ($registrationCodes as $code): ?>
+        <?php foreach ($viewModel['registrationCodes'] ?? [] as $code): ?>
             <div class="list-item">
                 <div class="cell code-cell">
                     <code><?= htmlspecialchars($code['code']) ?></code>
@@ -85,7 +83,7 @@
             <span class="close" onclick="document.getElementById('createRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=registration-codes">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="create_registration_code">
             
             <div class="form-group">
@@ -97,7 +95,7 @@
             <div class="form-group">
                 <label>Courses</label>
                 <div class="course-checkboxes">
-                    <?php foreach ($allCourses as $course): ?>
+                    <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <label class="checkbox-label">
                             <input type="checkbox" name="course_ids[]" value="<?= htmlspecialchars($course->uuid) ?>">
                             <?= htmlspecialchars($course->title) ?>
@@ -123,14 +121,14 @@
             <span class="close" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=registration-codes">
-            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="update_courses_to_registration_code_assignment">
             <input type="hidden" id="edit-registration-code-id" name="registration_code_id" value="">
             
             <div class="form-group">
                 <label>Assign Courses</label>
                 <div class="course-checkboxes">
-                    <?php foreach ($allCourses as $course): ?>
+                    <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <label class="checkbox-label">
                             <input type="checkbox" name="course_ids[]" value="<?= htmlspecialchars($course->uuid) ?>" class="edit-course-checkbox">
                             <?= htmlspecialchars($course->title) ?>

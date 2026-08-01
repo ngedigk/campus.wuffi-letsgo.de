@@ -1,9 +1,5 @@
 <?php
-/** @var string $csrfToken */
-/** @var User $user */
-/** @var array $courses */
-/** @var string $redeemError */
-/** @var string $redeemSuccess */
+/** @var array $viewModel */
 ?>
 <header id="content-header">
     <section id="hero" aria-hidden="true">
@@ -18,7 +14,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <p>Campus für fachtheoretische Wissensvermittlung</p>
-                <h1>Herzlich Willkommen<?= !empty($user->name) ? ', ' . htmlspecialchars($user->name) : '' ?>!</h1>
+                <h1>Herzlich Willkommen<?= !empty($viewModel['user']->name) ? ', ' . htmlspecialchars($viewModel['user']->name) : '' ?>!</h1>
 
                 <ul id="breadcrumb">
                     <li>Startseite</li>
@@ -39,11 +35,11 @@
 
                 <h2 id="courses-heading">Deine Kurse</h2>
 
-                <?php if (!$courses): ?>
+                <?php if (!$viewModel['courses'] ?? []): ?>
                 <p>You don't have any courses yet.</p>
                 <?php else: ?>
                     <div class="course-list">
-                        <?php foreach ($courses as $course): ?>
+                        <?php foreach ($viewModel['courses'] ?? [] as $course): ?>
                             <?php
                             $courseCardClass = 'course-card';
                             if (!empty($course->isCompleted)) {
@@ -80,17 +76,17 @@
 
                 <h4>Weitere Kurse</h4>
 
-                <?php if ($redeemError): ?>
-                    <p style="color: red; font-weight: bold;"><?= htmlspecialchars($redeemError) ?></p>
+                <?php if ($viewModel['redeemError'] ?? ''): ?>
+                    <p style="color: red; font-weight: bold;"><?= htmlspecialchars($viewModel['redeemError'] ?? '') ?></p>
                 <?php endif; ?>
 
-                <?php if ($redeemSuccess): ?>
-                    <p style="color: green; font-weight: bold;"><?= htmlspecialchars($redeemSuccess) ?></p>
+                <?php if ($viewModel['redeemSuccess'] ?? ''): ?>
+                    <p style="color: green; font-weight: bold;"><?= htmlspecialchars($viewModel['redeemSuccess'] ?? '') ?></p>
                 <?php endif; ?>
 
                 <form method="post" action="">
                     <input type="hidden" name="_action" value="redeem">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
                     <input type="text" name="code" placeholder="Freischaltcode" required>
                     <button type="submit" class="button-primary">Freischalten</button>
                 </form>

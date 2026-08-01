@@ -59,7 +59,7 @@ class CourseController
         return $currentModule;
     }
 
-    private function getQuizResult(Slide $currentSlide): ?QuizResult
+    private function getQuizResult(?Slide $currentSlide): ?QuizResult
     {
         if (!$currentSlide || empty($currentSlide->isQuiz)) {
             return null;
@@ -147,12 +147,12 @@ class CourseController
             exit;
         }
 
-        // Define allowed slide IDs for the sidebar (Visited + Next)
         $sidebarMaxIndex = $nextAllowedIndex;
         if ($currentGlobalIndex >= 0) {
             $sidebarMaxIndex = max($sidebarMaxIndex, $currentGlobalIndex + 1);
         }
         
+        $allowedSlideIds = [];
         if ($sidebarMaxIndex >= count($allSlidesGlobal)) {
             $sidebarMaxIndex = count($allSlidesGlobal) - 1;
         }
@@ -161,14 +161,11 @@ class CourseController
             $allowedSlideIds[] = $allSlidesGlobal[$i]['slide']->id;
         }
 
-        // Record progress now that we've validated access
         if ($currentSlide) {
             $this->progressService->recordSlideView($userUuid, $currentSlide->id);
-            // Refresh visited IDs in case we just recorded one
             $visitedSlideIds = $this->progressService->getVisitedSlideIds($userUuid, $courseUuid);
         }
 
-        // Build flattened list of all slides for navigation
         $allSlides = $allSlidesGlobal;
 
         $prevUrl = null;

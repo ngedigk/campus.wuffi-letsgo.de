@@ -1,12 +1,5 @@
 <?php
-/** @var Course $course */
-/** @var array $errors */
-/** @var Module $currentModule */
-/** @var int $currentSlideIndex */
-/** @var array $slidesForModule */
-/** @var string $prevUrl */
-/** @var string $nextUrl */
-/** @var bool $isLastSlide */
+/** @var array $viewModel */
 ?>
 
 <header id="content-header">
@@ -41,21 +34,21 @@
             <div class="col-sm-12">
 
                 <p class="heading-meta">Kursmaterial</p>
-                <h2 id="courses-heading"><?= htmlspecialchars($course->title) ?></h2>
+                <h2 id="courses-heading"><?= htmlspecialchars($viewModel['course']->title) ?></h2>
 
-                <p><?= nl2br(htmlspecialchars($course->description)) ?></p>
+                <p><?= nl2br(htmlspecialchars($viewModel['course']->description)) ?></p>
 
-                <?php if ($errors): ?>
+                <?php if ($viewModel['errors'] ?? []): ?>
                     <div class="course-errors">
                         <ul>
-                            <?php foreach ($errors as $error): ?>
+                            <?php foreach ($viewModel['errors'] ?? [] as $error): ?>
                                 <li><?= htmlspecialchars($error) ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </div>
                 <?php endif; ?>
 
-                <?php if (!$currentModule): ?>
+                <?php if (!$viewModel['currentModule'] ?? null): ?>
                     <p>No course modules are configured yet.</p>
                 <?php else: ?>
                     <div class="course-layout">
@@ -64,19 +57,21 @@
                         <main class="course-main">
                             <div class="slide-panel">
                                 <div class="slide-navigation">
-                                    <?php if ($prevUrl): ?>
-                                        <a href="<?= htmlspecialchars($prevUrl) ?>" class="btn prev-slide">
+                                    <?php if ($viewModel['prevUrl'] ?? ''): ?>
+                                        <a href="<?= htmlspecialchars($viewModel['prevUrl'] ?? '') ?>" class="btn prev-slide">
                                             <img src="assets/images/icons/chevron-left-solid-full.svg" width="28" height="28">
                                         </a>
                                     <?php endif; ?>
 
-                                    <p>Seite <?= $currentSlideIndex + 1 ?> von <?= count($slidesForModule) ?></p>
-                                    
-                                    <?php if ($nextUrl): ?>
-                                        <a href="<?= htmlspecialchars($nextUrl) ?>" class="btn next-slide">
+                                    <?php if (count($viewModel['slidesForModule'] ?? []) > 0): ?>
+                                        <p>Seite <?= ($viewModel['currentSlideIndex'] ?? 0) + 1 ?> von <?= count($viewModel['slidesForModule'] ?? []) ?></p>
+                                    <?php endif; ?>
+
+                                    <?php if ($viewModel['nextUrl'] ?? ''): ?>
+                                        <a href="<?= htmlspecialchars($viewModel['nextUrl'] ?? '') ?>" class="btn next-slide">
                                             <img src="assets/images/icons/angle-right-solid-full.svg" width="28" height="28">
                                         </a>
-                                    <?php elseif ($isLastSlide): ?>
+                                    <?php elseif ($viewModel['isLastSlide'] ?? false): ?>
                                         <a href="index.php" class="btn finish-course">
                                             Back to course overview →
                                         </a>

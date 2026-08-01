@@ -1,7 +1,10 @@
+<?php
+/** @var array $viewModel */
+?>
 <div class="admin-courses-layout">
     <!-- Course Details -->
     <div class="course-details-panel">
-        <?php if ($selectedCourse): ?>
+        <?php if ($viewModel['selectedCourse'] ?? null): ?>
             <?php require __DIR__ . '/partials/course-form-delete.php'; ?>
             <?php require __DIR__ . '/partials/course-form.php'; ?>
 
@@ -13,7 +16,7 @@
             <?php require __DIR__ . '/partials/modals/create-module-modal.php'; ?>
             <?php require __DIR__ . '/partials/modals/create-slide-modal.php'; ?>
 
-            <?php if ($selectedModule): ?>
+            <?php if ($viewModel['selectedModule'] ?? null): ?>
                 <!-- Module Details Section -->
                 <?php require __DIR__ . '/partials/module-form.php'; ?>
 
@@ -22,7 +25,7 @@
                 <?php require __DIR__ . '/partials/slide-form-delete.php'; ?>
 
                 <!-- Slide Details Section -->
-                <?php if ($selectedSlide): ?>
+                <?php if ($viewModel['selectedSlide'] ?? null): ?>
                     <?php require __DIR__ . '/partials/slide-form.php'; ?>
                 <?php endif; ?>
             <?php endif; ?>
