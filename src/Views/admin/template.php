@@ -64,11 +64,6 @@
                             <span>Access Codes</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="admin.php?page=settings" class="<?= $activePage === 'settings' ? 'active' : '' ?>">
-                            <span>Settings</span>
-                        </a>
-                    </li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
