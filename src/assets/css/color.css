@@ -9,5 +9,17 @@
     --slide-nav: #ccc;
 
     --primary-btn: var(--primary);
-    --primary-btn-hover: #000
+    --primary-btn-hover: #000;
+
+    --password-bar-bg: #e5e7eb;
+    --password-hints: #6b7280;    
+    --password-empty: #ef4444;
+    --password-very-weak: #ef4444;
+    --password-weak: #f97316;
+    --password-fair: #eab308;
+    --password-strong: #84cc16;
+    --password-very-strong: #22c55e;
+
+    --password-match: #22c55e;
+    --password-no-match: #ef4444;
 }

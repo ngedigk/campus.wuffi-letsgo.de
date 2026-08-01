@@ -5,7 +5,7 @@
 
 .password-bar {
     height: 8px;
-    background: #e5e7eb;
+    background: var(--password-bar-bg);
     border-radius: 999px;
     overflow: hidden;
 }
@@ -13,7 +13,7 @@
 #password-progress {
     height: 100%;
     width: 0%;
-    background: #ef4444;
+    background: var(--password-empty);
     transition: width 0.3s ease, background-color 0.3s ease;
 }
 
@@ -26,5 +26,48 @@
 #password-hints {
     margin-top: 6px;
     font-size: 13px;
-    color: #6b7280;
+    color: var(--password-hints);
+}
+
+#password-progress.empty {
+    width: 0%;
+    background-color: var(--password-empty);
+}
+
+#password-progress.very-weak {
+    width: 20%;
+    background-color: var(--password-very-weak);
+}
+
+#password-progress.weak {
+    width: 40%;
+    background-color: var(--password-weak);
+}
+
+#password-progress.fair {
+    width: 60%;
+    background-color: var(--password-fair);
+}
+
+#password-progress.strong {
+    width: 80%;
+    background-color: var(--password-strong);
+}
+
+#password-progress.very-strong {
+    width: 100%;
+    background-color: var(--password-very-strong);
+}
+
+.pw-status {
+    margin-top: 6px;
+    font-size: 0.85em;
+}
+
+.pw-status.match {
+    color: var(--password-match);
+}
+
+.pw-status.no-match {
+    color: var(--password-no-match);
 }
