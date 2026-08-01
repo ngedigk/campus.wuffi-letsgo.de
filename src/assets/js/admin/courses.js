@@ -1,20 +1,59 @@
 let choiceIndex = 1;
 
-function preventFormEnterSubmit(event) {
+const actions = {
+    'add-module': button => addModule(button.dataset.courseId),
+    'add-slide': button => addSlide(button.dataset.moduleId),
+    'add-question': button => addQuestion(button.dataset.slideId),
+    'add-choice': () => addChoice(),
+    'remove-choice': button => removeChoice(button),
+    'remove-edit-choice': button => removeEditChoice(button),
+    'delete-course': button => deleteCourse(button.dataset.courseId),
+    'delete-module': button => deleteModule(button.dataset.moduleId),
+    'delete-slide': button => deleteSlide(button.dataset.slideId),
+    'delete-question': button => deleteQuestion(button.dataset.questionId),
+};
+
+document.addEventListener('click', event => {
+    const button = event.target.closest('[data-action]');
+
+    if (!button) {
+        return;
+    }
+
+    const action = actions[button.dataset.action];
+
+    if (action) {
+        action(button);
+    }
+});
+
+document.addEventListener('keydown', event => {
     if (event.key !== 'Enter') {
-        return true;
+        return;
     }
 
     const target = event.target;
-    const targetTag = target && target.tagName ? target.tagName.toUpperCase() : '';
+    const targetTag = target?.tagName?.toUpperCase() || '';
 
     if (targetTag === 'BUTTON' || targetTag === 'TEXTAREA') {
-        return true;
+        return;
     }
 
     event.preventDefault();
-    return false;
-}
+});
+
+document.addEventListener('submit', event => {
+    const form = event.target;
+
+    if (
+        form.id === 'createQuestionForm' ||
+        form.id === 'editQuestionForm'
+    ) {
+        if (!validateQuestionForm(form)) {
+            event.preventDefault();
+        }
+    }
+});
 
 function addModule(courseId) {
     document.getElementById('module-course-id').value = courseId;
@@ -28,27 +67,51 @@ function addSlide(moduleId) {
 
 function addQuestion(slideId) {
     choiceIndex = 1;
+
     document.getElementById('question-slide-id').value = slideId;
     document.getElementById('createQuestionModal').style.display = 'flex';
 }
 
 function addChoice() {
     const container = document.getElementById('choices-container');
+
     const row = document.createElement('div');
     row.className = 'choice-row';
+
     row.innerHTML = `
-        <input type="text" name="choices[${choiceIndex}][text]" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
-        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" value="1"> Korrekt</label>
-        <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeChoice(this)">&times;</button>
+        <input
+            type="text"
+            name="choices[${choiceIndex}][text]"
+            placeholder="Antwort Text"
+            required
+            style="flex: 1; margin-right: 10px;"
+        >
+
+        <label>
+            <input
+                type="checkbox"
+                name="choices[${choiceIndex}][is_correct]"
+                value="1"
+            >
+            Korrekt
+        </label>
+
+        <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            data-action="remove-choice"
+        >&times;</button>
     `;
+
     container.appendChild(row);
     choiceIndex++;
 }
 
-function removeChoice(btn) {
-    const rows = document.querySelectorAll('.choice-row');
+function removeChoice(button) {
+    const rows = document.querySelectorAll('#choices-container .choice-row');
+
     if (rows.length > 1) {
-        btn.parentElement.remove();
+        button.parentElement.remove();
     } else {
         alert('Mindestens eine Antwort muss vorhanden sein.');
     }
@@ -56,17 +119,24 @@ function removeChoice(btn) {
 
 function validateQuestionForm(form) {
     const choices = form.querySelectorAll('.choice-row');
+
     let hasCorrect = false;
-    
-    for (let row of choices) {
-        const input = row.querySelector('input[name^="choices"][name$="[text]"]');
+
+    for (const row of choices) {
+        const input = row.querySelector(
+            'input[name^="choices"][name$="[text]"]'
+        );
+
         if (input && input.value.trim() === '') {
             alert('Bitte füllen Sie alle Antwortfelder aus.');
             return false;
         }
-        
-        const checkbox = row.querySelector('input[name^="choices"][name$="[is_correct]"]');
-        if (checkbox && checkbox.checked) {
+
+        const checkbox = row.querySelector(
+            'input[name^="choices"][name$="[is_correct]"]'
+        );
+
+        if (checkbox?.checked) {
             hasCorrect = true;
         }
     }
@@ -75,69 +145,113 @@ function validateQuestionForm(form) {
         alert('Bitte markieren Sie mindestens eine korrekte Antwort.');
         return false;
     }
-    
+
     return true;
 }
 
 function editQuestion(questionId, questionText, choicesJson) {
     choiceIndex = 1;
+
     document.getElementById('edit-question-id').value = questionId;
-    document.getElementById('edit-question-slide-id').value = document.getElementById('question-slide-id').value;
+
+    document.getElementById('edit-question-slide-id').value =
+        document.getElementById('question-slide-id').value;
+
     document.getElementById('edit-question-text').value = questionText;
 
-    populateEditModal(questionId, choicesJson);
+    populateEditModal(choicesJson);
+
     document.getElementById('editQuestionModal').style.display = 'flex';
 }
 
-function populateEditModal(questionId, choicesJson) {
+function populateEditModal(choicesJson) {
     const container = document.getElementById('edit-choices-container');
+
     container.innerHTML = '';
 
     if (choicesJson.length === 0) {
-        addEditChoice(); 
-    } else {
-        choicesJson.forEach(choice => {
-            addEditChoice(choice.choiceText, choice.isCorrect);
-        });
+        addEditChoice();
+        return;
     }
+
+    choicesJson.forEach(choice => {
+        addEditChoice(
+            choice.choiceText,
+            choice.isCorrect
+        );
+    });
 }
 
 function addEditChoice(text = '', isCorrect = false) {
     const container = document.getElementById('edit-choices-container');
+
     const row = document.createElement('div');
     row.className = 'choice-row';
+
     row.innerHTML = `
-        <input type="text" name="choices[${choiceIndex}][text]" value="${text}" placeholder="Antwort Text" required style="flex: 1; margin-right: 10px;">
-        <label><input type="checkbox" name="choices[${choiceIndex}][is_correct]" value="1" ${isCorrect ? 'checked' : ''}> Korrekt</label>
-        <button type="button" class="btn btn-danger btn-sm remove-choice" onclick="removeEditChoice(this)">&times;</button>
+        <input
+            type="text"
+            name="choices[${choiceIndex}][text]"
+            value="${escapeHtml(text)}"
+            placeholder="Antwort Text"
+            required
+            style="flex: 1; margin-right: 10px;"
+        >
+
+        <label>
+            <input
+                type="checkbox"
+                name="choices[${choiceIndex}][is_correct]"
+                value="1"
+                ${isCorrect ? 'checked' : ''}
+            >
+            Korrekt
+        </label>
+
+        <button
+            type="button"
+            class="btn btn-danger btn-sm"
+            data-action="remove-edit-choice"
+        >&times;</button>
     `;
+
     container.appendChild(row);
     choiceIndex++;
 }
 
-function removeEditChoice(btn) {
-    const rows = document.querySelectorAll('#edit-choices-container .choice-row');
+function removeEditChoice(button) {
+    const rows = document.querySelectorAll(
+        '#edit-choices-container .choice-row'
+    );
+
     if (rows.length > 1) {
-        btn.parentElement.remove();
+        button.parentElement.remove();
     } else {
         alert('Mindestens eine Antwort muss vorhanden sein.');
     }
 }
 
 function deleteCourse(courseId) {
-    if (!confirm('Sind Sie sicher, dass Sie diesen Kurs löschen möchten? Dies wird auch alle Untermodule und Folien innerhalb des Kurses löschen.')) {
+    if (!confirm(
+        'Sind Sie sicher, dass Sie diesen Kurs löschen möchten? ' +
+        'Dies wird auch alle Untermodule und Folien innerhalb des Kurses löschen.'
+    )) {
         return;
     }
-    
+
     document.getElementById('delete-course-form').submit();
 }
 
 function deleteModule(moduleId) {
-    if (!confirm('Sind Sie sicher, dass Sie dieses Modul löschen möchten? Dies wird auch alle Folien innerhalb des Moduls löschen.')) {
+    if (!confirm(
+        'Sind Sie sicher, dass Sie dieses Modul löschen möchten? ' +
+        'Dies wird auch alle Folien innerhalb des Moduls löschen.'
+    )) {
         return;
     }
 
     document.getElementById('delete-module-id').value = moduleId;
+
     document.getElementById('delete-module-form').submit();
 }
 
@@ -147,6 +261,7 @@ function deleteSlide(slideId) {
     }
 
     document.getElementById('delete-slide-id').value = slideId;
+
     document.getElementById('delete-slide-form').submit();
 }
 
@@ -156,6 +271,13 @@ function deleteQuestion(questionId) {
     }
 
     document.getElementById('delete-question-id').value = questionId;
+
     document.getElementById('delete-question-form').submit();
 }
 
+
+function escapeHtml(value) {
+    const div = document.createElement('div');
+    div.textContent = value;
+    return div.innerHTML;
+}

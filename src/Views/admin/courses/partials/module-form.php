@@ -17,7 +17,8 @@
                 <button
                     type="button"
                     class="btn btn-danger btn-small"
-                    onclick="deleteModule(<?= $viewModel['selectedModule']->id ?? '' ?>)"
+                    data-action="delete-module"
+                    data-module-id="<?= $viewModel['selectedModule']->id ?? '' ?>"
                 >
                     Modul löschen
                 </button>

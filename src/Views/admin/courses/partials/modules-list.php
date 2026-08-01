@@ -4,7 +4,11 @@
 <div class="modules-section">
     <div class="section-header">
         <h3>Module</h3>
-        <button class="btn btn-primary btn-small" onclick="addModule('<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>')">
+        <button
+            class="btn btn-primary btn-small"
+            data-action="add-module"
+            data-course-id="<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>"
+        >
             + Modul hinzufügen
         </button>
     </div>
@@ -22,7 +26,10 @@
                         >
                             ✏️
                         </a>
-                        <button onclick="deleteModule(<?= $module->id ?>)">🗑</button>
+                        <button
+                            data-action="delete-module"
+                            data-module-id="<?= htmlspecialchars($module->id) ?>"
+                        >🗑</button>
                     </div>
                 </div>
             <?php endforeach; ?>

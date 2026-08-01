@@ -16,7 +16,8 @@
             <button
                 type="button"
                 class="btn btn-danger btn-small"
-                onclick="deleteCourse('<?= $viewModel['selectedCourse']->uuid ?? '' ?>')"
+                data-action="delete-course"
+                data-course-id="<?= $viewModel['selectedSlideId']->uuid ?? '' ?>"
             >
                 Kurs löschen
             </button>

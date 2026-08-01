@@ -4,7 +4,11 @@
 <div class="slides-section">
     <div class="section-header">
         <h3>Folien</h3>
-        <button class="btn btn-primary btn-small" onclick="addSlide('<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>')">
+        <button
+            class="btn btn-primary btn-small"
+            data-action="add-slide"
+            data-module-id="<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>"
+        >
             + Folie hinzufügen
         </button>
     </div>
@@ -39,7 +43,10 @@
                                 >
                                     ✏️
                                 </a>
-                                <button onclick="deleteSlide(<?= $slide->id ?>)">🗑</button>
+                                <button
+                                    data-action="delete-slide"
+                                    data-slide-id="<?= $slide->id ?>"
+                                >🗑</button>
                             </td>
                         </tr>
                     <?php endforeach;

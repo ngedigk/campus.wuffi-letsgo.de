@@ -73,7 +73,10 @@ class AdminCoursesController extends AdminPageController
                 'type' => 'module'
             ];
         }
-        $context['additionalJs'][] = ['src' => '/assets/js/admin/courses.js'];
+        $context['additionalJs'][] = [
+            'src' => '/assets/js/admin/courses.js',
+            'type' => 'module'
+        ];
 
         $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
 

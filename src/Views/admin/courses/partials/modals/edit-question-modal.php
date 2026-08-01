@@ -4,7 +4,7 @@
             <h3>Frage bearbeiten</h3>
             <span class="close" onclick="document.getElementById('editQuestionModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="editQuestionForm" onsubmit="return validateQuestionForm(this)">
+        <form method="post" id="editQuestionForm">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
             <input type="hidden" name="action" value="update_question">
             <input type="hidden" id="edit-question-id" name="question_id" value="">

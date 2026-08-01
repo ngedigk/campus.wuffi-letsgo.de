@@ -4,7 +4,12 @@
 <div class="quiz-questions-section" style="margin-top: 30px;">
     <div class="section-header">
         <h3>Quiz Fragen</h3>
-        <button type="button" class="btn btn-primary btn-small" onclick="addQuestion(<?= $viewModel['selectedSlideId'] ?? 0 ?>)">+ Frage hinzufügen</button>
+        <button
+            type="button"
+            class="btn btn-primary btn-small"
+            data-action="add-question"
+            data-slide-id="<?= $viewModel['selectedSlideId'] ?? 0 ?>"
+        >+ Frage hinzufügen</button>
     </div>
 
     <?php if (empty($viewModel['quizQuestions'])): ?>
@@ -16,8 +21,16 @@
                     <span class="question-number"><?= $index + 1 ?>.</span>
                     <span class="question-title"><?= htmlspecialchars($question->questionText) ?></span>
                     <div class="question-actions">
-                        <button onclick='editQuestion(<?= $question->id ?>, "<?= htmlspecialchars($question->questionText) ?>",<?= json_encode($viewModel["quizChoicesByQuestion"][$question->id] ?? []) ?>)''>✏️</button>
-                        <button onclick="deleteQuestion(<?= $question->id ?>)">🗑</button>
+                        <button
+                            data-action="edit-question"
+                            data-question-id="<?= $question->id ?>"
+                            data-question-text="<?= htmlspecialchars($question->questionText) ?>"
+                            data-choices='<?= json_encode($viewModel["quizChoicesByQuestion"][$question->id] ?? []) ?>'
+                        >✏️</button>
+                        <button
+                            data-action="delete-question"
+                            data-question-id="<?= $question->id ?>"
+                        >🗑</button>
                     </div>
                 </div>
             <?php endforeach; ?>
