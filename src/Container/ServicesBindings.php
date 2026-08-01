@@ -24,7 +24,7 @@ use App\Repositories\AuthRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
-use App\Repositories\QuizRepository;
+use App\Repositories\QuizQuestionsRepository;
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
@@ -49,7 +49,7 @@ trait ServicesBindings
         ));
         $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepository::class)));
         $this->set(SlideService::class, fn($c) => new SlideService($c->get(SlideRepository::class)));
-        $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizRepository::class)));
+        $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionsRepository::class)));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(PDO::class),

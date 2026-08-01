@@ -5,7 +5,7 @@ namespace App\Repositories;
 use App\Dto\QuizQuestion;
 use PDO;
 
-class QuizRepository {
+class QuizQuestionsRepository {
 
     public function __construct(
         private PDO $pdo
