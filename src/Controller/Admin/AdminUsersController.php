@@ -37,7 +37,7 @@ class AdminUsersController extends AdminPageController
                 $this->handleManuallyVerify();
                 break;
             default:
-                throw new Exception('Unsupported admin action.');
+                throw new Exception('Administrative Aktion nicht unterstützt.');
         }
     }
 
@@ -45,36 +45,36 @@ class AdminUsersController extends AdminPageController
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
         if ($email === '') {
-            throw new Exception('Please provide an email address.');
+            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
         }
 
         $this->userService->grantAdmin($email);
-        $_SESSION['admin_success'] = 'Admin permissions granted.';
+        $_SESSION['admin_success'] = 'Admin-Berechtigung erteilt.';
     }
 
     private function handleRevokeAdmin(): void
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
         if ($email === '') {
-            throw new Exception('Please provide an email address.');
+            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
         }
 
         if ($email === strtolower($this->authService->currentUser()->email)) {
-            throw new Exception("Can't remove your own admin.");
+            throw new Exception("Sie können Ihre eigene Admin-Berechtigung nicht entfernen.");
         }
 
         $this->userService->removeAdmin($email);
-        $_SESSION['admin_success'] = 'Admin permissions removed.';
+        $_SESSION['admin_success'] = 'Admin-Berechtigung entfernt.';
     }
 
     private function handleManuallyVerify(): void
     {
         $email = trim($_POST['email'] ?? '');
         if ($email === '') {
-            throw new Exception('Please provide an email address.');
+            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
         }
 
         $this->userService->verify($email);
-        $_SESSION['admin_success'] = 'User manually verified.';
+        $_SESSION['admin_success'] = 'Benutzer manuell verifiziert.';
     }
 }

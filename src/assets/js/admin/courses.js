@@ -18,7 +18,7 @@ function addQuestion(slideId) {
 }
 
 function deleteCourse(courseId) {
-    if (!confirm('Are you sure you want to delete this course? This will also delete all submodules and slides within it.')) {
+    if (!confirm('Sind Sie sicher, dass Sie diesen Kurs löschen möchten? Dies wird auch alle Untermodule und Folien innerhalb des Kurses löschen.')) {
         return;
     }
     
@@ -26,7 +26,7 @@ function deleteCourse(courseId) {
 }
 
 function deleteModule(moduleId) {
-    if (!confirm('Are you sure you want to delete this module? This will also delete all slides within it.')) {
+    if (!confirm('Sind Sie sicher, dass Sie dieses Modul löschen möchten? Dies wird auch alle Folien innerhalb des Moduls löschen.')) {
         return;
     }
 
@@ -44,7 +44,7 @@ function prepareSlideContent() {
 }
 
 function deleteSlide(slideId) {
-    if (!confirm('Are you sure you want to delete this slide?')) {
+    if (!confirm('Sind Sie sicher, dass Sie diese Folie löschen möchten?')) {
         return;
     }
 
@@ -53,7 +53,7 @@ function deleteSlide(slideId) {
 }
 
 function deleteQuestion(questionId) {
-    if (!confirm('Are you sure you want to delete this question?')) {
+    if (!confirm('Sind Sie sicher, dass Sie diese Frage löschen möchten?')) {
         return;
     }
 

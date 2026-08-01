@@ -40,7 +40,7 @@ class Database
         } catch (PDOException $e) {
             error_log("Database connection failed: " . $e->getMessage());
             
-            throw new RuntimeException('Database connection failed. Please try again later.');
+            throw new RuntimeException('Datenbankverbindung fehlgeschlagen. Bitte versuchen Sie es später erneut.');
         }
     }
 

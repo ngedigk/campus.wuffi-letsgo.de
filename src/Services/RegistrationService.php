@@ -28,20 +28,17 @@ class RegistrationService
     ): array {
 
         if ($this->userRepository->existsByEmail($email)) {
-
-            throw new Exception(
-                "Email already exists."
-            );
+            throw new Exception("E-Mail existiert bereits.");
         }
 
         $codeData = $this->registrationCodeRepository->findByCodeForUpdate($registrationCode);
 
         if (!$codeData) {
-            throw new Exception("Invalid registration code.");
+            throw new Exception("Ungültiger Registrierungscode.");
         }
 
         if ($this->registrationCodeRepository->isUsed($registrationCode)) {
-            throw new Exception("Registration code has already been used.");
+            throw new Exception("Registrierungscode wurde bereits verwendet.");
         }
 
         $userId = $this->uuidService->generate();

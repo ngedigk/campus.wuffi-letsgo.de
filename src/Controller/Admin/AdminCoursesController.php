@@ -77,7 +77,7 @@ class AdminCoursesController extends AdminPageController
         $context['additionalJs'][] = 'https://unpkg.com/grapesjs-blocks-basic';
 
         if ($selectedSlide) {
-            $context['additionalJs'][] = '/assets/js/grapes-init.js';
+            $context['additionalJs'][] = '/assets/js/admin/grapes-init.js';
         }
         $context['additionalJs'][] = '/assets/js/admin/courses.js';
 
@@ -201,7 +201,7 @@ class AdminCoursesController extends AdminPageController
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') {
-            throw new Exception('Please provide a course title.');
+            throw new Exception('Bitte geben Sie einen Kursnamen an.');
         }
         $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
 
@@ -212,7 +212,7 @@ class AdminCoursesController extends AdminPageController
             prerequisiteCourseId: $prerequisiteCourseId,
             sortOrder: $sortOrder
         ));
-        $_SESSION['admin_success'] = 'Course created.';
+        $_SESSION['admin_success'] = 'Kurs erstellt.';
     }
 
     private function handleUpdateCourse(): void
@@ -224,7 +224,7 @@ class AdminCoursesController extends AdminPageController
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') {
-            throw new Exception('Please provide a valid title.');
+            throw new Exception('Bitte geben Sie einen gültigen Kursnamen an.');
         }
 
         $this->courseService->update(new CourseInput(
@@ -234,7 +234,7 @@ class AdminCoursesController extends AdminPageController
             prerequisiteCourseId: $prerequisiteCourseId,
             sortOrder: $sortOrder
         ));
-        $_SESSION['admin_success'] = 'Course updated.';
+        $_SESSION['admin_success'] = 'Kurs aktualisiert.';
     }
 
     private function handleCreateModule(): void
@@ -243,8 +243,8 @@ class AdminCoursesController extends AdminPageController
         $title = trim($_POST['title'] ?? '');
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
-        if ($courseId === '' || $title === '') {
-            throw new Exception('Please provide a course and module title.');
+        if ($title === '') {
+            throw new Exception('Bitte geben Sie einen Modulnamen an.');
         }
 
         $moduleId = $this->moduleService->create(new ModuleInput(
@@ -261,8 +261,8 @@ class AdminCoursesController extends AdminPageController
         $title = trim($_POST['title'] ?? '');
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
-        if ($moduleId === 0 || $title === '') {
-            throw new Exception('Please provide a valid module ID and title.');
+        if ($title === '') {
+            throw new Exception('Bitte geben Sie einen Modulnamen an.');
         }
 
         $this->moduleService->update(new Module(
@@ -271,7 +271,7 @@ class AdminCoursesController extends AdminPageController
             sortOrder: $sortOrder,
             slides: null
         ));
-        $_SESSION['admin_success'] = 'Module updated.';
+        $_SESSION['admin_success'] = 'Modul aktualisiert.';
     }
 
     private function handleCreateSlide(): void
@@ -282,7 +282,7 @@ class AdminCoursesController extends AdminPageController
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
 
         if ($title === '') {
-            throw new Exception('Please provide a slide title.');
+            throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
         $slideId = $this->slideService->create(new SlideInput(
@@ -293,7 +293,7 @@ class AdminCoursesController extends AdminPageController
             sortOrder: $sortOrder,
             isQuiz: false
         ));
-        $_SESSION['admin_success'] = "Slide $slideId created.";
+        $_SESSION['admin_success'] = "Folie $slideId erstellt.";
     }
 
     private function handleUpdateSlide(): void
@@ -305,8 +305,8 @@ class AdminCoursesController extends AdminPageController
         $sortOrder = (int)trim($_POST['sort_order'] ?? 0);
         $isQuiz = filter_var($_POST['is_quiz'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
-        if ($slideId === 0 || $title === '') {
-            throw new Exception('Please provide a valid slide ID and title.');
+        if ($title === '') {
+            throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
         $this->slideService->update(new Slide(
@@ -317,7 +317,7 @@ class AdminCoursesController extends AdminPageController
             sortOrder: $sortOrder,
             isQuiz: $isQuiz
         ));
-        $_SESSION['admin_success'] = 'Slide updated.';
+        $_SESSION['admin_success'] = 'Folie aktualisiert.';
     }
     
     private function handleCreateQuestion(): void
@@ -326,14 +326,14 @@ class AdminCoursesController extends AdminPageController
         $questionText = trim($_POST['question_text'] ?? '');
         
         if ($questionText === '') {
-            throw new Exception('Please provide a question text.');
+            throw new Exception('Bitte geben Sie einen Fragen-Text an.');
         }
 
         $questionId = $this->quizQuestionService->create(new QuizQuestionInput(
             slideId: $slideId,
             questionText: $questionText
         ));
-        $_SESSION['admin_success'] = "Question $questionId created.";
+        $_SESSION['admin_success'] = "Frage $questionId erstellt.";
     }
 
     private function handleUpdateQuestion(): void
@@ -343,7 +343,7 @@ class AdminCoursesController extends AdminPageController
         $questionText = trim($_POST['question_text'] ?? '');
 
         if ($questionId === 0 || $questionText === '') {
-            throw new Exception('Please provide a valid question ID and text.');
+            throw new Exception('Bitte geben Sie einen Fragen-Text an.');
         }
 
         $this->quizQuestionService->update(new QuizQuestion(
@@ -351,42 +351,42 @@ class AdminCoursesController extends AdminPageController
             slideId: $slideId,
             questionText: $questionText
         ));
-        $_SESSION['admin_success'] = 'Question updated.';
+        $_SESSION['admin_success'] = 'Frage aktualisiert.';
     }
 
     private function handleDeleteQuestion(): void
     {
         $questionId = (int)trim($_POST['question_id'] ?? '');
         $this->quizQuestionService->delete($questionId);
-        $_SESSION['admin_success'] = 'Question deleted.';
+        $_SESSION['admin_success'] = 'Frage gelöscht.';
     }
 
     private function handleDeleteSlide(): void
     {
         $slideId = (int)trim($_POST['slide_id'] ?? '');
         $this->slideService->delete($slideId);
-        $_SESSION['admin_success'] = 'Slide deleted.';
+        $_SESSION['admin_success'] = 'Folie gelöscht.';
     }
 
     private function handleDeleteModule(): void
     {
         $moduleId = (int)trim($_POST['module_id'] ?? '');
         $this->moduleService->delete($moduleId);
-        $_SESSION['admin_success'] = 'Module deleted.';
+        $_SESSION['admin_success'] = 'Modul gelöscht.';
     }
 
     private function handleDeleteCourse(): void
     {
         $courseId = trim($_POST['course_id'] ?? '');
         $this->courseService->delete($courseId);
-        $_SESSION['admin_success'] = 'Course deleted.';
+        $_SESSION['admin_success'] = 'Kurs gelöscht.';
     }
 
     private function handleUploadImage(): void
     {
         if (!$this->authService->isAdmin()) {
             http_response_code(403);
-            echo json_encode(['error' => 'Unauthorized']);
+            echo json_encode(['error' => 'Nicht autorisiert']);
             exit;
         }
 
@@ -394,13 +394,13 @@ class AdminCoursesController extends AdminPageController
             $this->csrfService->validateToken($_POST['csrf_token']);
         } catch (\Exception $e) {
             http_response_code(403);
-            echo json_encode(['error' => 'CSRF token invalid']);
+            echo json_encode(['error' => 'CSRF token ungültig']);
             exit;
         }
 
         if (!isset($_FILES['files'])) {
             http_response_code(400);
-            echo json_encode(['error' => 'No file uploaded']);
+            echo json_encode(['error' => 'Keine Datei hochgeladen']);
             exit;
         }
 

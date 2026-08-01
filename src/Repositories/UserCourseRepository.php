@@ -18,13 +18,13 @@ class UserCourseRepository
         $stmt = $this->pdo->prepare("
             SELECT 1
             FROM user_courses
-            WHERE user_id = ?
-              AND course_id = ?
+            WHERE user_id = :userUuid
+              AND course_id = :courseUuid
         ");
 
         $stmt->execute([
-            $userUuid,
-            $courseUuid
+            'userUuid' => $userUuid,
+            'courseUuid' => $courseUuid
         ]);
 
         return (bool)$stmt->fetch();
@@ -40,13 +40,13 @@ class UserCourseRepository
         $stmt = $this->pdo->prepare("
             INSERT INTO user_courses
                 (user_id, course_id, access_code_id)
-            VALUES (?, ?, ?)
+            VALUES (:userUuid, :courseUuid, :accessCodeId)
         ");
 
         $stmt->execute([
-            $userUuid,
-            $courseUuid,
-            $accessCodeId
+            'userUuid' => $userUuid,
+            'courseUuid' => $courseUuid,
+            'accessCodeId' => $accessCodeId
         ]);
     }
 }

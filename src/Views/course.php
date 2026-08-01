@@ -49,7 +49,7 @@
                 <?php endif; ?>
 
                 <?php if (!$viewModel['currentModule'] ?? null): ?>
-                    <p>No course modules are configured yet.</p>
+                    <p>Kursmodule sind noch nicht konfiguriert.</p>
                 <?php else: ?>
                     <div class="course-layout">
                         <?php require __DIR__ . '/course/sidebar.php'; ?>
@@ -73,7 +73,7 @@
                                         </a>
                                     <?php elseif ($viewModel['isLastSlide'] ?? false): ?>
                                         <a href="index.php" class="btn finish-course">
-                                            Back to course overview →
+                                            Zurück zur Kursübersicht →
                                         </a>
                                     <?php endif; ?>
                                 </div>

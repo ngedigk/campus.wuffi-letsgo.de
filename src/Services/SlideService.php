@@ -17,7 +17,7 @@ class SlideService {
         try {
             $slideId = $this->slideRepository->create($slide);
         } catch (\Exception $e) {
-            throw new \Exception("Failed to create slide: " . $e->getMessage());
+            throw new \Exception("Folienerstellung fehlgeschlagen: " . $e->getMessage());
         }
         return $slideId;        
     }

@@ -33,7 +33,7 @@ class RegistrationCodeService
                 'course_titles' => array_map(
                     fn($courseId) => [
                         'id' => $courseId,
-                        'title' => $courseMap[$courseId] ?? 'Unknown Course',
+                        'title' => $courseMap[$courseId] ?? 'Unbekannter Kurs',
                     ],
                     $courseIds
                 ),

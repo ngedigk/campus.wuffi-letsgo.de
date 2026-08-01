@@ -17,11 +17,11 @@ class CourseRepository
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM courses
-            WHERE id = ?
+            WHERE id = :courseUuid
             ORDER BY sort_order
         ");
 
-        $stmt->execute([$courseUuid]);
+        $stmt->execute(['courseUuid' => $courseUuid]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -41,12 +41,15 @@ class CourseRepository
             INNER JOIN user_courses uc
                 ON uc.course_id = c.id
             WHERE
-                uc.user_id = ?
-                AND c.id = ?
+                uc.user_id = :userUuid
+                AND c.id = :courseUuid
             ORDER BY c.sort_order
         ");
 
-        $stmt->execute([$userUuid, $courseUuid]);
+        $stmt->execute([
+            'userUuid' => $userUuid,
+            'courseUuid' => $courseUuid
+        ]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -87,11 +90,11 @@ class CourseRepository
             INNER JOIN user_courses uc
                 ON uc.course_id = c.id
             WHERE
-                uc.user_id = ?
+                uc.user_id = :userUuid
             ORDER BY c.sort_order
         ");
 
-        $stmt->execute([$userUuid]);
+        $stmt->execute(['userUuid' => $userUuid]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -110,15 +113,15 @@ class CourseRepository
                 prerequisite_course_id,
                 sort_order
             )
-            VALUES (?, ?, ?, ?, ?)
+            VALUES (:uuid, :title, :description, :prerequisiteCourseId, :sortOrder)
         ");
 
         $stmt->execute([
-            $course->uuid,
-            $course->title,
-            $course->description,
-            $course->prerequisiteCourseId,
-            $course->sortOrder
+            'uuid' => $course->uuid,
+            'title' => $course->title,
+            'description' => $course->description,
+            'prerequisiteCourseId' => $course->prerequisiteCourseId,
+            'sortOrder' => $course->sortOrder
         ]);
 
         return $course->uuid;
@@ -127,21 +130,21 @@ class CourseRepository
     public function update(CourseInput $course): void {
         $stmt = $this->pdo->prepare("
             UPDATE courses
-            SET title = ?, description = ?, prerequisite_course_id = ?, sort_order = ?
-            WHERE id = ?
+            SET title = :title, description = :description, prerequisite_course_id = :prerequisiteCourseId, sort_order = :sortOrder
+            WHERE id = :uuid
         ");
         $stmt->execute([
-            $course->title,
-            $course->description,
-            $course->prerequisiteCourseId,
-            $course->sortOrder,
-            $course->uuid
+            'title' => $course->title,
+            'description' => $course->description,
+            'prerequisiteCourseId' => $course->prerequisiteCourseId,
+            'sortOrder' => $course->sortOrder,
+            'uuid' => $course->uuid
         ]);
     }
 
     public function delete(string $uuid): void {
-        $stmt = $this->pdo->prepare("DELETE FROM courses WHERE id = ?");
-        $stmt->execute([$uuid]);
+        $stmt = $this->pdo->prepare("DELETE FROM courses WHERE id = :uuid");
+        $stmt->execute(['uuid' => $uuid]);
     }
 
     private function createDto(array $row): Course {

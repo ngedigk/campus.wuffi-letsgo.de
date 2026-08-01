@@ -76,8 +76,8 @@ class QuizService
 
         $allPassed = $correctQuestions === $totalQuestions && $totalQuestions > 0;
         $feedbackMessage = $allPassed
-            ? 'You answered this quiz correctly!'
-            : 'Some answers were incorrect or incomplete. Review the feedback below.';
+            ? 'Sie haben dieses Quiz korrekt beantwortet!'
+            : 'Einige Antworten waren falsch oder unvollständig. Überprüfen Sie das Feedback unten.';
         $feedbackType = $allPassed ? 'success' : 'error';
 
         return new QuizResult(

@@ -17,7 +17,7 @@ class QuizQuestionService {
         try {
             $slideId = $this->quizQuestionRepository->create($quizQuestion);
         } catch (\Exception $e) {
-            throw new \Exception("Failed to create slide: " . $e->getMessage());
+            throw new \Exception("Fragen Erstellung fehlgeschlagen: " . $e->getMessage());
         }
         return $slideId;        
     }

@@ -58,19 +58,19 @@ class DashboardController
         $code = trim($_POST['code'] ?? '');
 
         if ($code === '') {
-            $_SESSION['redeem_error'] = "Invalid code.";
+            $_SESSION['redeem_error'] = "Ungültiger Code.";
             header("Location: index.php");
             exit;
         }
 
         try {
             $this->redeemService->redeem($this->authService->getCurrentUserId(), $code);
-            $_SESSION['redeem_success'] = "Course redeemed successfully.";
+            $_SESSION['redeem_success'] = "Kurs erfolgreich eingelöst.";
         } catch (RedeemException $e) {
             $_SESSION['redeem_error'] = $e->getMessage();
         } catch (Throwable $e) {
             error_log($e);
-            $_SESSION['redeem_error'] = "Something went wrong. Please try again later.";
+            $_SESSION['redeem_error'] = "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut.";
         }
 
         header("Location: index.php");

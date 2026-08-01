@@ -50,11 +50,11 @@ class AdminRegistrationCodesController extends AdminPageController
         $courseIds = $_POST['course_ids'] ?? [];
 
         if ($code === '') {
-            throw new Exception('Please provide a registration code.');
+            throw new Exception('Bitte geben Sie einen Registrierungscode an.');
         }
 
         $this->registrationCodeService->create($code, $courseIds);
-        $_SESSION['admin_success'] = 'Registration code created.';
+        $_SESSION['admin_success'] = 'Registrierungscode erstellt.';
     }
 
     private function handleUpdateCoursesToRegistrationCode(): void
@@ -63,19 +63,19 @@ class AdminRegistrationCodesController extends AdminPageController
         $courseIds = $_POST['course_ids'] ?? [];
 
         if ($registrationCodeId === 0) {
-            throw new Exception('Please provide a valid registration code ID.');
+            throw new Exception('Bitte geben Sie eine gültige Registrierungscode-ID an.');
         }
 
         $this->registrationCodeService->removeAllCourses($registrationCodeId);
 
         if (empty($courseIds)) {
-            $_SESSION['admin_success'] = 'Courses assignment removed.';
+            $_SESSION['admin_success'] = 'Kurszuweisung entfernt.';
             return;
         }
 
         $this->registrationCodeService->addCourses($registrationCodeId, $courseIds);
 
-        $_SESSION['admin_success'] = 'Courses assignment updated.';
+        $_SESSION['admin_success'] = 'Kurszuweisung aktualisiert.';
     }
 
     private function handleDeleteRegistrationCode(): void
@@ -83,10 +83,10 @@ class AdminRegistrationCodesController extends AdminPageController
         $registrationCodeId = (int)trim($_POST['registration_code_id'] ?? '');
 
         if ($registrationCodeId === 0) {
-            throw new Exception('Please provide a valid registration code ID.');
+            throw new Exception('Bitte geben Sie eine gültige Registrierungscode-ID an.');
         }
 
         $this->registrationCodeService->delete($registrationCodeId);
-        $_SESSION['admin_success'] = 'Registration code deleted.';
+        $_SESSION['admin_success'] = 'Registrierungscode gelöscht.';
     }
 }

@@ -3,9 +3,9 @@
 ?>
 <div class="slides-section">
     <div class="section-header">
-        <h3>Slides</h3>
+        <h3>Folien</h3>
         <button class="btn btn-primary btn-small" onclick="addSlide('<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>')">
-            + Add Slide
+            + Folie hinzufügen
         </button>
     </div>
     <div class="slides-table">
@@ -13,31 +13,31 @@
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Title</th>
-                    <th>Type</th>
+                    <th>Titel</th>
+                    <th>Art</th>
                     <th>Audio</th>
-                    <th>Sort Order</th>
-                    <th>Actions</th>
+                    <th>Reihenfolge</th>
+                    <th>Aktionen</th>
                 </tr>
             </thead>
             <tbody id="slidesBody">
                 <?php if (empty($selectedModule->slides)): ?>
                     <tr class="empty-slides">
-                        <td colspan="6"><p>No slides yet for this module.</p></td>
+                        <td colspan="6"><p>Dieses Modul hat bisher keine Folien.</p></td>
                     </tr>
                 <?php else:
                     foreach ($selectedModule->slides as $index => $slide): ?>
                         <tr>
                             <td><?= $index + 1 ?></td>
                             <td><?= htmlspecialchars($slide->title) ?></td>
-                            <td><?= $slide->isQuiz ? 'Quiz' : 'Slide' ?></td>
-                            <td><?= $slide->audioUrl ? 'Yes' : 'No' ?></td>
+                            <td><?= $slide->isQuiz ? 'Quiz' : 'Folie' ?></td>
+                            <td><?= $slide->audioUrl ? 'Ja' : 'Nein' ?></td>
                             <td><?= $slide->sortOrder ?></td>
                             <td>
                                 <a
                                     href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($slide->id) ?>"
                                     class="btn btn-small"
-                                    title="Edit Slide"
+                                    title="Folie bearbeiten"
                                 >
                                     ✏️
                                 </a>

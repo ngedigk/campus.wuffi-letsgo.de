@@ -43,10 +43,10 @@
                         <span class="nav-section-title">Courses</span>
                         <button onclick="document.getElementById('createCourseModal').style.display='flex'">
                             <span class="nav-icon">➕</span>
-                            <span>Add Course</span>
+                            <span>Kurs hinzufügen</span>
                         </button>
                         <div class="search-box">
-                            <input type="text" placeholder="Search courses..." id="courseSearch">
+                            <input type="text" placeholder="Kurse suchen..." id="courseSearch">
                         </div>
                         <div class="sidebar-course-list-wrapper">
                             <ul class="sidebar-course-list">
@@ -56,7 +56,7 @@
                     </li>
                     <li>
                         <a href="admin.php?page=users" class="<?= ($viewModel['activePage'] ?? '') === 'users' ? 'active' : '' ?>">
-                            <span>Users</span>
+                            <span>Benutzer</span>
                         </a>
                     </li>
                     <li>
@@ -81,7 +81,7 @@
                         <span class="user-email"><?= htmlspecialchars($viewModel['user']->email ?? 'admin@example.com') ?></span>
                     </div>
                 </div>
-                <a href="index.php" class="back-link">← Back to Site</a>
+                <a href="index.php" class="back-link">← Zurück zur Seite</a>
             </div>
         </aside>
 

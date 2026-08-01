@@ -1,5 +1,5 @@
 function deleteRegistrationCode(registrationCodeId) {
-    if (!confirm('Are you sure you want to delete this registration code?')) {
+    if (!confirm('Sind Sie sicher, dass Sie diesen Registrierungscode löschen möchten?')) {
         return;
     }
 

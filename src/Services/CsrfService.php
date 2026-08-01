@@ -41,7 +41,7 @@ class CsrfService
 
         if (empty($token) || !isset($validTokens[$token]) || time() - $validTokens[$token] > 3600) {
             error_log('CSRF validation failed');
-            throw new Exception('Invalid or expired CSRF token.');
+            throw new Exception('Ungültiger oder abgelaufener CSRF-Token.');
         }
 
         unset($_SESSION['csrf_tokens'][$token]);
@@ -53,7 +53,7 @@ class CsrfService
             $this->validateToken($token);
         } catch (Exception $e) {
             error_log($e->getMessage());
-            $_SESSION['error'] = 'Invalid or expired CSRF token.';
+            $_SESSION['error'] = 'Ungültiger oder abgelaufener CSRF-Token.';
             header("Location: $redirectUrl");
             exit;
         }

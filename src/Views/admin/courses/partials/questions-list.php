@@ -3,12 +3,12 @@
 ?>
 <div class="quiz-questions-section" style="margin-top: 30px;">
     <div class="section-header">
-        <h3>Quiz Questions</h3>
+        <h3>Quiz Fragen</h3>
         <button type="button" class="btn btn-primary btn-small" onclick="addQuestion(<?= $viewModel['selectedSlideId'] ?? 0 ?>)">+ Add Question</button>
     </div>
 
     <?php if (empty($viewModel['quizQuestions'])): ?>
-        <p class="empty-state">No questions yet. Click "Add Question" to create one.</p>
+        <p class="empty-state">Keine Fragen. Klicken Sie auf "Frage hinzufügen", um eine zu erstellen.</p>
     <?php else: ?>
         <div class="questions-list">
             <?php foreach ($viewModel['quizQuestions'] as $index => $question): ?>
@@ -19,7 +19,7 @@
                         <a
                             href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id) ?>&slide_id=<?= urlencode($viewModel['selectedSlideId'] ?? 0) ?>&question_id=<?= urlencode($question->id) ?>"
                             class="btn btn-small"
-                            title="Edit Question"
+                            title="Frage bearbeiten"
                         >
                             ✏️
                         </a>

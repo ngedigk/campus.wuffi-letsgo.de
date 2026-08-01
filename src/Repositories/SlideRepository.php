@@ -16,11 +16,11 @@ class SlideRepository
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM module_slides
-            WHERE id = ?
+            WHERE id = :slideId
             ORDER BY sort_order
         ");
 
-        $stmt->execute([$slideId]);
+        $stmt->execute(['slideId' => $slideId]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -34,13 +34,13 @@ class SlideRepository
             FROM module_slides ms
             INNER JOIN course_modules cm
                 ON cm.id = ms.module_id
-            WHERE cm.id = ?
+            WHERE cm.id = :moduleId
             ORDER BY
                 cm.sort_order,
                 ms.sort_order
         ");
 
-        $stmt->execute([$moduleId]);
+        $stmt->execute(['moduleId' => $moduleId]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(function($row) {
@@ -52,16 +52,16 @@ class SlideRepository
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides
             (module_id, title, html_content, audio_url, sort_order, is_quiz)
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (:moduleId, :title, :htmlContent, :audioUrl, :sortOrder, :isQuiz)
         ");
 
         $stmt->execute([
-            $slide->moduleId,
-            $slide->title,
-            $slide->htmlContent,
-            $slide->audioUrl,
-            $slide->sortOrder,
-            (int) $slide->isQuiz
+            'moduleId' => $slide->moduleId,
+            'title' => $slide->title,
+            'htmlContent' => $slide->htmlContent,
+            'audioUrl' => $slide->audioUrl,
+            'sortOrder' => $slide->sortOrder,
+            'isQuiz' => (int) $slide->isQuiz
         ]);
 
         return (int)$this->pdo->lastInsertId();
@@ -71,32 +71,32 @@ class SlideRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE module_slides
-            SET title = ?, html_content = ?, audio_url = ?, sort_order = ?, is_quiz = ?
-            WHERE id = ?
+            SET title = :title, html_content = :htmlContent, audio_url = :audioUrl, sort_order = :sortOrder, is_quiz = :isQuiz
+            WHERE id = :slideId
         ");
         $stmt->execute([
-            $slide->title,
-            $slide->htmlContent,
-            $slide->audioUrl,
-            $slide->sortOrder,
-            (int) $slide->isQuiz,
-            $slide->id
+            'title' => $slide->title,
+            'htmlContent' => $slide->htmlContent,
+            'audioUrl' => $slide->audioUrl,
+            'sortOrder' => $slide->sortOrder,
+            'isQuiz' => (int) $slide->isQuiz,
+            'slideId' => $slide->id
         ]);
     }
 
     public function delete(int $slideId): void {
-        $stmt = $this->pdo->prepare("DELETE FROM module_slides WHERE id = ?");
-        $stmt->execute([$slideId]);
+        $stmt = $this->pdo->prepare("DELETE FROM module_slides WHERE id = :slideId");
+        $stmt->execute(['slideId' => $slideId]);
     }
 
     private function createDto(array $row): Slide {
         return new Slide(
-            $row['id'],
-            $row['title'],
-            $row['html_content'],
-            $row['audio_url'],
-            $row['sort_order'],
-            $row['is_quiz']
+            id: $row['id'],
+            title: $row['title'],
+            htmlContent: $row['html_content'],
+            audioUrl: $row['audio_url'],
+            sortOrder: $row['sort_order'],
+            isQuiz: (bool) $row['is_quiz']
         );
     }
 }

@@ -39,7 +39,7 @@ class AdminAccessCodesController extends AdminPageController
                 $this->handleDeleteAccessCode();
                 break;
             default:
-                throw new Exception('Unsupported admin action.');
+                throw new Exception('Nicht unterstützte Admin-Aktion.');
         }
     }
 
@@ -49,15 +49,15 @@ class AdminAccessCodesController extends AdminPageController
         $courseId = trim($_POST['course_id'] ?? '');
 
         if ($code === '' || $courseId === '') {
-            throw new Exception('Please provide both an access code and a course.');
+            throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
         if ($this->accessCodeRepository->existsByCode($code)) {
-            throw new Exception('That access code already exists.');
+            throw new Exception('Dieser Access Code existiert bereits.');
         }
 
         $this->accessCodeRepository->create($code, $courseId);
-        $_SESSION['admin_success'] = 'Access code created.';
+        $_SESSION['admin_success'] = 'Access Code erstellt.';
     }
 
     private function handleUpdateAccessCode(): void
@@ -66,17 +66,17 @@ class AdminAccessCodesController extends AdminPageController
         $courseId = trim($_POST['course_id'] ?? '');
 
         if ($code === '' || $courseId === '') {
-            throw new Exception('Please provide both an access code and a course.');
+            throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
         $this->accessCodeRepository->update($code, $courseId);
-        $_SESSION['admin_success'] = 'Access code updated.';
+        $_SESSION['admin_success'] = 'Access Code aktualisiert.';
     }
 
     private function handleDeleteAccessCode(): void
     {
         $accessCodeId = trim($_POST['access_code_id'] ?? '');
         $this->accessCodeRepository->delete($accessCodeId);
-        $_SESSION['admin_success'] = 'Access code deleted and removed user access.';
+        $_SESSION['admin_success'] = 'Access Code gelöscht und Benutzerzugriff entfernt.';
     }
 }

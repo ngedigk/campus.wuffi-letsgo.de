@@ -6,7 +6,7 @@
         <a
             href="admin.php?page=courses&course_id=<?= $course->uuid ?>"
             class="course-item <?= $course->uuid === ($viewModel['selectedCourseId'] ?? '' ?? '') ? 'active' : '' ?>"
-            title="Edit Course"
+            title="Kurs bearbeiten"
         >
             <div class="course-info">
                 <h4><?= htmlspecialchars($course->title) ?></h4>

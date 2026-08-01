@@ -4,7 +4,7 @@
 <div id="createQuestionModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Create New Question</h3>
+            <h3>Neue Frage erstellen</h3>
             <span class="close" onclick="document.getElementById('createQuestionModal').style.display='none'">&times;</span>
         </div>
         <form method="post" id="createQuestionForm">
@@ -13,13 +13,13 @@
             <input type="hidden" id="question-slide-id" name="slide_id" value="">
             
             <div class="form-group">
-                <label for="new-question-text">Question Text *</label>
+                <label for="new-question-text">Frage *</label>
                 <textarea id="new-question-text" name="question_text" placeholder="Enter question text" required style="width: 100%; min-height: 80px;"></textarea>
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createQuestionModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Question</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createQuestionModal').style.display='none'">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Frage erstellen</button>
             </div>
         </form>
     </div>

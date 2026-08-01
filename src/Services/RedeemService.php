@@ -30,7 +30,7 @@ class RedeemService
                 ->findByCodeForUpdate($code);
 
             if (!$access) {
-                throw new Exception("Invalid code.");
+                throw new Exception("Ungültiger Code.");
             }
 
             if ($this->userCourseRepository->userHasCourse(
@@ -38,7 +38,7 @@ class RedeemService
                 $access['course_id']
             )) {
                 throw new Exception(
-                    "You already have access to this course."
+                    "Sie haben bereits Zugriff auf diesen Kurs."
                 );
             }
 
@@ -53,7 +53,7 @@ class RedeemService
                 if ($e->errorInfo[1] === 1062) {
 
                     throw new RedeemException(
-                        "This access code has already been redeemed."
+                        "Dieser Zugangscode wurde bereits eingelöst."
                     );
                 }
 

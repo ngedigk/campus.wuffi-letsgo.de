@@ -56,9 +56,9 @@
             <?php endif; ?>
         <?php else: ?>
             <div class="empty-state">
-                <p>No course selected. Create a new course to get started.</p>
+                <p>Kein Kurs ausgewählt. Erstellen Sie einen neuen Kurs, um zu beginnen.</p>
                 <button class="btn btn-primary" onclick="document.getElementById('createCourseModal').style.display='flex'">
-                    + Add Course
+                    + Kurs hinzufügen
                 </button>
             </div>
         <?php endif; ?>

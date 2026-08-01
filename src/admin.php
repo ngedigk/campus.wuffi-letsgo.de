@@ -10,7 +10,7 @@ $authService = $container->get(AuthService::class);
 $authService->requireLogin(__DIR__);
 
 if (!$authService->isAdmin()) {
-    $_SESSION['admin_error'] = 'You do not have permission to manage admin features.';
+    $_SESSION['admin_error'] = 'Sie haben keine Berechtigung, administative Funktionen zu verwalten.';
     header('Location: index.php');
     exit;
 }

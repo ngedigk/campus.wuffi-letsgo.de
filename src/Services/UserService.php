@@ -51,7 +51,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('User not found.');
+            throw new Exception('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->setAdmin($user->id, true);
@@ -62,7 +62,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('User not found.');
+            throw new Exception('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->setAdmin($user->id, false);
@@ -73,7 +73,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('User not found.');
+            throw new Exception('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->verify($user->id);

@@ -15,11 +15,14 @@ class AuthRepository
         $stmt = $this->pdo->prepare("
             SELECT COUNT(*) 
             FROM login_attempts
-            WHERE ip = ?
-            AND attempted_at > (NOW() - INTERVAL ? MINUTE)
+            WHERE ip = :ip
+            AND attempted_at > (NOW() - INTERVAL :windowMinutes MINUTE)
         ");
 
-        $stmt->execute([$ip, $windowMinutes]);
+        $stmt->execute([
+            'ip' => $ip,
+            'windowMinutes' => $windowMinutes
+        ]);
 
         return $stmt->fetchColumn();
     }
@@ -28,19 +31,19 @@ class AuthRepository
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO login_attempts (ip)
-            VALUES (?)
+            VALUES (:ip)
         ");
 
-        $stmt->execute([$ip]);
+        $stmt->execute(['ip' => $ip]);
     }
 
     public function clearOldAttempts(int $windowMinutes): void
     {
         $stmt = $this->pdo->prepare("
             DELETE FROM login_attempts
-            WHERE attempted_at < (NOW() - INTERVAL ? MINUTE)
+            WHERE attempted_at < (NOW() - INTERVAL :windowMinutes MINUTE)
         ");
 
-        $stmt->execute([$windowMinutes]);
+        $stmt->execute(['windowMinutes' => $windowMinutes]);
     }
 }

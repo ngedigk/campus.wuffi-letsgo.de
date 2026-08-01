@@ -14,19 +14,16 @@ class QuizResult
         public readonly array $results = []
     ) {}
 
-    /**
-     * Helper to generate the feedback label for a choice in the view.
-     */
     public function getChoiceLabel(array $choice): string
     {
         if ($choice['is_correct'] && $choice['was_chosen']) {
-            return ' <strong>(Correct, Your answer)</strong>';
+            return ' <strong>(Richtig, Ihre Antwort)</strong>';
         }
         if ($choice['is_correct']) {
-            return ' <strong>(Correct)</strong>';
+            return ' <strong>(Richtig)</strong>';
         }
         if ($choice['was_chosen']) {
-            return ' <strong>(Your answer)</strong>';
+            return ' <strong>(Ihre Antwort)</strong>';
         }
         return '';
     }

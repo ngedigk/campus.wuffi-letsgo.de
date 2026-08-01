@@ -3,9 +3,9 @@
 ?>
 <div class="modules-section">
     <div class="section-header">
-        <h3>Modules</h3>
+        <h3>Module</h3>
         <button class="btn btn-primary btn-small" onclick="addModule('<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>')">
-            + Add Module
+            + Modul hinzufügen
         </button>
     </div>
     <div class="modules-list" id="modulesList">
@@ -18,7 +18,7 @@
                         <a
                             href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($module->id) ?>"
                             class="btn btn-small"
-                            title="Edit Module"
+                            title="Modul bearbeiten"
                         >
                             ✏️
                         </a>
@@ -28,7 +28,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <div class="empty-modules">
-                <p>No modules yet. Click "Add Module" to get started.</p>
+                <p>Keine Module. Klicken Sie auf "Modul hinzufügen", um ein Modul zu erstellen.</p>
             </div>
         <?php endif; ?>
     </div>

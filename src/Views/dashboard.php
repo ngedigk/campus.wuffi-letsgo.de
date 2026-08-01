@@ -36,7 +36,7 @@
                 <h2 id="courses-heading">Deine Kurse</h2>
 
                 <?php if (!$viewModel['courses'] ?? []): ?>
-                <p>You don't have any courses yet.</p>
+                <p>Sie haben noch keine Kurse.</p>
                 <?php else: ?>
                     <div class="course-list">
                         <?php foreach ($viewModel['courses'] ?? [] as $course): ?>

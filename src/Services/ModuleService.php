@@ -17,7 +17,7 @@ class ModuleService {
         try {
             $moduleId = $this->moduleRepository->create($module);
         } catch (\Exception $e) {
-            throw new \Exception("Failed to create module: " . $e->getMessage());
+            throw new \Exception("Modul Erstellung fehlgeschlagen: " . $e->getMessage());
         }
         return $moduleId;        
     }

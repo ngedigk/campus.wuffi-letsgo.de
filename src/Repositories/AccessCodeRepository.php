@@ -15,11 +15,11 @@ class AccessCodeRepository
         $stmt = $this->pdo->prepare("
             SELECT id, course_id
             FROM access_codes
-            WHERE code = ?
+            WHERE code = :code
             FOR UPDATE
         ");
 
-        $stmt->execute([$code]);
+        $stmt->execute(['code' => $code]);
 
         return $stmt->fetch() ?: null;
     }
@@ -29,10 +29,10 @@ class AccessCodeRepository
         $stmt = $this->pdo->prepare("
             SELECT 1
             FROM access_codes
-            WHERE code = ?
+            WHERE code = :code
         ");
 
-        $stmt->execute([$code]);
+        $stmt->execute(['code' => $code]);
 
         return (bool)$stmt->fetch();
     }
@@ -45,20 +45,26 @@ class AccessCodeRepository
                 code,
                 course_id
             )
-            VALUES (?, ?)
+            VALUES (:code, :courseUuid)
         ");
 
-        $stmt->execute([$code, $courseUuid]);
+        $stmt->execute([
+            'code' => $code,
+            'courseUuid' => $courseUuid
+        ]);
     }
 
     public function update(string $code, string $courseUuid): void
     {
         $stmt = $this->pdo->prepare("
            UPDATE access_codes
-            SET course_id = ?
-            WHERE code = ?
+            SET course_id = :courseUuid
+            WHERE code = :code
         ");
-        $stmt->execute([$courseUuid, $code]);
+        $stmt->execute([
+            'courseUuid' => $courseUuid,
+            'code' => $code
+        ]);
     }
 
     public function createForRegistration(int $registrationCodeId, string $userId, string $courseId): int
@@ -66,9 +72,12 @@ class AccessCodeRepository
         $accessCode = bin2hex(random_bytes(16));
         $stmt = $this->pdo->prepare("
             INSERT INTO access_codes (code, course_id)
-            VALUES (?, ?)
+            VALUES (:code, :courseId)
         ");
-        $stmt->execute([$accessCode, $courseId]);
+        $stmt->execute([
+            'code' => $accessCode,
+            'courseId' => $courseId
+        ]);
         return (int)$this->pdo->lastInsertId();
     }
 
@@ -96,7 +105,7 @@ class AccessCodeRepository
 
     public function delete(int $accessCodeId): void
     {
-        $stmt = $this->pdo->prepare("DELETE FROM access_codes WHERE id = ?");
-        $stmt->execute([$accessCodeId]);
+        $stmt = $this->pdo->prepare("DELETE FROM access_codes WHERE id = :accessCodeId");
+        $stmt->execute(['accessCodeId' => $accessCodeId]);
     }
 }

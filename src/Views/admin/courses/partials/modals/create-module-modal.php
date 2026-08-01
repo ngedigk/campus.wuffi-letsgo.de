@@ -4,7 +4,7 @@
 <div id="createModuleModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Create New Module</h3>
+            <h3>Neues Modul erstellen</h3>
             <span class="close" onclick="document.getElementById('createModuleModal').style.display='none'">&times;</span>
         </div>
         <form method="post" id="createModuleForm" action="">
@@ -13,18 +13,18 @@
             <input type="hidden" id="module-course-id" name="course_id" value="">
             
             <div class="form-group">
-                <label for="new-module-title">Module Title *</label>
+                <label for="new-module-title">Modul Titel *</label>
                 <input type="text" id="new-module-title" name="title" placeholder="Enter module title" required>
             </div>
 
             <div class="form-group">
-                <label for="new-module-title">Sort Order</label>
+                <label for="new-module-title">Reihenfolge</label>
                 <input type="text" id="new-module-sort" name="sort_order" value="0">
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createModuleModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Module</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createModuleModal').style.display='none'">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Modul erstellen</button>
             </div>
         </form>
     </div>

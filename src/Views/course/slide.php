@@ -2,7 +2,7 @@
 /** @var array $viewModel */
 ?>
 <?php if (!$viewModel['currentSlide']): ?>
-    <p>No slide available for this module.</p>
+    <p>Keine Folien verfügbar für dieses Modul.</p>
 <?php else: ?>
     <article class="slide-content">
         <h3><?= htmlspecialchars($viewModel['currentSlide']->title ?? 'Untitled Slide') ?></h3>
@@ -21,7 +21,7 @@
             <div class="slide-audio">
                 <audio controls preload="none">
                     <source src="<?= htmlspecialchars($audioSrc) ?>" type="audio/mpeg">
-                    Your browser does not support audio playback.
+                    Ihr Browser unterstützt die Wiedergabe von Audio-Inhalten nicht.
                 </audio>
             </div>
         <?php endif; ?>
@@ -42,7 +42,7 @@
                             <fieldset>
                                 <legend><?= htmlspecialchars($question['question_text']) ?>
                                     <span class="question-result <?= $isQuestionCorrect ? 'correct' : 'incorrect' ?>">
-                                        <?= $isQuestionCorrect ? '✓ Correct' : '✗ Incorrect' ?>
+                                        <?= $isQuestionCorrect ? '✓ Richtig' : '✗ Falsch' ?>
                                     </span>
                                 </legend>
                                 <?php foreach ($viewModel['quizResult']->results[$qId]['choices'] ?? $viewModel['quizResult']->choicesByQuestion[$qId] ?? [] as $choice):
@@ -101,7 +101,7 @@
                             </fieldset>
                         <?php endforeach; ?>
 
-                        <button type="submit" name="quiz_submit" value="1">Submit Quiz</button>
+                        <button type="submit" name="quiz_submit" value="1">Antworten prüfen</button>
                     </form>
                 <?php endif; ?>
             </div>

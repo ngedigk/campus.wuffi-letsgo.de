@@ -20,45 +20,27 @@
                         value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>"
                     >
 
-                    <label>E-Mail</label>
-                    <br>
-
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                    >
+                    <label>E-Mail<br>
+                        <input type="email" name="email" required>
+                    </label>
 
                     <br><br>
 
-                    <label>Passwort</label>
-                    <br>
-
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                    >
+                    <label>Passwort<br>
+                        <input type="password" name="password" required>
+                    </label>
 
                     <br><br>
 
-                    <button type="submit">
-                        Anmelden
-                    </button>
+                    <button type="submit">Anmelden</button>
 
                 </form>
 
                 <br>
 
-                <a href="register.php">
-                Account erstellen
-                </a>
-
+                <a href="register.php">Account erstellen</a>
                 <br>
-
-                <a href="forgot-password.php">
-                Passwort vergessen?
-                </a>
+                <a href="forgot-password.php">Passwort vergessen?</a>
 
             </div>
         </div>

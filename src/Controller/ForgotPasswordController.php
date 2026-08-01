@@ -49,16 +49,16 @@ class ForgotPasswordController
             $this->sendResetEmail($email, $token);
         }
 
-        $this->renderForm(['message' => 'If the email exists, a reset link was sent.']);
+        $this->renderForm(['message' => 'Wenn die E-Mail-Adresse existiert, wurde ein Reset-Link gesendet.']);
     }
 
     private function sendResetEmail(string $email, string $token): void
     {
         $link = SITE_URL . "/reset-password.php?token=" . urlencode($token);
-        $htmlBody = "<p>Reset your password:</p><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($link) . "</a>";
+        $htmlBody = "<p>Passwort zurücksetzen:</p><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($link) . "</a>";
 
         try {
-            $this->mailerService->send($email, 'Password Reset', $htmlBody);
+            $this->mailerService->send($email, 'Passwort zurücksetzen', $htmlBody);
         } catch (Exception $e) {
             error_log("Reset email failed: " . $e->getMessage());
         }
@@ -67,7 +67,7 @@ class ForgotPasswordController
     private function renderForm(array $context): void
     {
         $context['csrfToken'] = $this->csrfService->generateToken();
-        $context['pageTitle'] = 'Forgot Password';
+        $context['pageTitle'] = 'Passwort vergessen';
         $context['isLoggedIn'] = $this->authService->isLoggedIn();
 
         $this->viewRenderer->renderWithTemplate('forgot-password', $context);

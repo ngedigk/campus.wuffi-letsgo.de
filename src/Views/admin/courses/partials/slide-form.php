@@ -13,7 +13,7 @@
         <input type="hidden" name="module_id" value="<?= htmlspecialchars($viewModel['selectedModule']->id ?? '') ?>">
 
         <div class="section-header">
-            <h3>Slide Details</h3>
+            <h3>Folien Details</h3>
 
             <div class="panel-actions">
                 <button
@@ -21,7 +21,7 @@
                     class="btn btn-danger btn-small"
                     onclick="deleteSlide(<?= $viewModel['selectedSlide']->id ?? '' ?>)"
                 >
-                    Delete Slide
+                    Folie löschen
                 </button>
 
                 <button
@@ -29,14 +29,14 @@
                     class="btn btn-primary btn-small"
                     onclick="prepareSlideContent()"
                 >
-                    Save Slide
+                    Folie speichern
                 </button>
             </div>
         </div>
 
         <div class="slide-form">
             <div class="form-group">
-                <label for="slide-title">Title *</label>
+                <label for="slide-title">Titel *</label>
                 <input
                     type="text"
                     id="slide-title"
@@ -46,7 +46,7 @@
             </div>
 
             <div class="form-group">
-                <label for="slide-content">Content</label>
+                <label for="slide-content">Inhalt</label>
 
                 <div id="blocks"></div>
 
@@ -72,7 +72,7 @@
             </div>
 
             <div class="form-group">
-                <label for="slide-sort">Sort Order</label>
+                <label for="slide-sort">Reihenfolge</label>
                 <input
                     type="number"
                     id="slide-sort"
@@ -91,7 +91,7 @@
                         value="1"
                         <?= $viewModel['selectedSlide']->isQuiz ?? false ? 'checked' : '' ?>
                     >
-                    Quiz Slide
+                    Quiz Folie
                 </label>
             </div>
         </div>

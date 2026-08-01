@@ -13,7 +13,7 @@
         <input type="hidden" name="slide_id" value="<?= htmlspecialchars($viewModel['selectedSlide']->id ?? '') ?>">
 
         <div class="section-header">
-            <h3>Question Details</h3>
+            <h3>Frage Details</h3>
 
             <div class="panel-actions">
                 <button
@@ -21,18 +21,18 @@
                     class="btn btn-danger btn-small"
                     onclick="deleteQuestion(<?= $viewModel['selectedQuestion']->id ?? '' ?>)"
                 >
-                    Delete Question
+                    Frage löschen
                 </button>
 
                 <button type="submit" class="btn btn-primary btn-small">
-                    Save Question
+                    Frage speichern
                 </button>
             </div>
         </div>
 
         <div class="question-form">
             <div class="form-group">
-                <label for="question-text">Question *</label>
+                <label for="question-text">Frage *</label>
                 <input
                     type="text"
                     id="question-text"

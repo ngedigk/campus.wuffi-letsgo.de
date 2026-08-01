@@ -45,7 +45,7 @@ class RegistrationController
                 'isLoggedIn' => false
             ]);
         } else {
-            $_SESSION['verify_error'] = $result['message'] ?? 'Invalid or expired token.';
+            $_SESSION['verify_error'] = $result['message'] ?? 'Ungültiger oder abgelaufener Token.';
             header('Location: index.php');
             exit;
         }
@@ -118,7 +118,7 @@ class RegistrationController
     {
         $link = SITE_URL . "/register.php?action=verify&token=" . urlencode($token);
 
-        $htmlBody = "<h1>Account verifizieren</h1><p>Klicken Sie auf den unteren Link:</p><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($link) . "</a>";
+        $htmlBody = "<h1>Account bestätigen</h1><p>Klicken Sie auf den unteren Link:</p><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($link) . "</a>";
 
         try {
             $this->mailerService->send($email, 'Bestätigen Sie Ihre E-Mail', $htmlBody);

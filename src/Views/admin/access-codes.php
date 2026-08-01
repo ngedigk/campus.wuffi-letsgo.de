@@ -3,7 +3,7 @@
 ?>
 <div class="page-actions">
     <button class="btn btn-primary" onclick="document.getElementById('createAccessCodeModal').style.display='flex'">
-        + Create Access Code
+        + Access Code erstellen
     </button>
 </div>
 
@@ -20,12 +20,12 @@
 <div class="list-grid access-codes-list">
     <div class="list-item header-row">
         <div class="cell code-cell">Code</div>
-        <div class="cell course-cell">Course</div>
+        <div class="cell course-cell">Kurs</div>
         <div class="cell status-cell">Status</div>
-        <div class="cell actions-cell">Actions</div>
+        <div class="cell actions-cell">Aktionen</div>
     </div>
     <?php if (empty($viewModel['accessCodes'] ?? [])): ?>
-        <div class="empty-state" style="grid-column: 1 / -1;">No access codes found. Create your first access code!</div>
+        <div class="empty-state" style="grid-column: 1 / -1;">Keine Access Codes gefunden. Erstellen Sie Ihren ersten Access Code!</div>
     <?php else: ?>
         <?php foreach ($viewModel['accessCodes'] ?? [] as $code): ?>
             <div class="list-item">
@@ -38,14 +38,14 @@
                             <?= htmlspecialchars($code['course_title']) ?>
                         </a>
                     <?php else: ?>
-                        Unknown Course
+                        Unbekannter Kurs
                     <?php endif; ?>
                 </div>
                 <div class="cell status-cell">
                     <?php if ($code['claimed']): ?>
-                        <span class="status-badge active">Claimed</span>
+                        <span class="status-badge active">Eingelöst</span>
                     <?php else: ?>
-                        <span class="status-badge pending">Not Claimed</span>
+                        <span class="status-badge pending">Nicht eingelöst</span>
                     <?php endif; ?>
                 </div>
                 <div class="cell actions-cell">
@@ -54,9 +54,9 @@
                                 onclick="editAccessCode('<?= $code['id'] ?>')"
                                 data-course-id="<?= htmlspecialchars($code['course_id']) ?>"
                                 data-code="<?= htmlspecialchars($code['code']) ?>">
-                            Edit
+                            Bearbeiten
                         </button>
-                        <button class="btn btn-small btn-danger" onclick="deleteAccessCode('<?= $code['id'] ?>')">Delete</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteAccessCode('<?= $code['id'] ?>')">Löschen</button>
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
 <div id="createAccessCodeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Create Access Code</h3>
+            <h3>Access Code erstellen</h3>
             <span class="close" onclick="document.getElementById('createAccessCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=access-codes">
@@ -77,14 +77,13 @@
             
             <div class="form-group">
                 <label for="access-code">Access Code</label>
-                <input type="text" id="access-code" name="code" placeholder="Enter access code" required>
-                <small>Will be automatically converted to uppercase</small>
+                <input type="text" id="access-code" name="code" placeholder="Access Code eingeben" required>
             </div>
             
             <div class="form-group">
-                <label for="access-course">Course</label>
+                <label for="access-course">Kurs</label>
                 <select id="access-course" name="course_id" required>
-                    <option value="">Select a course</option>
+                    <option value="">Kurs auswählen</option>
                     <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <option value="<?= htmlspecialchars($course->uuid) ?>">
                             <?= htmlspecialchars($course->title) ?>
@@ -94,8 +93,8 @@
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createAccessCodeModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Code</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createAccessCodeModal').style.display='none'">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Code erstellen</button>
             </div>
         </form>
     </div>

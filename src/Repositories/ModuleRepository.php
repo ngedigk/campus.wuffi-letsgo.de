@@ -16,11 +16,11 @@ class ModuleRepository
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM course_modules
-            WHERE id = ?
+            WHERE id = :moduleId
             ORDER BY sort_order
         ");
 
-        $stmt->execute([$moduleId]);
+        $stmt->execute(['moduleId' => $moduleId]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -34,12 +34,12 @@ class ModuleRepository
             FROM course_modules cm
             INNER JOIN courses c
                 ON c.id = cm.course_id
-            WHERE c.id = ?
+            WHERE c.id = :courseId
             ORDER BY
                 cm.sort_order
         ");
 
-        $stmt->execute([$courseId]);
+        $stmt->execute(['courseId' => $courseId]);
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return array_map(function($row) {
@@ -51,13 +51,13 @@ class ModuleRepository
         $stmt = $this->pdo->prepare("
             INSERT INTO course_modules
             (course_id, title, sort_order)
-            VALUES (?, ?, ?)
+            VALUES (:courseId, :title, :sortOrder)
         ");
 
         $stmt->execute([
-            $module->courseId,
-            $module->title,
-            $module->sortOrder
+            'courseId' => $module->courseId,
+            'title' => $module->title,
+            'sortOrder' => $module->sortOrder
         ]);
 
         return (int)$this->pdo->lastInsertId();
@@ -67,19 +67,19 @@ class ModuleRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE course_modules
-            SET title = ?, sort_order = ?
-            WHERE id = ?
+            SET title = :title, sort_order = :sortOrder
+            WHERE id = :moduleId
         ");
         $stmt->execute([
-            $module->title,
-            $module->sortOrder,
-            $module->id
+            'title' => $module->title,
+            'sortOrder' => $module->sortOrder,
+            'moduleId' => $module->id
         ]);
     }
 
     public function delete(int $moduleId): void {
-        $stmt = $this->pdo->prepare("DELETE FROM course_modules WHERE id = ?");
-        $stmt->execute([$moduleId]);
+        $stmt = $this->pdo->prepare("DELETE FROM course_modules WHERE id = :moduleId");
+        $stmt->execute(['moduleId' => $moduleId]);
     }
 
     private function createDto(array $row): Module {

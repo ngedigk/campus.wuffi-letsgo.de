@@ -15,11 +15,11 @@ class RegistrationCodeRepository
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM registration_codes
-            WHERE code = ?
+            WHERE code = :code
             FOR UPDATE
         ");
 
-        $stmt->execute([$code]);
+        $stmt->execute(['code' => $code]);
 
         return $stmt->fetch() ?: null;
     }
@@ -29,11 +29,11 @@ class RegistrationCodeRepository
         $stmt = $this->pdo->prepare("
             SELECT 1
             FROM registration_codes
-            WHERE code = ?
+            WHERE code = :code
               AND used_by_user_id IS NOT NULL
         ");
 
-        $stmt->execute([$code]);
+        $stmt->execute(['code' => $code]);
 
         return (bool)$stmt->fetch();
     }
@@ -42,18 +42,21 @@ class RegistrationCodeRepository
     {
         $stmt = $this->pdo->prepare("
             UPDATE registration_codes
-            SET used_by_user_id = ?,
+            SET used_by_user_id = :userId,
                 used_at = NOW()
-            WHERE id = ?
+            WHERE id = :id
         ");
 
-        $stmt->execute([$userId, $id]);
+        $stmt->execute([
+            'userId' => $userId,
+            'id' => $id
+        ]);
     }
 
     public function create(string $code, array $courseIds = []): void
     {
         $stmt = $this->pdo->prepare(
-            "INSERT INTO registration_codes (code) VALUES (?)"
+            "INSERT INTO registration_codes (code) VALUES (:code)"
         );
         $stmt->execute([$code]);
         $id = (int)$this->pdo->lastInsertId();
@@ -77,9 +80,9 @@ class RegistrationCodeRepository
     public function getCourseIds(int $registrationCodeId): array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT course_id FROM registration_code_courses WHERE registration_code_id = ?"
+            "SELECT course_id FROM registration_code_courses WHERE registration_code_id = :registrationCodeId"
         );
-        $stmt->execute([$registrationCodeId]);
+        $stmt->execute(['registrationCodeId' => $registrationCodeId]);
         return array_column($stmt->fetchAll(PDO::FETCH_ASSOC), 'course_id');
     }
 
@@ -115,9 +118,9 @@ class RegistrationCodeRepository
     public function removeAllCourses(int $registrationCodeId): void
     {
         $stmt = $this->pdo->prepare(
-            "DELETE FROM registration_code_courses WHERE registration_code_id = ?"
+            "DELETE FROM registration_code_courses WHERE registration_code_id = :registrationCodeId"
         );
-        $stmt->execute([$registrationCodeId]);
+        $stmt->execute(['registrationCodeId' => $registrationCodeId]);
     }
 
     public function getAll(): array
@@ -139,7 +142,7 @@ class RegistrationCodeRepository
 
     public function delete(int $id): void
     {
-        $stmt = $this->pdo->prepare("DELETE FROM registration_codes WHERE id = ?");
-        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare("DELETE FROM registration_codes WHERE id = :id");
+        $stmt->execute(['id' => $id]);
     }
 }

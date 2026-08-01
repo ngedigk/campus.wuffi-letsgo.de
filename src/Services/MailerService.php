@@ -65,7 +65,7 @@ class MailerService
             $this->mailer->send();
         } catch (Exception $e) {
             error_log("Mailer Error: " . $e->getMessage());
-            throw new Exception("Email sending failed.");
+            throw new Exception("E-Mail Versand fehlgeschlagen.");
         }
     }
 }

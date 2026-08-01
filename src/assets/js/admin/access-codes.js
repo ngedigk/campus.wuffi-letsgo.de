@@ -1,5 +1,5 @@
 function deleteAccessCode(accessCodeId) {
-    if (!confirm('Are you sure you want to delete this access code?')) {
+    if (!confirm('Sind Sie sicher, dass Sie diesen Access Code löschen möchten?')) {
         return;
     }
 

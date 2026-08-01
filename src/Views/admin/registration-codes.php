@@ -3,7 +3,7 @@
 ?>
 <div class="page-actions">
     <button class="btn btn-primary" onclick="document.getElementById('createRegistrationCodeModal').style.display='flex'">
-        + Create Registration Code
+        + Registration Code erstellen
     </button>
 </div>
 
@@ -26,7 +26,7 @@
         <div class="cell actions-cell">Actions</div>
     </div>
     <?php if (empty($viewModel['registrationCodes'] ?? [])): ?>
-        <div class="empty-state" style="grid-column: 1 / -1;">No registration codes found. Create your first registration code!</div>
+        <div class="empty-state" style="grid-column: 1 / -1;">Keine Registration Codes gefunden. Erstellen Sie Ihren ersten Registration Code!</div>
     <?php else: ?>
         <?php foreach ($viewModel['registrationCodes'] ?? [] as $code): ?>
             <div class="list-item">
@@ -45,14 +45,14 @@
                             <?php endforeach; ?>
                         </ul>
                     <?php else: ?>
-                        No Courses
+                        Keine Kurse
                     <?php endif; ?>
                 </div>
                 <div class="cell status-cell">
                     <?php if ($code['used_by_user_id']): ?>
-                        <span class="status-badge active">Used</span>
+                        <span class="status-badge active">Verwendet</span>
                     <?php else: ?>
-                        <span class="status-badge pending">Available</span>
+                        <span class="status-badge pending">Verfügbar</span>
                     <?php endif; ?>
                 </div>
                 <div class="cell used-at-cell">
@@ -67,10 +67,10 @@
                     <button class="btn btn-small" 
                             onclick="editRegistrationCode('<?= $code['id'] ?>')" 
                             data-course-ids="<?= !empty($code['course_titles']) ? implode(',', array_column($code['course_titles'], 'id')) : '' ?>">
-                        Edit
+                        Bearbeiten
                     </button>
                     <?php endif; ?>
-                    <button class="btn btn-small btn-danger" onclick="deleteRegistrationCode('<?= $code['id'] ?>')">Delete</button>
+                    <button class="btn btn-small btn-danger" onclick="deleteRegistrationCode('<?= $code['id'] ?>')">Löschen</button>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -81,7 +81,7 @@
 <div id="createRegistrationCodeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Create Registration Code</h3>
+            <h3>Registration Code erstellen</h3>
             <span class="close" onclick="document.getElementById('createRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=registration-codes">
@@ -90,12 +90,11 @@
             
             <div class="form-group">
                 <label for="reg-code">Registration Code</label>
-                <input type="text" id="reg-code" name="code" placeholder="Enter registration code" required>
-                <small>Will be automatically converted to uppercase</small>
+                <input type="text" id="reg-code" name="code" placeholder="Registration Code eingeben" required>
             </div>
             
             <div class="form-group">
-                <label>Courses</label>
+                <label>Kurse</label>
                 <div class="course-checkboxes">
                     <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <label class="checkbox-label">
@@ -104,12 +103,11 @@
                         </label>
                     <?php endforeach; ?>
                 </div>
-                <small>Select at least one course</small>
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createRegistrationCodeModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Create Code</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('createRegistrationCodeModal').style.display='none'">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Code erstellen</button>
             </div>
         </form>
     </div>
@@ -119,7 +117,7 @@
 <div id="editRegistrationCodeModal" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h3>Edit Registration Code</h3>
+            <h3>Registration Code bearbeiten</h3>
             <span class="close" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
         <form method="post" action="admin.php?page=registration-codes">
@@ -128,7 +126,7 @@
             <input type="hidden" id="edit-registration-code-id" name="registration_code_id" value="">
             
             <div class="form-group">
-                <label>Assign Courses</label>
+                <label>Kurse zuweisen</label>
                 <div class="course-checkboxes">
                     <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
                         <label class="checkbox-label">
@@ -137,12 +135,11 @@
                         </label>
                     <?php endforeach; ?>
                 </div>
-                <small>Only courses not currently assigned will be added</small>
             </div>
             
             <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Courses</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">Abbrechen</button>
+                <button type="submit" class="btn btn-primary">Kurse hinzufügen</button>
             </div>
         </form>
     </div>
