@@ -77,6 +77,14 @@ class RegistrationCodeRepository
         }
     }
 
+    public function update(int $registrationCodeId, string $code): void
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE registration_codes SET code = :code WHERE id = :id"
+        );
+        $stmt->execute(['code' => $code, 'id' => $registrationCodeId]);
+    }
+
     public function getCourseIds(int $registrationCodeId): array
     {
         $stmt = $this->pdo->prepare(

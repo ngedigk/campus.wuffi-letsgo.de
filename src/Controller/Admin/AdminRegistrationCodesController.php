@@ -8,7 +8,10 @@ class AdminRegistrationCodesController extends AdminPageController
 {
     public function render(array $context): void
     {
-        $context['additionalJs'][] = ['src' => '/assets/js/admin/registration-codes.js'];
+        $context['additionalJs'][] = [
+            'src' => '/assets/js/admin/registration-codes.js',
+            'type' => 'module'
+        ];
 
         $viewData = [
             ...$context,
@@ -33,8 +36,8 @@ class AdminRegistrationCodesController extends AdminPageController
             case 'create_registration_code':
                 $this->handleCreateRegistrationCode();
                 break;
-            case 'update_courses_to_registration_code_assignment':
-                $this->handleUpdateCoursesToRegistrationCode();
+            case 'update_registration_code':
+                $this->handleUpdateRegistrationCode();
                 break;
             case 'delete_registration_code':
                 $this->handleDeleteRegistrationCode();
@@ -57,14 +60,17 @@ class AdminRegistrationCodesController extends AdminPageController
         $_SESSION['admin_success'] = 'Registrierungscode erstellt.';
     }
 
-    private function handleUpdateCoursesToRegistrationCode(): void
+    private function handleUpdateRegistrationCode(): void
     {
         $registrationCodeId = (int)trim($_POST['registration_code_id'] ?? '');
+        $registrationCode = trim($_POST['code'] ?? '');
         $courseIds = $_POST['course_ids'] ?? [];
 
-        if ($registrationCodeId === 0) {
-            throw new Exception('Bitte geben Sie eine gültige Registrierungscode-ID an.');
+        if (empty($registrationCode)) {
+            throw new Exception('Bitte geben Sie einen Registrierungscode an.');
         }
+
+        $this->registrationCodeService->update($registrationCodeId, $registrationCode);
 
         $this->registrationCodeService->removeAllCourses($registrationCodeId);
 

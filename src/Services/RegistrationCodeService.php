@@ -30,7 +30,7 @@ class RegistrationCodeService
                 'code' => $code['code'],
                 'used_by_user_id' => $code['used_by_user_id'],
                 'used_at' => $code['used_at'],
-                'course_titles' => array_map(
+                'courses' => array_map(
                     fn($courseId) => [
                         'id' => $courseId,
                         'title' => $courseMap[$courseId] ?? 'Unbekannter Kurs',
@@ -46,6 +46,11 @@ class RegistrationCodeService
     public function create(string $code, array $courseIds): void
     {
         $this->registrationCodeRepository->create($code, $courseIds);
+    }
+
+    public function update(int $registrationCodeId, string $code): void
+    {
+        $this->registrationCodeRepository->update($registrationCodeId, $code);
     }
 
     public function addCourses(int $registrationCodeId, array $courseIds): void

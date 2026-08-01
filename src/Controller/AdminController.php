@@ -133,7 +133,7 @@ class AdminController extends AdminPageController
                     $this->accessCodesController->handlePost($action);
                     break;
                 case 'create_registration_code':
-                case 'update_courses_to_registration_code_assignment':
+                case 'update_registration_code':
                 case 'delete_registration_code':
                     $this->registrationCodesController->handlePost($action);
                     break;

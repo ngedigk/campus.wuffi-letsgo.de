@@ -34,9 +34,9 @@
                     <code><?= htmlspecialchars($code['code']) ?></code>
                 </div>
                 <div class="cell courses-cell">
-                    <?php if (!empty($code['course_titles'])): ?>
+                    <?php if (!empty($code['courses'])): ?>
                         <ul class="course-list">
-                            <?php foreach ($code['course_titles'] as $course): ?>
+                            <?php foreach ($code['courses'] as $course): ?>
                                 <li>
                                     <a href="admin.php?page=courses&course_id=<?= htmlspecialchars($course['id']) ?>">
                                         <?= htmlspecialchars($course['title']) ?>
@@ -65,12 +65,18 @@
                 <div class="cell actions-cell">
                     <?php if (!$code['used_by_user_id']): ?>
                     <button class="btn btn-small" 
-                            onclick="editRegistrationCode('<?= $code['id'] ?>')" 
-                            data-course-ids="<?= !empty($code['course_titles']) ? implode(',', array_column($code['course_titles'], 'id')) : '' ?>">
+                            data-action="edit-registration-code"
+                            data-registration-code-id="<?= $code['id'] ?>"
+                            data-registration-code="<?= $code['code'] ?>"
+                            data-course-ids='<?= !empty($code['courses']) ? json_encode(array_column($code['courses'], 'id')) : "" ?>'>
                         Bearbeiten
                     </button>
                     <?php endif; ?>
-                    <button class="btn btn-small btn-danger" onclick="deleteRegistrationCode('<?= $code['id'] ?>')">Löschen</button>
+                    <button
+                        class="btn btn-small btn-danger"
+                        data-action="delete-registration-code"
+                        data-registration-code-id="<?= $code['id'] ?>"
+                    >Löschen</button>
                 </div>
             </div>
         <?php endforeach; ?>
@@ -122,8 +128,13 @@
         </div>
         <form method="post" action="admin.php?page=registration-codes">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="update_courses_to_registration_code_assignment">
+            <input type="hidden" name="action" value="update_registration_code">
             <input type="hidden" id="edit-registration-code-id" name="registration_code_id" value="">
+
+            <div class="form-group">
+                <label for="reg-code">Registration Code</label>
+                <input type="text" id="edit-registration-code" name="code" placeholder="Registration Code eingeben" required>
+            </div>
             
             <div class="form-group">
                 <label>Kurse zuweisen</label>
@@ -139,7 +150,7 @@
             
             <div class="modal-actions">
                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">Abbrechen</button>
-                <button type="submit" class="btn btn-primary">Kurse hinzufügen</button>
+                <button type="submit" class="btn btn-primary">Code aktualisieren</button>
             </div>
         </form>
     </div>
