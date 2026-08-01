@@ -6,6 +6,7 @@ spl_autoload_register(function ($class) {
 
     $folders = [
         __DIR__.'/Controller/',
+        __DIR__.'/Controller/Admin/',
         __DIR__.'/Services/',
         __DIR__.'/Repositories/',
         __DIR__.'/Helpers/',

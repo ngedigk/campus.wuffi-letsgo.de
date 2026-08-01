@@ -1,5 +1,6 @@
 <?php
 /** @var array $viewModel */
+/** @var string $content */
 ?>
 <!DOCTYPE html>
 <html lang="en">
