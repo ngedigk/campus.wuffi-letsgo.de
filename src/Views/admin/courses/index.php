@@ -6,23 +6,33 @@
     <div class="course-details-panel">
         <?php if ($viewModel['selectedCourse'] ?? null): ?>
             <?php require __DIR__ . '/partials/course-form-delete.php'; ?>
-            <?php require __DIR__ . '/partials/course-form.php'; ?>
-
-            <!-- Modules Section -->
-            <?php require __DIR__ . '/partials/modules-list.php'; ?>
             <?php require __DIR__ . '/partials/module-form-delete.php'; ?>
+            <?php require __DIR__ . '/partials/slide-form-delete.php'; ?>
+            
+            <?php if (!$viewModel['selectedModule']): ?>
+                <!-- Create Module Modal -->
+                <?php require __DIR__ . '/partials/modals/create-module-modal.php'; ?>
 
-            <!-- Create Module Modals -->
-            <?php require __DIR__ . '/partials/modals/create-module-modal.php'; ?>
-            <?php require __DIR__ . '/partials/modals/create-slide-modal.php'; ?>
+                <!-- Course Details Section -->
+                <?php require __DIR__ . '/partials/course-form.php'; ?>
 
+                <!-- Modules Section (navigation) -->
+                <?php require __DIR__ . '/partials/modules-list.php'; ?>
+            <?php endif; ?>
+
+            <!-- Module & Slide Context -->
             <?php if ($viewModel['selectedModule'] ?? null): ?>
-                <!-- Module Details Section -->
-                <?php require __DIR__ . '/partials/module-form.php'; ?>
+                <?php if (!$viewModel['selectedSlide']): ?>
 
-                <!-- Slides Section -->
-                <?php require __DIR__ . '/partials/slides-list.php'; ?>
-                <?php require __DIR__ . '/partials/slide-form-delete.php'; ?>
+                    <!-- Create Slide Modal -->
+                    <?php require __DIR__ . '/partials/modals/create-slide-modal.php'; ?>
+
+                    <!-- Module Details Section -->
+                    <?php require __DIR__ . '/partials/module-form.php'; ?>
+
+                    <!-- Slides Section (navigation) -->
+                    <?php require __DIR__ . '/partials/slides-list.php'; ?>
+                <?php endif; ?>
 
                 <!-- Slide Details Section -->
                 <?php if ($viewModel['selectedSlide'] ?? null): ?>

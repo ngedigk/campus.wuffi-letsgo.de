@@ -70,15 +70,21 @@ class AdminCoursesController extends AdminPageController
 
         $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
 
+        $breadcrumb = [];
+        if ($selectedCourse) {
+            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}", 'title' => $selectedCourse->title];
+        }
+        if ($selectedModule) {
+            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}", 'title' => $selectedModule->title];
+        }
+        if ($selectedSlide) {
+            $breadcrumb[] = ['url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}", 'title' => $selectedSlide->title];
+        }
+
         $viewData = [
             ...$context,
             'activePage' => 'courses',
-            'breadcrumb' => [
-                [
-                    'url' => '',
-                    'title' => $selectedCourse->title ?? 'Courses'
-                ],
-            ],
+            'breadcrumb' => $breadcrumb,
             'selectedCourse' => $selectedCourse,
             'selectedCourseId' => $selectedCourseId,
             'selectedModule' => $selectedModule,
