@@ -63,11 +63,13 @@
                     <?php endif; ?>
                 </div>
                 <div class="cell actions-cell">
+                    <?php if (!$code['used_by_user_id']): ?>
                     <button class="btn btn-small" 
                             onclick="editRegistrationCode('<?= $code['id'] ?>')" 
                             data-course-ids="<?= !empty($code['course_titles']) ? implode(',', array_column($code['course_titles'], 'id')) : '' ?>">
                         Edit
                     </button>
+                    <?php endif; ?>
                     <button class="btn btn-small btn-danger" onclick="deleteRegistrationCode('<?= $code['id'] ?>')">Delete</button>
                 </div>
             </div>
