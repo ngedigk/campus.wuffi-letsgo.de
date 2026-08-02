@@ -44,6 +44,10 @@ class AuthController
 
     public function showLogin(array $context): void
     {
+        $context['additionalJs'] = [
+            ['src' => '/assets/js/password-toggle.js']
+        ];
+
         $viewData = [
             'pageTitle' => 'Login',
             ...$context,

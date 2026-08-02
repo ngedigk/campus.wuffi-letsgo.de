@@ -1,92 +1,162 @@
 <?php
 /** @var array $viewModel */
 ?>
+
+<header id="content-header">
+    <section id="hero" aria-hidden="true">
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/aht-hero-06.webp'); --hero-focus: 84% 44%;"></div>
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/aht-hero-03.webp'); --hero-focus: 62% 42%;"></div>
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/AHT-2_edit.webp'); --hero-focus: 50% 42%;"></div>
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/aht-hero-04.webp'); --hero-focus: 28% 46%;"></div>
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/esa-hero-01.webp'); --hero-focus: 50% 42%;"></div>
+        <div class="hero-image" style="--hero-image: url('/assets/images/hero/aht-hero-01.webp'); --hero-focus: 48% 48%;"></div>
+    </section>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <p>Dein Profil</p>
+
+                <h1>
+                    Hallo<?= !empty($viewModel['user']->name)
+                        ? ', ' . htmlspecialchars($viewModel['user']->name)
+                        : '' ?>
+                </h1>
+
+                <ul id="breadcrumb">
+                    <li>Startseite</li>
+                    <li aria-hidden="true">></li>
+                    <li>Profil</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
+
 <section>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1>Mein Profil</h1>
 
                 <?php if (!empty($viewModel['success'])): ?>
-                    <p class="success"><?= htmlspecialchars($viewModel['success']) ?></p>
+                    <p class="success">
+                        <?= htmlspecialchars($viewModel['success']) ?>
+                    </p>
                 <?php endif; ?>
 
                 <?php if (!empty($viewModel['error'])): ?>
-                    <p class="error"><?= htmlspecialchars($viewModel['error']) ?></p>
+                    <p class="error">
+                        <?= htmlspecialchars($viewModel['error']) ?>
+                    </p>
                 <?php endif; ?>
 
-                <form method="post">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col">
+                            <form method="post" class="form-card">
+                                <h2>Persönliche Informationen</h2>
 
-                    <label>Name<br>
-                        <input
-                            type="text"
-                            name="name"
-                            value="<?= htmlspecialchars($viewModel['user']->name ?? '') ?>"
-                            placeholder="Ihr Name"
-                        >
-                    </label>
-                    
-                    <br><br>
+                                <input
+                                    type="hidden"
+                                    name="csrf_token"
+                                    value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>"
+                                >
 
-                    <label>E-Mail<br>
-                        <input
-                            type="email"
-                            name="email"
-                            value="<?= htmlspecialchars($viewModel['user']->email ?? '') ?>"
-                            required
-                        >
-                    </label>
+                                <div class="profile-fields">
+                                    <div class="form-group">
+                                        <label>
+                                            Name
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                value="<?= htmlspecialchars($viewModel['user']->name ?? '') ?>"
+                                                placeholder="Ihr Name"
+                                            >
+                                        </label>
+                                    </div>
 
-                    <br><br>
+                                    <div class="form-group">
+                                        <label>
+                                            E-Mail
+                                            <input
+                                                type="email"
+                                                name="email"
+                                                value="<?= htmlspecialchars($viewModel['user']->email ?? '') ?>"
+                                                required
+                                            >
+                                        </label>
+                                    </div>
+                                </div>
 
-                    <button type="submit">Speichern</button>
-                </form>
-
-                <br>
-
-                <h2>Sicherheit</h2>
-
-                <form method="post">
-                    <input type="hidden" name="action" value="change_password">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-
-                    <label>Neues Passwort<br>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            autocomplete="new-password"
-                            required
-                        >
-                    </label>
-
-                    <br>
-
-                    <label>Passwort bestätigen<br>
-                        <input
-                            type="password"
-                            name="password_confirm"
-                            autocomplete="new-password"
-                            required
-                        >
-                    </label>
-
-                    <div class="password-meter">
-                        <div class="password-bar">
-                            <div id="password-progress"></div>
+                                <button type="submit" class="button-primary">Speichern</button>
+                            </form>
                         </div>
-                        <div id="password-label">Passwort eingeben</div>
-                        <div id="password-hints">
-                            Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.
+                        <div class="col">
+                            <form method="post" class="form-card">
+
+                                <h2>Passwort ändern</h2>
+
+                                <input type="hidden" name="action" value="change_password">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
+
+                                <div class="password-fields">
+                                    <label>Neues Passwort
+                                        <div class="form-input">
+                                            <input
+                                                type="password"
+                                                id="password"
+                                                name="password"
+                                                autocomplete="new-password"
+                                                required
+                                            >
+                                            <button
+                                                type="button"
+                                                class="password-toggle"
+                                                aria-label="Passwort anzeigen"
+                                                aria-pressed="false"
+                                                data-target="password"
+                                            >
+                                                <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
+                                            </button>
+                                        </div>
+                                    </label>
+
+                                    <label>Passwort bestätigen
+                                        <div class="form-input">
+                                            <input
+                                                type="password"
+                                                id="password-confirm"
+                                                name="password_confirm"
+                                                autocomplete="new-password"
+                                                required
+                                            >
+                                            <button
+                                                type="button"
+                                                class="password-toggle"
+                                                aria-label="Passwort anzeigen"
+                                                aria-pressed="false"
+                                                data-target="password-confirm"
+                                            >
+                                                <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
+                                            </button>
+                                    </label>
+                                </div>
+
+                                <div class="password-meter">
+                                    <div class="password-bar">
+                                        <div id="password-progress"></div>
+                                    </div>
+                                    <div id="password-label">Passwort eingeben</div>
+                                    <div id="password-hints">Empfehlung: 12+ Zeichen mit Groß-/Kleinbuchstaben, Zahlen und Symbolen.</div>
+                                    <div class="pw-status"></div>
+                                </div>
+
+                                <button type="submit" class="button-primary">Passwort ändern</button>
+                            </form>
                         </div>
-                        <div class="pw-status"></div>
                     </div>
-
-                    <button type="submit">Passwort ändern</button>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 </section>
-

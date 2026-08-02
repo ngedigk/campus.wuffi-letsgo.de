@@ -110,8 +110,11 @@ class ProfileController
         $context['isLoggedIn'] = true;
         $context['isAdmin'] = $user->isAdmin;
         $context['user'] = $user;
-        $context['additionalJs'] = [['src' => '/assets/js/password-meter.js']];
-        $context['additionalCss'] = ['/assets/css/register.css'];
+        $context['additionalJs'] = [
+            ['src' => '/assets/js/password-toggle.js'],
+            ['src' => '/assets/js/password-meter.js']
+        ];
+        $context['additionalCss'] = ['/assets/css/password-meter.css', '/assets/css/profile.css'];
 
         $this->viewRenderer->renderWithTemplate('profile', $context);
     }

@@ -8,11 +8,15 @@
     --locked: #ccc;
     --slide-nav: #ccc;
 
+    --input-border: #d8d8d8;
+
     --primary-btn: var(--primary);
+    --primary-btn-color: #fff;
     --primary-btn-hover: #000;
 
     --password-bar-bg: #e5e7eb;
-    --password-hints: #6b7280;    
+    --password-hints: #6b7280;
+    --password-hints-bg: #f4fafa;
     --password-empty: #ef4444;
     --password-very-weak: #ef4444;
     --password-weak: #f97316;

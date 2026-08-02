@@ -145,17 +145,19 @@ class UserRepository
         string $id,
         string $email,
         string $passwordHash,
+        string $name,
         bool $isAdmin = false
     ): void {
 
         $stmt = $this->pdo->prepare("
-            INSERT INTO users (id, email, password_hash, is_admin )
-            VALUES (:id, :email, :passwordHash, :isAdmin)
+            INSERT INTO users (id, email, name, password_hash, is_admin )
+            VALUES (:id, :email, :name, :passwordHash, :isAdmin)
         ");
 
         $stmt->execute([
             'id' => $id,
             'email' => $email,
+            'name' => $name,
             'passwordHash' => $passwordHash,
             'isAdmin' => (int)$isAdmin
         ]);

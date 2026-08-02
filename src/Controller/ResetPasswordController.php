@@ -75,8 +75,11 @@ class ResetPasswordController
         $context['csrfToken'] = $this->csrfService->generateToken();
         $context['pageTitle'] = 'Reset Password';
         $context['isLoggedIn'] = $this->authService->isLoggedIn();
-        $context['additionalCss'] = ['/assets/css/register.css'];
-        $context['additionalJs'] = [['src' => '/assets/js/password-meter.js']];
+        $context['additionalCss'] = ['/assets/css/password-meter.css'];
+        $context['additionalJs'] = [
+            ['src' => '/assets/js/password-toggle.js'],
+            ['src' => '/assets/js/password-meter.js']
+        ];
 
         $this->viewRenderer->renderWithTemplate('reset-password', $context);
     }

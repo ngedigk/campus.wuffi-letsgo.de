@@ -5,20 +5,21 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <h1>Passwort vergessen</h1>
 
                 <p><?= htmlspecialchars($viewModel['message'] ?? '') ?></p>
 
-                <form method="post">
+                <form method="post" class="form-card">
+                    <h2>Passwort vergessen</h2>
 
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
-                    <label>E-Mail</label><br>
-                    <input type="email" name="email" required>
+                    <div class="form-group">
+                        <label>E-Mail
+                            <input type="email" name="email" required>
+                        </label>
+                    </div>
 
-                    <br><br>
-
-                    <button type="submit">Reset-Link senden</button>
+                    <button type="submit" class="button-primary">Reset-Link senden</button>
 
                 </form>
             </div>

@@ -6,13 +6,13 @@
         <div class="row">
             <div class="col-sm-12">
 
-                <h1>Anmelden</h1>
-
                 <?php if (!empty($viewModel['loginError'])): ?>
                 <p><?= htmlspecialchars($viewModel['loginError']) ?></p>
                 <?php endif; ?>
 
-                <form method="post">
+                <form method="post" class="form-card">
+
+                    <h2>Anmelden</h2>
 
                     <input
                         type="hidden"
@@ -20,23 +20,32 @@
                         value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>"
                     >
 
-                    <label>E-Mail<br>
-                        <input type="email" name="email" required>
-                    </label>
+                    <div class="form-group">
+                        <label>E-Mail
+                            <input type="email"name="email" required>
+                        </label>
+                    </div>
 
-                    <br><br>
+                    <div class="form-group">
+                        <label>Passwort
+                            <div class="form-input">
+                                <input type="password" id="password" name="password" required>
+                                <button
+                                    type="button"
+                                    class="password-toggle"
+                                    aria-label="Passwort anzeigen"
+                                    aria-pressed="false"
+                                    data-target="password"
+                                >
+                                    <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
+                                </button>
+                            </div>
+                        </label>
+                    </div>
 
-                    <label>Passwort<br>
-                        <input type="password" name="password" required>
-                    </label>
-
-                    <br><br>
-
-                    <button type="submit">Anmelden</button>
+                    <button type="submit" class="button-primary">Anmelden</button>
 
                 </form>
-
-                <br>
 
                 <a href="register.php">Account erstellen</a>
                 <br>

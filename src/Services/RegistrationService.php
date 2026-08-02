@@ -22,7 +22,7 @@ class RegistrationService
         private UuidService $uuidService
     ) {}
 
-    public function register(string $email, string $password, string $registrationCode): array
+    public function register(string $email, string $password, string $registrationCode, string $name): array
     {
 
         if ($this->userRepository->existsByEmail($email)) {
@@ -53,7 +53,7 @@ class RegistrationService
         $this->pdo->beginTransaction();
 
         try {
-            $this->userRepository->create($userId, $email, $passwordHash);
+            $this->userRepository->create($userId, $email, $passwordHash, $name);
             $this->emailVerificationRepository->create($userId, $token);
             $this->registrationCodeRepository->markAsUsed($codeData['id'], $userId);
 

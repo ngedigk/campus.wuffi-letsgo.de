@@ -1,0 +1,39 @@
+.profile-fields,
+.password-fields {
+    display: grid;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.password-fields label,
+.profile-fields label {
+    width: 100%;
+    margin: 0;
+}
+
+.password-meter {
+    margin: 5px 0 25px;
+}
+
+@media (max-width: 767px) {
+    main form {
+        padding: 25px 20px;
+    }
+
+    .profile-fields {
+        grid-template-columns: 1fr;
+    }
+
+    main form:nth-of-type(2) label,
+    .password-meter {
+        width: 100%;
+    }
+
+    main h2 {
+        font-size: 27px;
+    }
+
+    main form button {
+        width: 100%;
+    }
+}

@@ -33,6 +33,7 @@ class RegistrationController
             'error' => '',
             'success' => '',
             'email' => '',
+            'name' => '',
             'registrationCode' => ''
         ]);
     }
@@ -62,28 +63,42 @@ class RegistrationController
                 'error' => $e->getMessage(),
                 'success' => '',
                 'email' => $_POST['email'] ?? '',
+                'name' => $_POST['name'] ?? '',
                 'registrationCode' => $_POST['registration_code'] ?? '',
             ]);
             return;
         }
 
         $email = strtolower(trim($_POST['email'] ?? ''));
+        $name = strtolower(trim($_POST['name'] ?? ''));
         $registrationCode = trim($_POST['registration_code'] ?? '');
         $password = $_POST['password'] ?? '';
         $passwordConfirm = $_POST['password_confirm'] ?? '';
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->renderForm(['error' => 'Ungültige E-Mail Adresse.', 'success' => '', 'email' => $email, 'registrationCode' => $registrationCode]);
+            $this->renderForm([
+                'error' => 'Ungültige E-Mail Adresse.',
+                'success' => '',
+                'email' => $email,
+                'name' => $name,
+                'registrationCode' => $registrationCode
+            ]);
             return;
         }
 
         if ($password !== $passwordConfirm) {
-            $this->renderForm(['error' => 'Passwörter stimmen nicht überein.', 'success' => '', 'email' => $email, 'registrationCode' => $registrationCode]);
+            $this->renderForm([
+                'error' => 'Passwörter stimmen nicht überein.',
+                'success' => '',
+                'email' => $email,
+                'name' => $name,
+                'registrationCode' => $registrationCode
+            ]);
             return;
         }        
 
         try {
-            $result = $this->registrationService->register($email, $password, $registrationCode);
+            $result = $this->registrationService->register($email, $password, $registrationCode, $name);
             
             $this->sendVerificationEmail($email, $result['token']);
 
@@ -91,6 +106,7 @@ class RegistrationController
                 'error' => '',
                 'success' => 'Registrierung erfolgreich. Überprüfen Sie Ihre E-Mails.',
                 'email' => '',
+                'name' => '',
                 'registrationCode' => '',
             ]);
 
@@ -100,6 +116,7 @@ class RegistrationController
                 'error' => 'Bei der Erstellung des Accounts ist ein Problem aufgetreten. Informieren Sie den Anbieter und versuchen Sie es später nochmal.',
                 'success' => '',
                 'email' => $email,
+                'name' => $name,
                 'registrationCode' => $registrationCode,
             ]);
         }
@@ -109,8 +126,11 @@ class RegistrationController
     {
         $context['csrfToken'] = $this->csrfService->generateToken();
         $context['pageTitle'] = 'Registrierung';
-        $context['additionalCss'] = ['/assets/css/register.css'];
-        $context['additionalJs'] = [['src' => '/assets/js/password-meter.js']];
+        $context['additionalCss'] = ['/assets/css/password-meter.css', '/assets/css/register.css'];
+        $context['additionalJs'] = [
+            ['src' => '/assets/js/password-toggle.js'],
+            ['src' => '/assets/js/password-meter.js']
+        ];
         $context['isLoggedIn'] = false;
 
         $this->viewRenderer->renderWithTemplate('register-form', $context);

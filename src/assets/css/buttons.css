@@ -3,7 +3,7 @@
     padding: 8px 34px;
     text-align: center;
     font-size: 15px;
-    color: #fff;
+    color: var(--primary-btn-color);
     background-color: var(--primary-btn);
     text-transform: capitalize;
     -webkit-transition: .5s;

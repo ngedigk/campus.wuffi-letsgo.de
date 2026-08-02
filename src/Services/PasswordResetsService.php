@@ -17,7 +17,7 @@ class PasswordResetsService
 
     public function recordReset(string $userId, string $token): void
     {
-        return $this->passwordResetsRepository->recordReset($userId, $token);
+        $this->passwordResetsRepository->recordReset($userId, $token);
     }
 
     public function deleteRecordsByUserId(string $userId): void

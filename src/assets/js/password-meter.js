@@ -41,8 +41,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const level = levels[score];
 
-            // Let CSS handle width and colors
             progress.classList.remove(
+                'empty',
+                'very-weak',
+                'weak',
+                'fair',
+                'strong',
+                'very-strong'
+            );
+            label.classList.remove(
                 'empty',
                 'very-weak',
                 'weak',
@@ -52,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             );
 
             progress.classList.add(level.className);
+            label.classList.add(level.className);
 
             label.textContent = level.label;
 
-            // Password confirmation
             const submitBtn = form.querySelector('button[type="submit"]');
 
             if (confirmInput && confirmInput.value) {
