@@ -63,6 +63,23 @@ class AdminCoursesController extends AdminPageController
                 }
             }
         }
+        
+        $audioDir = __DIR__ . '/../../assets/audio/';
+        $audioFiles = [];
+        if (is_dir($audioDir)) {
+            foreach (scandir($audioDir) as $file) {
+                if ($file === '.' || $file === '..') {
+                    continue;
+                }
+                $path = $audioDir . $file;
+                if (is_file($path)) {
+                    $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                    if (in_array($extension, ['mp3', 'wav', 'ogg', 'm4a', 'webm', 'aac', 'flac'])) {
+                        $audioFiles[] = $file;
+                    }
+                }
+            }
+        }
 
         $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs'];
         $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs-blocks-basic'];
@@ -128,6 +145,7 @@ class AdminCoursesController extends AdminPageController
             'selectedSlide' => $selectedSlide,
             'selectedSlideId' => $selectedSlideId,
             'slideAssets' => $slideAssets,
+            'audioFiles' => $audioFiles,
             'pageTitle' => $pageTitle
         ];
 
@@ -273,6 +291,11 @@ class AdminCoursesController extends AdminPageController
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
+        $uploadedAudio = $this->handleAudioUpload($_FILES);
+        if ($uploadedAudio) {
+            $audioUrl = $uploadedAudio;
+        }
+
         $slideId = $this->slideService->create(new SlideInput(
             moduleId: $moduleId,
             title: $title,
@@ -295,6 +318,11 @@ class AdminCoursesController extends AdminPageController
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
+        $uploadedAudio = $this->handleAudioUpload($_FILES);
+        if ($uploadedAudio) {
+            $audioUrl = $uploadedAudio;
+        }
+
         $this->slideService->update(new Slide(
             id: $slideId,
             title: $title,
@@ -303,6 +331,56 @@ class AdminCoursesController extends AdminPageController
             sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = 'Folie aktualisiert.';
+    }
+
+    private function handleAudioUpload(array $files): ?string
+    {
+        if (!isset($files['audio_file']) || $files['audio_file']['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
+        $maxSize = 10 * 1024 * 1024;
+        if ($files['audio_file']['size'] > $maxSize) {
+            throw new Exception('Die hochgeladene Datei ist zu groß. Maximal 10MB erlaubt.');
+        }
+
+        $allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/webm'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $files['audio_file']['tmp_name']);
+        if (!in_array($mime, $allowedTypes, true)) {
+            throw new Exception('Ungültiger Dateityp. Nur Audio-Dateien sind erlaubt.');
+        }
+
+        $uploadDir = __DIR__ . '/../../assets/audio/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0775, true);
+        }
+
+        $originalName = $files['audio_file']['name'];
+        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
+        $baseName = pathinfo($originalName, PATHINFO_FILENAME);
+
+        $baseName = str_replace(['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'], ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss'], $baseName);
+
+        $baseName = strtolower($baseName);
+        $baseName = str_replace(' ', '_', $baseName);
+        $filename = $baseName . '.' . $extension;
+        $target = $uploadDir . $filename;
+
+        if (file_exists($target)) {
+            $i = 1;
+            while (file_exists($uploadDir . $baseName . '_' . $i . '.' . $extension)) {
+                $i++;
+            }
+            $filename = $baseName . '_' . $i . '.' . $extension;
+            $target = $uploadDir . $filename;
+        }
+
+        if (!move_uploaded_file($files['audio_file']['tmp_name'], $target)) {
+            throw new Exception('Fehler beim Hochladen der Audio-Datei.');
+        }
+
+        return $filename;
     }
     
     private function handleCreateQuestion(): void

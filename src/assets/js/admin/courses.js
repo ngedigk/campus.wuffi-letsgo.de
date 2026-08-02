@@ -13,6 +13,28 @@ const actions = {
     'delete-question': button => deleteQuestion(button.dataset.questionId),
 };
 
+// Audio preview handlers
+document.getElementById('slide-audio-file')?.addEventListener('change', function() {
+    previewAudioFile(this, 'audio-preview', 'audio-preview-container');
+});
+document.getElementById('remove-audio-preview')?.addEventListener('click', function() {
+    removeAudioPreview('audio-preview', 'audio-preview-container', 'slide-audio-file');
+});
+document.getElementById('new-slide-audio-file')?.addEventListener('change', function() {
+    previewAudioFile(this, 'create-audio-preview', 'create-audio-preview-container');
+});
+document.getElementById('remove-create-audio-preview')?.addEventListener('click', function() {
+    removeAudioPreview('create-audio-preview', 'create-audio-preview-container', 'new-slide-audio-file');
+});
+
+// Dropdown audio preview handlers
+document.getElementById('slide-audio-url')?.addEventListener('change', function() {
+    handleDropdownAudioPreview(this, 'slide-dropdown-audio-preview', 'slide-dropdown-audio-preview-container');
+});
+document.getElementById('new-slide-audio-url')?.addEventListener('change', function() {
+    handleDropdownAudioPreview(this, 'create-dropdown-audio-preview', 'create-dropdown-audio-preview-container');
+});
+
 document.addEventListener('click', event => {
     const button = event.target.closest('[data-action]');
 
@@ -114,6 +136,20 @@ function removeChoice(button) {
         button.parentElement.remove();
     } else {
         alert('Mindestens eine Antwort muss vorhanden sein.');
+    }
+}
+
+function handleDropdownAudioPreview(select, audioId, containerId) {
+    const selectedFile = select.value;
+    const audio = document.getElementById(audioId);
+    const container = document.getElementById(containerId);
+
+    if (selectedFile) {
+        audio.src = '/assets/audio/' + selectedFile;
+        container.style.display = 'block';
+    } else {
+        audio.src = '';
+        container.style.display = 'none';
     }
 }
 
@@ -281,3 +317,21 @@ function escapeHtml(value) {
     div.textContent = value;
     return div.innerHTML;
 }
+
+function previewAudioFile(fileInput, audioId, containerId) {
+    const file = fileInput.files[0];
+    if (!file) {
+        return;
+    }
+
+    const audio = document.getElementById(audioId);
+    const container = document.getElementById(containerId);
+
+    if (file && audio && container) {
+        const url = URL.createObjectURL(file);
+        audio.src = url;
+        audio.style.display = 'block';
+        container.style.display = 'block';
+    }
+}
+

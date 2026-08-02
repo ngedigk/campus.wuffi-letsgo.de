@@ -6,6 +6,7 @@
         id="slide-form"
         method="post"
         action="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($viewModel['selectedSlide']->id ?? '') ?>"
+        enctype="multipart/form-data"
     >
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
         <input type="hidden" name="action" value="update_slide">
@@ -62,14 +63,55 @@
                 ><?= htmlspecialchars($viewModel['selectedSlide']->htmlContent ?? '') ?></textarea>
             </div>
 
-            <div class="form-group">
-                <label for="slide-audio-url">Audio Url</label>
-                <input
-                    type="text"
-                    id="slide-audio-url"
-                    name="audio_url"
-                    value="<?= htmlspecialchars($viewModel['selectedSlide']->audioUrl ?? '') ?>"
-                >
+            <div class="form-group audio-select-wrapper">
+                <label for="slide-audio-url">Audio Url
+                    <select
+                        id="slide-audio-url"
+                        name="audio_url"
+                        style="width: 100%"
+                        <?= empty($viewModel['audioFiles']) ? 'disabled' : '' ?>
+                    >
+                        <option value="">-- Kein Audio --</option>
+                        <?php foreach ($viewModel['audioFiles'] as $file): ?>
+                            <option value="<?= htmlspecialchars($file) ?>" <?= ($viewModel['selectedSlide']->audioUrl ?? '') === $file ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($file) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </label>
+                <div id="slide-dropdown-audio-preview-container" style="<?php if (empty($viewModel['selectedSlide']->audioUrl)): ?> display: none;<?php endif; ?>">
+                    <label>Vorschau:
+                        <audio
+                            id="slide-dropdown-audio-preview"
+                            controls
+                            style="width: 100%;"
+                            src="<?= "/assets/audio/" . ($viewModel['selectedSlide']->audioUrl ?? '') ?>"
+                        >
+                            Ihr Browser unterstützt kein Audio-Element.
+                        </audio>
+                    </label>
+                </div>
+                <?php if (empty($viewModel['audioFiles'])): ?>
+                    <small>Keine Audio-Dateien verfügbar. Bitte laden Sie eine Datei hoch.</small>
+                <?php endif; ?>
+            </div>
+
+            <div class="form-group audio-upload-wrapper">
+                <label for="slide-audio-file">Audio Datei hochladen
+                    <input
+                        type="file"
+                        id="slide-audio-file"
+                        name="audio_file"
+                        accept="audio/*"
+                    >
+                    <small>Optional. Nur neue Dateien hochladen. Bestehende Dateien werden nicht überschrieben.</small>
+                </label>
+                <div id="audio-preview-container" style="margin-top: 10px; display: none;">
+                    <label>Vorschau:</label>
+                    <audio id="audio-preview" controls style="width: 100%;">
+                        Ihr Browser unterstützt kein Audio-Element.
+                    </audio>
+                </div>
             </div>
 
             <div class="form-group">
