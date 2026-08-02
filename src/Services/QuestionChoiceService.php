@@ -39,4 +39,10 @@ class QuestionChoiceService {
     ): void {
         $this->questionChoiceRepository->delete($id);
     }
+
+    public function deleteByQuestionId(
+        int $questionId
+    ): void {
+        $this->questionChoiceRepository->deleteByQuestionId($questionId);
+    }
 }

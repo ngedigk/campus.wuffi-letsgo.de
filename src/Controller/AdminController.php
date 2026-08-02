@@ -2,50 +2,23 @@
 
 namespace App\Controller;
 
-use App\Services\AuthService;
-use App\Services\CsrfService;
-use App\Services\CourseService;
-use App\Services\SlideService;
-use App\Services\ModuleService;
-use App\Services\RegistrationCodeService;
-use App\Services\UuidService;
-use App\Services\UserService;
-use App\Services\QuizService;
-use App\Services\QuizQuestionService;
-
-use App\Repositories\AccessCodeRepository;
-use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoiceRepository;
-
-use App\Controller\Admin\AdminPageController;
-use App\Controller\Admin\AdminDashboardController;
-use App\Controller\Admin\AdminCoursesController;
 use App\Controller\Admin\AdminAccessCodesController;
-use App\Controller\Admin\AdminUsersController;
-use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminAudioAssetsController;
-
-use App\Helpers\ViewRenderer;
+use App\Controller\Admin\AdminCoursesController;
+use App\Controller\Admin\AdminDashboardController;
+use App\Controller\Admin\AdminPageController;
+use App\Controller\Admin\AdminRegistrationCodesController;
+use App\Controller\Admin\AdminUsersController;
+use App\Services\AdminContextService;
+use App\Services\AuthService;
 use Exception;
 use Throwable;
 
 class AdminController extends AdminPageController
 {
     public function __construct(
-        CourseService $courseService,
-        UserService $userService,
-        AccessCodeRepository $accessCodeRepository,
-        SlideService $slideService,
-        ModuleService $moduleService,
-        ViewRenderer $viewRenderer,
+        AdminContextService $adminContextService,
         AuthService $authService,
-        CsrfService $csrfService,
-        UuidService $uuidService,
-        RegistrationCodeService $registrationCodeService,
-        QuizQuestionRepository $quizQuestionRepository,
-        QuestionChoiceRepository $questionChoicesRepository,
-        QuizService $quizService,
-        QuizQuestionService $quizQuestionService,
         private AdminDashboardController $dashboardController,
         private AdminCoursesController $coursesController,
         private AdminAccessCodesController $accessCodesController,
@@ -53,22 +26,7 @@ class AdminController extends AdminPageController
         private AdminRegistrationCodesController $registrationCodesController,
         private AdminAudioAssetsController $audioAssetsController,
     ) {
-        parent::__construct(
-            $courseService,
-            $userService,
-            $accessCodeRepository,
-            $slideService,
-            $moduleService,
-            $viewRenderer,
-            $authService,
-            $csrfService,
-            $uuidService,
-            $registrationCodeService,
-            $quizQuestionRepository,
-            $questionChoicesRepository,
-            $quizService,
-            $quizQuestionService
-        );
+        parent::__construct($adminContextService, $authService);
     }
 
     public function handle(string $page): void

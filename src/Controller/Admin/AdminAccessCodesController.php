@@ -2,10 +2,25 @@
 
 namespace App\Controller\Admin;
 
+use App\Services\AccessCodeService;
+use App\Services\AdminContextService;
+use App\Services\AuthService;
+
+use App\Helpers\ViewRenderer;
+
 use Exception;
 
 class AdminAccessCodesController extends AdminPageController
 {
+    public function __construct(
+        protected AccessCodeService $accessCodeService,
+        protected ViewRenderer $viewRenderer,
+        protected AuthService $authService,
+        protected AdminContextService $adminContextService
+    ) {
+        parent::__construct($adminContextService, $authService);
+    }
+
     public function render(array $context): void
     {
         $context['additionalJs'][] = [
@@ -22,7 +37,7 @@ class AdminAccessCodesController extends AdminPageController
                     'title' => 'Access Codes'
                 ],
             ],
-            'accessCodes' => $this->accessCodeRepository->getAll(),
+            'accessCodes' => $this->accessCodeService->getAll(),
             'pageTitle' => 'Access Codes'
         ];
 
@@ -55,11 +70,11 @@ class AdminAccessCodesController extends AdminPageController
             throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
-        if ($this->accessCodeRepository->existsByCode($code)) {
+        if ($this->accessCodeService->existsByCode($code)) {
             throw new Exception('Dieser Access Code existiert bereits.');
         }
 
-        $this->accessCodeRepository->create($code, $courseId);
+        $this->accessCodeService->create($code, $courseId);
         $_SESSION['admin_success'] = 'Access Code erstellt.';
     }
 
@@ -73,14 +88,14 @@ class AdminAccessCodesController extends AdminPageController
             throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
-        $this->accessCodeRepository->update($accessCodeId, $code, $courseId);
+        $this->accessCodeService->update($accessCodeId, $code, $courseId);
         $_SESSION['admin_success'] = 'Access Code aktualisiert.';
     }
 
     private function handleDeleteAccessCode(): void
     {
         $accessCodeId = trim($_POST['access_code_id'] ?? '');
-        $this->accessCodeRepository->delete($accessCodeId);
+        $this->accessCodeService->delete($accessCodeId);
         $_SESSION['admin_success'] = 'Access Code gelöscht und Benutzerzugriff entfernt.';
     }
 }

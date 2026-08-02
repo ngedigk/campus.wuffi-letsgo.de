@@ -2,6 +2,18 @@
 
 namespace App\Controller\Admin;
 
+use App\Services\AdminContextService;
+use App\Services\AssetsService;
+use App\Services\AuthService;
+use App\Services\CourseService;
+use App\Services\ModuleService;
+use App\Services\SlideService;
+use App\Services\UuidService;
+use App\Services\QuizQuestionService;
+use App\Services\QuestionChoiceService;
+
+use App\Helpers\ViewRenderer;
+
 use App\Dto\CourseInput;
 use App\Dto\ModuleInput;
 use App\Dto\Module;
@@ -11,61 +23,23 @@ use App\Dto\QuizQuestionInput;
 use App\Dto\QuizQuestion;
 use App\Dto\QuestionChoiceInput;
 
-use App\Services\CourseService;
-use App\Services\UserService;
-use App\Services\SlideService;
-use App\Services\ModuleService;
-use App\Services\AuthService;
-use App\Services\CsrfService;
-use App\Services\UuidService;
-use App\Services\RegistrationCodeService;
-use App\Services\AssetsService;
-use App\Services\QuizService;
-use App\Services\QuizQuestionService;
-
-use App\Helpers\ViewRenderer;
-
-use App\Repositories\AccessCodeRepository;
-use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoiceRepository;
-
 use Exception;
 
 class AdminCoursesController extends AdminPageController
 {
     public function __construct(
-        CourseService $courseService,
-        UserService $userService,
-        AccessCodeRepository $accessCodeRepository,
-        SlideService $slideService,
-        ModuleService $moduleService,
-        ViewRenderer $viewRenderer,
-        AuthService $authService,
-        CsrfService $csrfService,
-        UuidService $uuidService,
-        RegistrationCodeService $registrationCodeService,
-        QuizQuestionRepository $quizQuestionRepository,
-        QuestionChoiceRepository $questionChoicesRepository,
-        QuizService $quizService,
-        QuizQuestionService $quizQuestionService,
+        protected CourseService $courseService,
+        protected SlideService $slideService,
+        protected ModuleService $moduleService,
+        protected ViewRenderer $viewRenderer,
+        protected AuthService $authService,
+        protected UuidService $uuidService,
+        protected QuizQuestionService $quizQuestionService,
+        protected QuestionChoiceService $questionChoicesService,
+        protected AdminContextService $adminContextService,
         private AssetsService $assetsService
     ) {
-        return parent::__construct(
-            $courseService,
-            $userService,
-            $accessCodeRepository,
-            $slideService,
-            $moduleService,
-            $viewRenderer,
-            $authService,
-            $csrfService,
-            $uuidService,
-            $registrationCodeService,
-            $quizQuestionRepository,
-            $questionChoicesRepository,
-            $quizService,
-            $quizQuestionService
-        );
+        parent::__construct($adminContextService, $authService);
     }
 
     public function render(array $context): void
@@ -120,9 +94,9 @@ class AdminCoursesController extends AdminPageController
         $quizQuestions = [];
         $quizChoicesByQuestion = [];
         if ($selectedSlide && $this->slideService->hasQuiz($selectedSlide->id)) {
-            $questions = $this->quizQuestionRepository->getBySlideId($selectedSlide->id);
+            $questions = $this->quizQuestionService->getBySlideId($selectedSlide->id);
             foreach ($questions as $question) {
-                $choices = $this->questionChoicesRepository->getByQuestionId($question->id);
+                $choices = $this->questionChoicesService->getByQuestionId($question->id);
                 $quizChoicesByQuestion[$question->id] = $choices;
             }
             $quizQuestions = $questions;
@@ -393,7 +367,7 @@ class AdminCoursesController extends AdminPageController
         ));
 
         foreach ($choices as $choiceData) {
-            $this->questionChoicesRepository->create(new QuestionChoiceInput(
+            $this->questionChoicesService->create(new QuestionChoiceInput(
                 questionId: $questionId,
                 choiceText: trim($choiceData['text']),
                 isCorrect: !empty($choiceData['is_correct'])
@@ -440,9 +414,9 @@ class AdminCoursesController extends AdminPageController
         ));
 
         try {
-            $this->questionChoicesRepository->deleteByQuestionId($questionId);
+            $this->questionChoicesService->deleteByQuestionId($questionId);
             foreach ($choices as $choiceData) {
-                $this->questionChoicesRepository->create(new QuestionChoiceInput(
+                $this->questionChoicesService->create(new QuestionChoiceInput(
                     questionId: $questionId,
                     choiceText: trim($choiceData['text']),
                     isCorrect: !empty($choiceData['is_correct'])

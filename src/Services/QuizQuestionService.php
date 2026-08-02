@@ -15,6 +15,12 @@ class QuizQuestionService {
         private QuestionChoiceService $questionChoiceService
     ) {}
 
+    public function getBySlideId(
+        int $slideId
+    ): array {
+        return $this->quizQuestionRepository->getBySlideId($slideId);
+    }
+
     public function getWithChoices(
         int $id
     ): ?QuizQuestion {

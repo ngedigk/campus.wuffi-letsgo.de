@@ -2,6 +2,7 @@
 
 namespace App\Container;
 
+use App\Services\AdminContextService;
 use App\Services\AuthService;
 use App\Services\CourseService;
 use App\Services\CourseSidebarBuilderService;
@@ -21,6 +22,7 @@ use App\Services\UuidService;
 use App\Services\QuizQuestionService;
 use App\Services\QuestionChoiceService;
 use App\Services\AssetsService;
+use App\Services\AccessCodeService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -34,6 +36,7 @@ use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
+
 use PDO;
 
 trait ServicesBindings
@@ -41,6 +44,11 @@ trait ServicesBindings
     private function registerServices(): void
     {
         $this->set(CsrfService::class, fn() => new CsrfService());
+        $this->set(AdminContextService::class, fn($c) => new AdminContextService(
+            $c->get(CourseService::class),
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class)
+        ));
         $this->set(UuidService::class, fn() => new UuidService());
         $this->set(MailerService::class, fn() => new MailerService());
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
@@ -62,6 +70,7 @@ trait ServicesBindings
         ));
         $this->set(QuestionChoiceService::class, fn($c) => new QuestionChoiceService($c->get(QuestionChoiceRepository::class)));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
+        $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(PDO::class),
             $c->get(AccessCodeRepository::class),

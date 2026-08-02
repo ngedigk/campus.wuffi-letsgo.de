@@ -2,10 +2,27 @@
 
 namespace App\Controller\Admin;
 
+use App\Services\AdminContextService;
+use App\Services\AuthService;
+use App\Services\CourseService;
+use App\Services\RegistrationCodeService;
+
+use App\Helpers\ViewRenderer;
+
 use Exception;
 
 class AdminRegistrationCodesController extends AdminPageController
 {
+    public function __construct(
+        protected RegistrationCodeService $registrationCodeService,
+        protected CourseService $courseService,
+        protected ViewRenderer $viewRenderer,
+        protected AuthService $authService,
+        protected AdminContextService $adminContextService
+    ) {
+        parent::__construct($adminContextService, $authService);
+    }
+
     public function render(array $context): void
     {
         $context['additionalJs'][] = [

@@ -2,10 +2,23 @@
 
 namespace App\Controller\Admin;
 
+use App\Helpers\ViewRenderer;
+use App\Services\AdminContextService;
+use App\Services\AuthService;
+use App\Services\UserService;
 use Exception;
 
 class AdminUsersController extends AdminPageController
 {
+    public function __construct(
+        protected UserService $userService,
+        protected ViewRenderer $viewRenderer,
+        protected AuthService $authService,
+        protected AdminContextService $adminContextService
+    ) {
+        parent::__construct($adminContextService, $authService);
+    }
+
     public function render(array $context): void
     {
         $viewData = [

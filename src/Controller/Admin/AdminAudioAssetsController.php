@@ -2,61 +2,23 @@
 
 namespace App\Controller\Admin;
 
-use App\Services\CourseService;
-use App\Services\UserService;
-use App\Services\SlideService;
-use App\Services\ModuleService;
-use App\Services\AuthService;
-use App\Services\CsrfService;
-use App\Services\UuidService;
-use App\Services\RegistrationCodeService;
-use App\Services\AssetsService;
-use App\Services\QuizService;
-use App\Services\QuizQuestionService;
-
 use App\Helpers\ViewRenderer;
-
-use App\Repositories\AccessCodeRepository;
-use App\Repositories\QuizQuestionRepository;
-use App\Repositories\QuestionChoiceRepository;
-
+use App\Services\AdminContextService;
+use App\Services\AssetsService;
+use App\Services\AuthService;
+use App\Services\SlideService;
 use Exception;
 
 class AdminAudioAssetsController extends AdminPageController
 {
     public function __construct(
-        CourseService $courseService,
-        UserService $userService,
-        AccessCodeRepository $accessCodeRepository,
-        SlideService $slideService,
-        ModuleService $moduleService,
-        ViewRenderer $viewRenderer,
-        AuthService $authService,
-        CsrfService $csrfService,
-        UuidService $uuidService,
-        RegistrationCodeService $registrationCodeService,
-        QuizQuestionRepository $quizQuestionRepository,
-        QuestionChoiceRepository $questionChoicesRepository,
-        QuizService $quizService,
-        QuizQuestionService $quizQuestionService,
+        protected SlideService $slideService,
+        protected ViewRenderer $viewRenderer,
+        protected AuthService $authService,
+        protected AdminContextService $adminContextService,
         private AssetsService $assetsService
     ) {
-        return parent::__construct(
-            $courseService,
-            $userService,
-            $accessCodeRepository,
-            $slideService,
-            $moduleService,
-            $viewRenderer,
-            $authService,
-            $csrfService,
-            $uuidService,
-            $registrationCodeService,
-            $quizQuestionRepository,
-            $questionChoicesRepository,
-            $quizService,
-            $quizQuestionService
-        );
+        parent::__construct($adminContextService, $authService);
     }
 
     public function render(array $context): void
