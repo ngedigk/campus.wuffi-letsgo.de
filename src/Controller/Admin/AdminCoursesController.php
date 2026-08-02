@@ -11,10 +11,63 @@ use App\Dto\QuizQuestionInput;
 use App\Dto\QuizQuestion;
 use App\Dto\QuestionChoiceInput;
 
+use App\Services\CourseService;
+use App\Services\UserService;
+use App\Services\SlideService;
+use App\Services\ModuleService;
+use App\Services\AuthService;
+use App\Services\CsrfService;
+use App\Services\UuidService;
+use App\Services\RegistrationCodeService;
+use App\Services\AssetsService;
+use App\Services\QuizService;
+use App\Services\QuizQuestionService;
+
+use App\Helpers\ViewRenderer;
+
+use App\Repositories\AccessCodeRepository;
+use App\Repositories\QuizQuestionRepository;
+use App\Repositories\QuestionChoiceRepository;
+
 use Exception;
 
 class AdminCoursesController extends AdminPageController
 {
+    public function __construct(
+        CourseService $courseService,
+        UserService $userService,
+        AccessCodeRepository $accessCodeRepository,
+        SlideService $slideService,
+        ModuleService $moduleService,
+        ViewRenderer $viewRenderer,
+        AuthService $authService,
+        CsrfService $csrfService,
+        UuidService $uuidService,
+        RegistrationCodeService $registrationCodeService,
+        QuizQuestionRepository $quizQuestionRepository,
+        QuestionChoiceRepository $questionChoicesRepository,
+        QuizService $quizService,
+        QuizQuestionService $quizQuestionService,
+        private AssetsService $assetsService
+    ) {
+        return parent::__construct(
+            $courseService,
+            $userService,
+            $accessCodeRepository,
+            $slideService,
+            $moduleService,
+            $viewRenderer,
+            $authService,
+            $csrfService,
+            $uuidService,
+            $registrationCodeService,
+            $quizQuestionRepository,
+            $questionChoicesRepository,
+            $quizService,
+            $quizQuestionService
+        );
+    }
+
     public function render(array $context): void
     {
         $selectedCourse = null;
@@ -45,41 +98,8 @@ class AdminCoursesController extends AdminPageController
             }
         }
 
-        $assetDir = __DIR__ . '/../../assets/images/slides/';
-        $assetUrl = '/assets/images/slides/';
-        $slideAssets = [];
-
-        if (is_dir($assetDir)) {
-            foreach (scandir($assetDir) as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;
-                }
-                $path = $assetDir . $file;
-                if (is_file($path)) {
-                    $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
-                        $slideAssets[] = ['src' => $assetUrl . $file];
-                    }
-                }
-            }
-        }
-        
-        $audioDir = __DIR__ . '/../../assets/audio/';
-        $audioFiles = [];
-        if (is_dir($audioDir)) {
-            foreach (scandir($audioDir) as $file) {
-                if ($file === '.' || $file === '..') {
-                    continue;
-                }
-                $path = $audioDir . $file;
-                if (is_file($path)) {
-                    $extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                    if (in_array($extension, ['mp3', 'wav', 'ogg', 'm4a', 'webm', 'aac', 'flac'])) {
-                        $audioFiles[] = $file;
-                    }
-                }
-            }
-        }
+        $slideAssets = $this->assetsService->getSlideAssets();
+        $audioFiles = $this->assetsService->getAudioFiles();
 
         $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs'];
         $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs-blocks-basic'];
@@ -192,8 +212,13 @@ class AdminCoursesController extends AdminPageController
                 $this->handleDeleteCourse();
                 break;
             case 'upload_image':
-                $this->handleUploadImage();
-                break;
+                header('Content-Type: application/json; charset=utf-8');
+                echo $this->assetsService->handleUploadImage();
+                exit;
+            case 'delete_image':
+                header('Content-Type: application/json; charset=utf-8');
+                echo $this->assetsService->handleDeleteImage();
+                exit;
             default:
                 throw new Exception('Unsupported admin action.');
         }
@@ -291,7 +316,7 @@ class AdminCoursesController extends AdminPageController
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
-        $uploadedAudio = $this->handleAudioUpload($_FILES);
+        $uploadedAudio = $this->assetsService->handleAudioUpload($_FILES);
         if ($uploadedAudio) {
             $audioUrl = $uploadedAudio;
         }
@@ -318,7 +343,7 @@ class AdminCoursesController extends AdminPageController
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
 
-        $uploadedAudio = $this->handleAudioUpload($_FILES);
+        $uploadedAudio = $this->assetsService->handleAudioUpload($_FILES);
         if ($uploadedAudio) {
             $audioUrl = $uploadedAudio;
         }
@@ -331,56 +356,6 @@ class AdminCoursesController extends AdminPageController
             sortOrder: $sortOrder
         ));
         $_SESSION['admin_success'] = 'Folie aktualisiert.';
-    }
-
-    private function handleAudioUpload(array $files): ?string
-    {
-        if (!isset($files['audio_file']) || $files['audio_file']['error'] !== UPLOAD_ERR_OK) {
-            return null;
-        }
-
-        $maxSize = 10 * 1024 * 1024;
-        if ($files['audio_file']['size'] > $maxSize) {
-            throw new Exception('Die hochgeladene Datei ist zu groß. Maximal 10MB erlaubt.');
-        }
-
-        $allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/webm'];
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mime = finfo_file($finfo, $files['audio_file']['tmp_name']);
-        if (!in_array($mime, $allowedTypes, true)) {
-            throw new Exception('Ungültiger Dateityp. Nur Audio-Dateien sind erlaubt.');
-        }
-
-        $uploadDir = __DIR__ . '/../../assets/audio/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0775, true);
-        }
-
-        $originalName = $files['audio_file']['name'];
-        $extension = pathinfo($originalName, PATHINFO_EXTENSION);
-        $baseName = pathinfo($originalName, PATHINFO_FILENAME);
-
-        $baseName = str_replace(['ä', 'ö', 'ü', 'Ä', 'Ö', 'Ü', 'ß'], ['ae', 'oe', 'ue', 'Ae', 'Oe', 'Ue', 'ss'], $baseName);
-
-        $baseName = strtolower($baseName);
-        $baseName = str_replace(' ', '_', $baseName);
-        $filename = $baseName . '.' . $extension;
-        $target = $uploadDir . $filename;
-
-        if (file_exists($target)) {
-            $i = 1;
-            while (file_exists($uploadDir . $baseName . '_' . $i . '.' . $extension)) {
-                $i++;
-            }
-            $filename = $baseName . '_' . $i . '.' . $extension;
-            $target = $uploadDir . $filename;
-        }
-
-        if (!move_uploaded_file($files['audio_file']['tmp_name'], $target)) {
-            throw new Exception('Fehler beim Hochladen der Audio-Datei.');
-        }
-
-        return $filename;
     }
     
     private function handleCreateQuestion(): void
@@ -506,53 +481,5 @@ class AdminCoursesController extends AdminPageController
         $courseId = trim($_POST['course_id'] ?? '');
         $this->courseService->delete($courseId);
         $_SESSION['admin_success'] = 'Kurs gelöscht.';
-    }
-
-    private function handleUploadImage(): void
-    {
-        if (!$this->authService->isAdmin()) {
-            http_response_code(403);
-            echo json_encode(['error' => 'Nicht autorisiert']);
-            exit;
-        }
-
-        try {
-            $this->csrfService->validateToken($_POST['csrf_token']);
-        } catch (\Exception $e) {
-            http_response_code(403);
-            echo json_encode(['error' => 'CSRF token ungültig']);
-            exit;
-        }
-
-        if (!isset($_FILES['files'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Keine Datei hochgeladen']);
-            exit;
-        }
-
-        $uploadDir = __DIR__ . '/../../assets/images/slides/';
-
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0775, true);
-        }
-
-        $response = [];
-
-        foreach ($_FILES['files']['name'] as $index => $originalName) {
-            $tmpName = $_FILES['files']['tmp_name'][$index];
-            $filename = uniqid() . '-' . basename($originalName);
-            $target = $uploadDir . $filename;
-
-            if (move_uploaded_file($tmpName, $target)) {
-                $response[] = [
-                    'src' => '/assets/images/slides/' . $filename
-                ];
-            }
-        }
-
-        echo json_encode([
-            'data' => $response
-        ]);
-        exit;
     }
 }

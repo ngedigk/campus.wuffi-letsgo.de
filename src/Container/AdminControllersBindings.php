@@ -23,6 +23,7 @@ use App\Services\UuidService;
 use App\Services\UserService;
 use App\Services\QuizService;
 use App\Services\QuizQuestionService;
+use App\Services\AssetsService;
 
 use App\Helpers\ViewRenderer;
 
@@ -61,7 +62,8 @@ trait AdminControllersBindings
             $c->get(QuizQuestionRepository::class),
             $c->get(QuestionChoiceRepository::class),
             $c->get(QuizService::class),
-            $c->get(QuizQuestionService::class)
+            $c->get(QuizQuestionService::class),
+            $c->get(AssetsService::class)
         ));
         $this->set(AdminAccessCodesController::class, fn($c) => new AdminAccessCodesController(
             $c->get(CourseService::class),

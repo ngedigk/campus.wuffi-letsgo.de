@@ -20,6 +20,7 @@ use App\Services\UserService;
 use App\Services\UuidService;
 use App\Services\QuizQuestionService;
 use App\Services\QuestionChoiceService;
+use App\Services\AssetsService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -33,7 +34,6 @@ use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
-
 use PDO;
 
 trait ServicesBindings
@@ -90,6 +90,12 @@ trait ServicesBindings
         $this->set(RegistrationCodeService::class, fn($c) => new RegistrationCodeService(
             $c->get(RegistrationCodeRepository::class),
             $c->get(CourseRepository::class)
+        ));
+        $this->set(AssetsService::class, fn($c) => new AssetsService(
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class),
+            __DIR__ . '/../assets',
+            '/assets'
         ));
     }
 }

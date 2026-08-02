@@ -125,6 +125,7 @@ class AdminController extends AdminPageController
                 case 'delete_module':
                 case 'delete_course':
                 case 'upload_image':
+                case 'delete_image':
                     $this->coursesController->handlePost($action);
                     break;
                 case 'create_access_code':

@@ -13,8 +13,6 @@ export default function initEditor(options = {}) {
         css += style.innerHTML;
     });
 
-    const csrfToken = window.getCsrfToken();
-
     return grapesjs.init({
         container: '#gjs',
         height: '500px',
@@ -23,23 +21,6 @@ export default function initEditor(options = {}) {
         style: css,
 
         storageManager: false,
-
-        assetManager: {
-            upload: '/admin.php',
-            uploadName: 'files',
-
-            params: {
-                action: 'upload_image',
-                csrf_token: csrfToken
-            }
-        },
-
-        canvas: {
-            styles: [
-                '/assets/css/style.css',
-                '/assets/css/slides.css'
-            ],
-        },
 
         ...options
     });

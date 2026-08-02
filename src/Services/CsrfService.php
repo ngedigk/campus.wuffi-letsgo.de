@@ -12,23 +12,16 @@ class CsrfService
             session_start();
         }
 
-        if (!isset($_SESSION['csrf_tokens']) || !is_array($_SESSION['csrf_tokens'])) {
-            $_SESSION['csrf_tokens'] = [];
+        if (
+            empty($_SESSION['csrf_token']) ||
+            empty($_SESSION['csrf_token_created']) ||
+            time() - $_SESSION['csrf_token_created'] > 3600
+        ) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            $_SESSION['csrf_token_created'] = time();
         }
 
-        if (empty($_SESSION['csrf_tokens'])) {
-            $token = bin2hex(random_bytes(32));
-            $_SESSION['csrf_tokens'][$token] = time();
-        }
-
-        $threshold = time() - 3600;
-        $_SESSION['csrf_tokens'] = array_filter(
-            $_SESSION['csrf_tokens'],
-            fn($timestamp) => $timestamp > $threshold
-        );
-
-        $lastToken = array_key_last($_SESSION['csrf_tokens']);
-        return $lastToken !== null ? (string) $lastToken : '';
+        return $_SESSION['csrf_token'];
     }
 
     public function validateToken(string $token): void
@@ -37,25 +30,18 @@ class CsrfService
             session_start();
         }
 
-        $validTokens = $_SESSION['csrf_tokens'] ?? [];
+        $validToken = $_SESSION['csrf_token'] ?? '';
+        $created = $_SESSION['csrf_token_created'] ?? 0;
 
-        if (empty($token) || !isset($validTokens[$token]) || time() - $validTokens[$token] > 3600) {
-            error_log('CSRF validation failed');
-            throw new Exception('Ungültiger oder abgelaufener CSRF-Token.');
-        }
-
-        unset($_SESSION['csrf_tokens'][$token]);
-    }
-    
-    public function validateAndHandle(string $token, string $redirectUrl): void
-    {
-        try {
-            $this->validateToken($token);
-        } catch (Exception $e) {
-            error_log($e->getMessage());
-            $_SESSION['error'] = 'Ungültiger oder abgelaufener CSRF-Token.';
-            header("Location: $redirectUrl");
-            exit;
+        if (
+            empty($token) ||
+            empty($validToken) ||
+            !hash_equals($validToken, $token) ||
+            time() - $created > 3600
+        ) {
+            throw new Exception(
+                'Ungültiger oder abgelaufener CSRF-Token.'
+            );
         }
     }
 }

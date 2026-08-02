@@ -9,6 +9,7 @@ services:
       - "8080:80"
     volumes:
       - ./src:/var/www/html
+      - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
     env_file:
       - .env
     depends_on:
