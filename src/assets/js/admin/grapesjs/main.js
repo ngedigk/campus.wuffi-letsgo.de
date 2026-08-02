@@ -37,6 +37,86 @@ const editor = initEditor({
     }
 });
 
+function selectAsset(asset, complete = false) {
+    const component = editor.getSelected();
+
+    if (!component || !component.is('image')) {
+        return;
+    }
+
+    const src = asset.getSrc();
+
+    component.set('src', src);
+
+    requestAnimationFrame(() => {
+        highlightAsset(src);
+    });
+
+    if (complete) {
+        editor.AssetManager.close();
+    }
+}
+
+function openAssetManager() {
+    editor.AssetManager.open({
+        types: ['image'],
+
+        select(asset, complete) {
+            selectAsset(asset, complete);
+        }
+    });
+}
+
+let isUploading = false;
+let uploadedImageAssigned = false;
+
+editor.on('asset:upload:start', () => {
+    isUploading = true;
+    uploadedImageAssigned = false;
+});
+
+editor.on('asset:add', asset => {
+    if (!isUploading || uploadedImageAssigned) {
+        return;
+    }
+
+    const component = editor.getSelected();
+
+    if (!component || !component.is('image')) {
+        return;
+    }
+
+    selectAsset(asset);
+
+    uploadedImageAssigned = true;
+});
+
+editor.on('asset:upload:end', () => {
+    isUploading = false;
+});
+
+function highlightAsset(src) {
+    const url = new URL(src, window.location.origin);
+    const filename = decodeURIComponent(
+        url.pathname.split('/').pop()
+    );
+
+    document.querySelectorAll('.gjs-am-asset').forEach(el => {
+        const name = el.querySelector('.gjs-am-name');
+
+        if (!name) {
+            return;
+        }
+
+        const assetName = name.textContent.trim();
+
+        el.classList.toggle(
+            'gjs-am-highlight',
+            assetName === filename
+        );
+    });
+}
+
 editor.on('asset:remove', asset => {
     fetch('/admin.php', {
         method: 'POST',
