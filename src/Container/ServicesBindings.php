@@ -24,6 +24,7 @@ use App\Services\QuizQuestionService;
 use App\Services\QuestionChoiceService;
 use App\Services\AssetsService;
 use App\Services\AccessCodeService;
+use App\Services\PasswordResetsService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -37,6 +38,8 @@ use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\PasswordResetsRepository;
+
 
 use PDO;
 
@@ -115,6 +118,10 @@ trait ServicesBindings
             $c->get(CsrfService::class),
             __DIR__ . '/../assets',
             '/assets'
+        ));
+
+        $this->set(PasswordResetsService::class, fn($c) => new PasswordResetsService(
+            $c->get(PasswordResetsRepository::class)
         ));
     }
 }

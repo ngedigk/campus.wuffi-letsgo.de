@@ -122,7 +122,7 @@ class AuthService
         return new AuthenticationResult(true);
     }
 
-    public function isIpBlocked($limit = 5, $windowMinutes = 10)
+    public function isIpBlocked($limit = 5, $windowMinutes = 10): bool
     {
         $ip = $this->getClientIp();
 
@@ -131,13 +131,13 @@ class AuthService
         return $count >= $limit;
     }
 
-    public function recordFailedLogin()
+    public function recordFailedLogin(): void
     {
         $ip = $this->getClientIp();
         $this->authRepository->recordFailedLogin($ip);
     }
 
-    public function clearOldAttempts($windowMinutes = 10)
+    public function clearOldAttempts($windowMinutes = 10): void
     {
         $this->authRepository->clearOldAttempts($windowMinutes);
     }

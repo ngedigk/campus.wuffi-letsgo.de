@@ -7,13 +7,14 @@ use App\Dto\QuizQuestionInput;
 
 use \PDO;
 
-class QuizQuestionRepository {
-
+class QuizQuestionRepository
+{
     public function __construct(
         private PDO $pdo
     ) {}
 
-    public function getById(int $id): ?QuizQuestion {
+    public function getById(int $id): ?QuizQuestion
+    {
         $stmt = $this->pdo->prepare("
             SELECT
                 qq.*
@@ -31,7 +32,8 @@ class QuizQuestionRepository {
         return $this->createDto($row);
     }
 
-    public function getBySlideId(int $slideId): array {
+    public function getBySlideId(int $slideId): array
+    {
         $stmt = $this->pdo->prepare("
             SELECT
                 qq.*
@@ -47,7 +49,8 @@ class QuizQuestionRepository {
         }, $rows);
     }
 
-    public function create(QuizQuestionInput $quizQuestion): int {
+    public function create(QuizQuestionInput $quizQuestion): int
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO quiz_questions (slide_id, question_text)
             VALUES (:slideId, :questionText)
@@ -60,7 +63,8 @@ class QuizQuestionRepository {
         return (int)$this->pdo->lastInsertId();
     }
 
-    public function update(QuizQuestion $quizQuestion): void {
+    public function update(QuizQuestion $quizQuestion): void
+    {
         $stmt = $this->pdo->prepare("
             UPDATE quiz_questions
             SET question_text = :questionText
@@ -72,7 +76,8 @@ class QuizQuestionRepository {
         ]);
     }
 
-    public function delete(int $id): void {
+    public function delete(int $id): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM quiz_questions WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
@@ -121,7 +126,8 @@ class QuizQuestionRepository {
         return ['questions' => $questions, 'choices' => $choices];
     }
 
-    private function createDto(array $row): QuizQuestion {
+    private function createDto(array $row): QuizQuestion
+    {
         return new QuizQuestion(
             id: $row['id'],
             slideId: $row['slide_id'],

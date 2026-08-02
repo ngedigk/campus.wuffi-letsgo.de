@@ -8,7 +8,9 @@ use App\Dto\QuizResult;
 
 class QuizService
 {
-    public function __construct(private readonly QuizQuestionRepository $quizQuestionRepository) {}
+    public function __construct(
+        private QuizQuestionRepository $quizQuestionRepository
+    ) {}
 
     public function getQuizData(int $slideId): QuizResult
     {

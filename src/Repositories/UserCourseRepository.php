@@ -10,11 +10,8 @@ class UserCourseRepository
         private PDO $pdo
     ) {}
 
-    public function userHasCourse(
-        string $userUuid,
-        string $courseUuid
-    ): bool {
-
+    public function userHasCourse(string $userUuid, string $courseUuid): bool
+    {
         $stmt = $this->pdo->prepare("
             SELECT 1
             FROM user_courses
@@ -30,13 +27,8 @@ class UserCourseRepository
         return (bool)$stmt->fetch();
     }
 
-
-    public function addCourse(
-        string $userUuid,
-        string $courseUuid,
-        int $accessCodeId
-    ): void {
-
+    public function addCourse(string $userUuid, string $courseUuid, int $accessCodeId): void
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO user_courses
                 (user_id, course_id, access_code_id)

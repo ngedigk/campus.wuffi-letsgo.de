@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repositories\PasswordResetsRepository;
-
+use App\Services\PasswordResetsService;
 use App\Services\CsrfService;
 use App\Services\UserService;
 use App\Services\AuthService;
@@ -16,7 +15,7 @@ use \Throwable;
 class ResetPasswordController
 {
     public function __construct(
-        private PasswordResetsRepository $passwordResetsRepository,
+        private PasswordResetsService $passwordResetsService,
         private UserService $userService,
         private CsrfService $csrfService,
         private ViewRenderer $viewRenderer,
@@ -26,7 +25,7 @@ class ResetPasswordController
     public function index(): void
     {
         $token = $_GET['token'] ?? '';
-        $userUuid = $this->passwordResetsRepository->getUserUuidByToken($token);
+        $userUuid = $this->passwordResetsService->getUserUuidByToken($token);
 
         if (!$userUuid) {
             http_response_code(404);
@@ -62,7 +61,7 @@ class ResetPasswordController
         try {
             $hash = password_hash($password, PASSWORD_DEFAULT);
             $this->userService->setPassword($userUuid, $hash);
-            $this->passwordResetsRepository->deleteRecord($userUuid);
+            $this->passwordResetsService->deleteRecordsByUserId($userUuid);
 
             $this->renderForm(['success' => 'Passwort erfolgreich aktualisiert.'], $userUuid);
         } catch (Throwable $e) {

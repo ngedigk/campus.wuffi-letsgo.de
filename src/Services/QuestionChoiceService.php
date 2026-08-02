@@ -12,15 +12,13 @@ class QuestionChoiceService {
         private QuestionChoiceRepository $questionChoiceRepository
     ) {}
 
-    public function getByQuestionId(
-        int $questionId
-    ): array {
+    public function getByQuestionId(int $questionId): array
+    {
         return $this->questionChoiceRepository->getByQuestionId($questionId);
     }
 
-    public function create(
-        QuestionChoiceInput $questionChoice
-    ): int {
+    public function create(QuestionChoiceInput $questionChoice): int
+    {
         try {
             $slideId = $this->questionChoiceRepository->create($questionChoice);
         } catch (\Exception $e) {
@@ -29,21 +27,18 @@ class QuestionChoiceService {
         return $slideId;        
     }
 
-    public function update(
-        QuestionChoice $questionChoice
-    ): void {
+    public function update(QuestionChoice $questionChoice): void
+    {
         $this->questionChoiceRepository->update($questionChoice);
     }
 
-    public function delete(
-        int $id
-    ): void {
+    public function delete(int $id): void
+    {
         $this->questionChoiceRepository->delete($id);
     }
 
-    public function deleteByQuestionId(
-        int $questionId
-    ): void {
+    public function deleteByQuestionId(int $questionId): void
+    {
         $this->questionChoiceRepository->deleteByQuestionId($questionId);
     }
 }

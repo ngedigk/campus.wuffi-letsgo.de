@@ -15,15 +15,13 @@ class QuizQuestionService {
         private QuestionChoiceService $questionChoiceService
     ) {}
 
-    public function getBySlideId(
-        int $slideId
-    ): array {
+    public function getBySlideId(int $slideId): array
+    {
         return $this->quizQuestionRepository->getBySlideId($slideId);
     }
 
-    public function getWithChoices(
-        int $id
-    ): ?QuizQuestion {
+    public function getWithChoices(int $id): ?QuizQuestion
+    {
         $quizQuestion = $this->quizQuestionRepository->getById($id);
         if (!$quizQuestion) {
             return null;
@@ -36,9 +34,8 @@ class QuizQuestionService {
 
     }
 
-    public function create(
-        QuizQuestionInput $quizQuestion
-    ): int {
+    public function create(QuizQuestionInput $quizQuestion): int
+    {
         try {
             $slideId = $this->quizQuestionRepository->create($quizQuestion);
         } catch (\Exception $e) {
@@ -47,15 +44,13 @@ class QuizQuestionService {
         return $slideId;        
     }
 
-    public function update(
-        QuizQuestion $quizQuestion
-    ): void {
+    public function update(QuizQuestion $quizQuestion): void
+    {
         $this->quizQuestionRepository->update($quizQuestion);
     }
 
-    public function delete(
-        int $id
-    ): void {
+    public function delete(int $id): void
+    {
         $this->quizQuestionRepository->delete($id);
     }
 }

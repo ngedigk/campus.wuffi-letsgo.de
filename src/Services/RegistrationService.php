@@ -22,11 +22,8 @@ class RegistrationService
         private UuidService $uuidService
     ) {}
 
-    public function register(
-        string $email,
-        string $password,
-        string $registrationCode
-    ): array {
+    public function register(string $email, string $password, string $registrationCode): array
+    {
 
         if ($this->userRepository->existsByEmail($email)) {
             throw new Exception("E-Mail existiert bereits.");

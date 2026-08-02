@@ -12,9 +12,8 @@ class ModuleService {
         private ModuleRepository $moduleRepository
     ) {}
 
-    public function create(
-        ModuleInput $module
-    ): int {
+    public function create(ModuleInput $module): int
+    {
         try {
             $moduleId = $this->moduleRepository->create($module);
         } catch (\Exception $e) {
@@ -23,15 +22,13 @@ class ModuleService {
         return $moduleId;        
     }
 
-    public function update(
-        Module $module
-    ): void {
+    public function update(Module $module): void
+    {
         $this->moduleRepository->update($module);
     }
 
-    public function delete(
-        int $id
-    ): void {
+    public function delete(int $id): void
+    {
         $this->moduleRepository->delete($id);
     }
 }

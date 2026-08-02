@@ -204,7 +204,8 @@ class AssetsService
         return json_encode(['success' => true]);
     }
 
-    public function deleteAudioAsset(string $filename): void {
+    public function deleteAudioAsset(string $filename): void
+    {
         $uploadDir = $this->assetsPath . '/audio/';
         $file = $uploadDir . $filename;
 

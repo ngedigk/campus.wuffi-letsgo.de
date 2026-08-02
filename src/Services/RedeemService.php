@@ -20,10 +20,8 @@ class RedeemService
         private UserCourseRepository $userCourseRepository
     ) {}
 
-    public function redeem(
-        string $userUuid,
-        string $code
-    ): void {
+    public function redeem(string $userUuid, string $code): void
+    {
         $this->pdo->beginTransaction();
 
         try {

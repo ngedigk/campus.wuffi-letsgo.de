@@ -13,7 +13,8 @@ class SlideRepository
         private PDO $pdo
     ) {}
 
-    public function get(int $slideId) {
+    public function get(int $slideId): Slide
+    {
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM module_slides
@@ -28,7 +29,8 @@ class SlideRepository
         return $this->createDto($row);
     }
 
-    public function getByModuleId(int $moduleId): array {
+    public function getByModuleId(int $moduleId): array
+    {
         $stmt = $this->pdo->prepare("
             SELECT
                 ms.*
@@ -49,7 +51,8 @@ class SlideRepository
         }, $rows);
     }
 
-    public function getSlidesByAudioUrl(string $audioUrl): array {
+    public function getSlidesByAudioUrl(string $audioUrl): array
+    {
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM module_slides ms
@@ -63,7 +66,8 @@ class SlideRepository
         }, $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    public function create(SlideInput $slide): int {
+    public function create(SlideInput $slide): int
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides
             (module_id, title, html_content, audio_url, sort_order)
@@ -97,12 +101,14 @@ class SlideRepository
         ]);
     }
 
-    public function delete(int $slideId): void {
+    public function delete(int $slideId): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM module_slides WHERE id = :slideId");
         $stmt->execute(['slideId' => $slideId]);
     }
 
-    private function createDto(array $row): Slide {
+    private function createDto(array $row): Slide
+    {
         return new Slide(
             id: $row['id'],
             title: $row['title'],

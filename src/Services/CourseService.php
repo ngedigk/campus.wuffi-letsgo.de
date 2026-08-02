@@ -19,9 +19,8 @@ class CourseService
         private SlideRepository $slideRepository
     ) {}
 
-    public function create(
-        CourseInput $course
-    ): string {
+    public function create(CourseInput $course): string
+    {
         try {
             $courseId = $this->courseRepository->create($course);
         } catch (\Exception $e) {
@@ -30,23 +29,23 @@ class CourseService
         return $courseId;        
     }
 
-    public function update(
-        CourseInput $course
-    ): void {
+    public function update(CourseInput $course): void
+    {
         $this->courseRepository->update($course);
     }
 
-    public function delete(
-        string $uuid
-    ): void {
+    public function delete(string $uuid): void
+    {
         $this->courseRepository->delete($uuid);
     }
 
-    public function get(string $courseUuid): Course {
+    public function get(string $courseUuid): Course
+    {
         return $this->courseRepository->get($courseUuid);
     }
 
-    public function getWithDetails(string $courseUuid): Course {
+    public function getWithDetails(string $courseUuid): Course
+    {
         $course = $this->courseRepository->get($courseUuid);
 
         return new Course(
@@ -59,7 +58,8 @@ class CourseService
         );
     }
 
-    public function getWithDetailsForUser(string $userUuid, string $courseUuid): Course {
+    public function getWithDetailsForUser(string $userUuid, string $courseUuid): Course
+    {
         $course = $this->courseRepository->getCourseForUser($userUuid, $courseUuid);
         
         if (!$course) {
@@ -87,19 +87,18 @@ class CourseService
         return $modules;
     }
 
-    public function getAll(): array {
+    public function getAll(): array
+    {
         return $this->courseRepository->getAll();
     }
 
-    public function getAllForUser(string $userUuid): array {
+    public function getAllForUser(string $userUuid): array
+    {
         return $this->courseRepository->getAllForUser($userUuid);
     }
 
-    public function buildCourseUrl(
-        string $courseUuid,
-        int $moduleIndex,
-        int $slideIndex
-    ): string {
+    public function buildCourseUrl(string $courseUuid, int $moduleIndex, int $slideIndex): string
+    {
         return sprintf(
             'course.php?id=%s&module=%s&slide=%d',
             urlencode($courseUuid),

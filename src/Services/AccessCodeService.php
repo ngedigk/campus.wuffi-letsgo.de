@@ -15,19 +15,23 @@ class AccessCodeService
         return $this->accessCodeRepository->getAll();
     }
 
-    public function existsByCode(string $code): bool{
+    public function existsByCode(string $code): bool
+    {
         return $this->accessCodeRepository->existsByCode($code);
     }
 
-    public function create(string $code, string $courseId): void{
+    public function create(string $code, string $courseId): void
+    {
         $this->accessCodeRepository->create($code, $courseId);
     }
 
-    public function update(int $accessCodeId, string $code, string $courseId): void{
+    public function update(int $accessCodeId, string $code, string $courseId): void
+    {
         $this->accessCodeRepository->update($accessCodeId, $code, $courseId);
     }
 
-    public function delete(int $accessCodeId): void{
+    public function delete(int $accessCodeId): void
+    {
         $this->accessCodeRepository->delete($accessCodeId);
     }
 

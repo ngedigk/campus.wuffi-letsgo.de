@@ -14,12 +14,9 @@ class CourseSidebarBuilderService
         private CourseService $courseService
     ) {}
 
-    public function build(
-        Course $course,
-        ?Module $currentModule,
-        array $allowedSlideIds,
-        array $visitedSlideIds
-    ): array {
+    public function build(Course $course, ?Module $currentModule, array $allowedSlideIds, array $visitedSlideIds
+    ): array
+    {
         $items = [];
 
         foreach ($course->modules as $moduleIndex => $module) {

@@ -4,9 +4,10 @@ namespace App\Controller;
 
 use App\Services\AuthService;
 use App\Services\CsrfService;
+use App\Services\UserService;
 use App\Services\MailerService;
-use App\Repositories\UserRepository;
-use App\Repositories\PasswordResetsRepository;
+use App\Services\PasswordResetsService;
+
 use App\Helpers\ViewRenderer;
 
 use \Exception;
@@ -16,8 +17,8 @@ class ForgotPasswordController
     public function __construct(
         private AuthService $authService,
         private CsrfService $csrfService,
-        private UserRepository $userRepository,
-        private PasswordResetsRepository $passwordResetsRepository,
+        private UserService $userService,
+        private PasswordResetsService $passwordResetsService,
         private MailerService $mailerService,
         private ViewRenderer $viewRenderer
     ) {}
@@ -42,11 +43,11 @@ class ForgotPasswordController
         }
 
         $email = trim($_POST['email'] ?? '');
-        $user = $this->userRepository->findByEmail($email);
+        $user = $this->userService->findByEmail($email);
 
         if ($user) {
             $token = bin2hex(random_bytes(32));
-            $this->passwordResetsRepository->recordReset($user->id, $token);
+            $this->passwordResetsService->recordReset($user->id, $token);
             $this->sendResetEmail($email, $token);
         }
 

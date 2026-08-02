@@ -11,9 +11,6 @@ use App\Controller\ProfileController;
 use App\Controller\RegistrationController;
 use App\Controller\ResetPasswordController;
 
-use App\Repositories\PasswordResetsRepository;
-use App\Repositories\UserRepository;
-
 use App\Services\AuthService;
 use App\Services\CourseService;
 use App\Services\CsrfService;
@@ -27,6 +24,7 @@ use App\Services\CourseSidebarBuilderService;
 use App\Services\ProgressService;
 use App\Services\QuizService;
 use App\Services\SlideService;
+use App\Services\PasswordResetsService;
 
 use App\Helpers\ViewRenderer;
 
@@ -62,13 +60,13 @@ trait ApplicationControllersBindings
         $this->set(ForgotPasswordController::class, fn($c) => new ForgotPasswordController(
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
-            $c->get(UserRepository::class),
-            $c->get(PasswordResetsRepository::class),
+            $c->get(UserService::class),
+            $c->get(PasswordResetsService::class),
             $c->get(MailerService::class),
             $c->get(ViewRenderer::class)
         ));
         $this->set(ResetPasswordController::class, fn($c) => new ResetPasswordController(
-            $c->get(PasswordResetsRepository::class),
+            $c->get(PasswordResetsService::class),
             $c->get(UserService::class),
             $c->get(CsrfService::class),
             $c->get(ViewRenderer::class),

@@ -14,9 +14,8 @@ class SlideService {
         private QuizQuestionRepository $quizQuestionRepository
     ) {}
 
-    public function create(
-        SlideInput $slide
-    ): int {
+    public function create(SlideInput $slide): int
+    {
         try {
             $slideId = $this->slideRepository->create($slide);
         } catch (\Exception $e) {
@@ -25,19 +24,18 @@ class SlideService {
         return $slideId;        
     }
 
-    public function update(
-        Slide $slide
-    ): void {
+    public function update(Slide $slide): void
+    {
         $this->slideRepository->update($slide);
     }
 
-    public function delete(
-        int $id
-    ): void {
+    public function delete(int $id): void
+    {
         $this->slideRepository->delete($id);
     }
 
-    public function deleteAudioAssetFromSlides(string $audioUrl): void {
+    public function deleteAudioAssetFromSlides(string $audioUrl): void
+    {
         $slides = $this->slideRepository->getSlidesByAudioUrl($audioUrl);
         foreach ($slides as $slide) {
             $slide->audioUrl = '';
@@ -45,9 +43,8 @@ class SlideService {
         }
     }
 
-    public function hasQuiz(
-        int $slideId
-    ): bool {
+    public function hasQuiz(int $slideId): bool
+    {
         $questions = $this->quizQuestionRepository->getBySlideId($slideId);
         return !empty($questions);
     }

@@ -37,7 +37,7 @@ class PasswordResetsRepository
         ]);
     }
 
-    public function deleteRecord(string $userId): void
+    public function deleteRecordsByUserId(string $userId): void
     {
         $stmt = $this->pdo->prepare("
             DELETE FROM password_resets

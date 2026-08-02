@@ -7,13 +7,14 @@ use App\Dto\QuestionChoiceInput;
 
 use \PDO;
 
-class QuestionChoiceRepository {
-
+class QuestionChoiceRepository
+{
     public function __construct(
         private PDO $pdo
     ) {}
 
-    public function getByQuestionId(int $questionId): array {
+    public function getByQuestionId(int $questionId): array
+    {
         $stmt = $this->pdo->prepare("SELECT * FROM question_choices WHERE question_id = :questionId");
         $stmt->execute(['questionId' => $questionId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -21,7 +22,8 @@ class QuestionChoiceRepository {
         return array_map(fn($row) => $this->createDto($row), $rows);
     }
 
-    public function create(QuestionChoiceInput $questionChoice): int {
+    public function create(QuestionChoiceInput $questionChoice): int
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO question_choices (question_id, choice_text, is_correct)
             VALUES (:questionId, :choiceText, :isCorrect)
@@ -35,7 +37,8 @@ class QuestionChoiceRepository {
         return (int)$this->pdo->lastInsertId();
     }
 
-    public function update(QuestionChoice $questionChoice): void {
+    public function update(QuestionChoice $questionChoice): void
+    {
         $stmt = $this->pdo->prepare("
             UPDATE question_choices
             SET choice_text = :choiceText, is_correct = :isCorrect
@@ -48,17 +51,20 @@ class QuestionChoiceRepository {
         ]);
     }
 
-    public function delete(int $id): void {
+    public function delete(int $id): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM question_choices WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
 
-    public function deleteByQuestionId(int $questionId): void {
+    public function deleteByQuestionId(int $questionId): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM question_choices WHERE question_id = :questionId");
         $stmt->execute(['questionId' => $questionId]);
     }
 
-    private function createDto(array $row): QuestionChoice {
+    private function createDto(array $row): QuestionChoice
+    {
         return new QuestionChoice(
             id: $row['id'],
             questionId: $row['question_id'],

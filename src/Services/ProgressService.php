@@ -8,7 +8,7 @@ class ProgressService
 {
     public function __construct(
         private ProgressRepository $progressRepo
-    ) { }
+    ) {}
 
     public function recordSlideView(string $userId, int $slideId): void
     {

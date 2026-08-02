@@ -6,12 +6,9 @@ use \PDO;
 
 class ProgressRepository
 {
-    private PDO $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
+    public function __construct(
+        private PDO $pdo
+    ) {}
 
     public function getVisitedSlideIds(string $userId, string $courseUuid): array
     {
