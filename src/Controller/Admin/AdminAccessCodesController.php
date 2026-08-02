@@ -8,7 +8,7 @@ use App\Services\AuthService;
 
 use App\Helpers\ViewRenderer;
 
-use Exception;
+use \Exception;
 
 class AdminAccessCodesController extends AdminPageController
 {

@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Dto\CourseInput;
 use App\Dto\Course;
-use PDO;
+
+use \PDO;
 
 class CourseRepository
 {

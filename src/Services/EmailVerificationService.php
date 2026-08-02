@@ -4,8 +4,9 @@ namespace App\Services;
 
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\UserRepository;
-use PDO;
-use Throwable;
+
+use \PDO;
+use \Throwable;
 
 class EmailVerificationService
 {

@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use \Exception;
 
 class RedeemException extends Exception
 {

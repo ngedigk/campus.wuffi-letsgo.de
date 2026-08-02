@@ -4,11 +4,13 @@ namespace App\Services;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\UserCourseRepository;
+
 use App\Exceptions\RedeemException;
-use PDO;
-use PDOException;
-use Exception;
-use Throwable;
+
+use \PDO;
+use \PDOException;
+use \Exception;
+use \Throwable;
 
 class RedeemService
 {

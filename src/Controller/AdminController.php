@@ -9,10 +9,12 @@ use App\Controller\Admin\AdminDashboardController;
 use App\Controller\Admin\AdminPageController;
 use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminUsersController;
+
 use App\Services\AdminContextService;
 use App\Services\AuthService;
-use Exception;
-use Throwable;
+
+use \Exception;
+use \Throwable;
 
 class AdminController extends AdminPageController
 {

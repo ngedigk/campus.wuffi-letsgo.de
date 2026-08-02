@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use \PHPMailer\PHPMailer\PHPMailer;
-use Exception;
+
+use \Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 

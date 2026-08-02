@@ -10,8 +10,9 @@ use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminUsersController;
 use App\Controller\AdminController;
 
-use App\Services\QuestionChoiceService;
+use App\Services\AdminCourseManagementService;
 use App\Services\AdminContextService;
+use App\Services\QuestionChoiceService;
 use App\Services\AssetsService;
 use App\Services\AuthService;
 use App\Services\CourseService;
@@ -47,7 +48,8 @@ trait AdminControllersBindings
             $c->get(QuizQuestionService::class),
             $c->get(QuestionChoiceService::class),
             $c->get(AdminContextService::class),
-            $c->get(AssetsService::class)
+            $c->get(AssetsService::class),
+            $c->get(AdminCourseManagementService::class)
         ));
         $this->set(AdminAccessCodesController::class, fn($c) => new AdminAccessCodesController(
             $c->get(AccessCodeService::class),

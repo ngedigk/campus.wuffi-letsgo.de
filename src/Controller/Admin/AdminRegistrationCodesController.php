@@ -9,7 +9,7 @@ use App\Services\RegistrationCodeService;
 
 use App\Helpers\ViewRenderer;
 
-use Exception;
+use \Exception;
 
 class AdminRegistrationCodesController extends AdminPageController
 {

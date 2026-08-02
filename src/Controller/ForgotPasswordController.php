@@ -8,7 +8,8 @@ use App\Services\MailerService;
 use App\Repositories\UserRepository;
 use App\Repositories\PasswordResetsRepository;
 use App\Helpers\ViewRenderer;
-use Exception;
+
+use \Exception;
 
 class ForgotPasswordController
 {

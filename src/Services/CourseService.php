@@ -9,7 +9,7 @@ use App\Repositories\SlideRepository;
 use App\Dto\Course;
 use App\Dto\CourseInput;
 
-use RuntimeException;
+use \RuntimeException;
 
 class CourseService
 {

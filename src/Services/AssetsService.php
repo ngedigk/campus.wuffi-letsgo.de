@@ -208,8 +208,6 @@ class AssetsService
         $uploadDir = $this->assetsPath . '/audio/';
         $file = $uploadDir . $filename;
 
-        error_log($file);
-
         if (!is_file($file)) {
             throw new Exception('Audio-Datei existiert nicht.');
         }

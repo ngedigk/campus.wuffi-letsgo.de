@@ -5,7 +5,8 @@ namespace App\Controller;
 use App\Services\AuthService;
 use App\Services\CsrfService;
 use App\Helpers\ViewRenderer;
-use Exception;
+
+use \Exception;
 
 class AuthController
 {

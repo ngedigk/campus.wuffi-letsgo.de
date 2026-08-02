@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use Exception;
+use \Exception;
 
 class CsrfService
 {

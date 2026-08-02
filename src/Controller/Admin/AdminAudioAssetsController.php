@@ -2,12 +2,14 @@
 
 namespace App\Controller\Admin;
 
-use App\Helpers\ViewRenderer;
 use App\Services\AdminContextService;
 use App\Services\AssetsService;
 use App\Services\AuthService;
 use App\Services\SlideService;
-use Exception;
+
+use App\Helpers\ViewRenderer;
+
+use \Exception;
 
 class AdminAudioAssetsController extends AdminPageController
 {

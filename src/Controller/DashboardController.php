@@ -6,10 +6,13 @@ use App\Services\DashboardService;
 use App\Services\RedeemService;
 use App\Services\AuthService;
 use App\Services\CsrfService;
+
 use App\Helpers\ViewRenderer;
+
 use App\Exceptions\RedeemException;
-use Exception;
-use Throwable;
+
+use \Exception;
+use \Throwable;
 
 class DashboardController
 {

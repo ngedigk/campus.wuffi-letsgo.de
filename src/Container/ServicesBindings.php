@@ -3,6 +3,7 @@
 namespace App\Container;
 
 use App\Services\AdminContextService;
+use App\Services\AdminCourseManagementService;
 use App\Services\AuthService;
 use App\Services\CourseService;
 use App\Services\CourseSidebarBuilderService;
@@ -69,6 +70,15 @@ trait ServicesBindings
             $c->get(QuestionChoiceService::class)
         ));
         $this->set(QuestionChoiceService::class, fn($c) => new QuestionChoiceService($c->get(QuestionChoiceRepository::class)));
+        $this->set(AdminCourseManagementService::class, fn($c) => new AdminCourseManagementService(
+            $c->get(CourseService::class),
+            $c->get(ModuleService::class),
+            $c->get(SlideService::class),
+            $c->get(UuidService::class),
+            $c->get(QuizQuestionService::class),
+            $c->get(QuestionChoiceService::class),
+            $c->get(AssetsService::class)
+        ));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(

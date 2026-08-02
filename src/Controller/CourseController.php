@@ -15,7 +15,8 @@ use App\Dto\Course;
 use App\Dto\Module;
 use App\Dto\Slide;
 use App\Dto\QuizResult;
-use Exception;
+
+use \Exception;
 
 class CourseController
 {

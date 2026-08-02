@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Dto\Slide;
 use App\Dto\SlideInput;
-use PDO;
+
+use \PDO;
 
 class SlideRepository
 {
@@ -56,7 +57,7 @@ class SlideRepository
         ");
 
         $stmt->execute(['audioUrl' => $audioUrl]);
-        
+
         return array_map(function($row) {
             return $this->createDto($row);
         }, $stmt->fetchAll(PDO::FETCH_ASSOC));

@@ -2,11 +2,13 @@
 
 namespace App\Controller\Admin;
 
-use App\Helpers\ViewRenderer;
 use App\Services\AdminContextService;
 use App\Services\AuthService;
 use App\Services\UserService;
-use Exception;
+
+use App\Helpers\ViewRenderer;
+
+use \Exception;
 
 class AdminUsersController extends AdminPageController
 {

@@ -5,10 +5,13 @@ namespace App\Controller;
 use App\Services\AuthService;
 use App\Services\CsrfService;
 use App\Services\UserService;
+
 use App\Helpers\ViewRenderer;
+
 use App\Dto\User;
-use Exception;
-use Throwable;
+
+use \Exception;
+use \Throwable;
 
 class ProfileController
 {

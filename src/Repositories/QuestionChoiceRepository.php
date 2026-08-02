@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Dto\QuestionChoice;
 use App\Dto\QuestionChoiceInput;
-use PDO;
+
+use \PDO;
 
 class QuestionChoiceRepository {
 

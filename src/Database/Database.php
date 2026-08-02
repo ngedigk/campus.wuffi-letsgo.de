@@ -2,9 +2,9 @@
 
 namespace App\Database;
 
-use PDO;
-use PDOException;
-use RuntimeException;
+use \PDO;
+use \PDOException;
+use \RuntimeException;
 
 require_once __DIR__ . '/../config.php';
 

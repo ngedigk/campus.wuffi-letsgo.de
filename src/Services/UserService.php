@@ -4,7 +4,8 @@ namespace App\Services;
 
 use App\Repositories\UserRepository;
 use App\Dto\User;
-use Exception;
+
+use \Exception;
 
 class UserService
 {

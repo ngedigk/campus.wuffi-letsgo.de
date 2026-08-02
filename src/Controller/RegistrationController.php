@@ -6,9 +6,11 @@ use App\Services\RegistrationService;
 use App\Services\CsrfService;
 use App\Services\EmailVerificationService;
 use App\Services\MailerService;
+
 use App\Helpers\ViewRenderer;
-use Exception;
-use Throwable;
+
+use \Exception;
+use \Throwable;
 
 class RegistrationController
 {

@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use PDO;
 use App\Dto\User;
+
+use \PDO;
 
 class UserRepository
 {

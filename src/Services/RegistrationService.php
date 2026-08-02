@@ -6,9 +6,10 @@ use App\Repositories\UserRepository;
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\AccessCodeRepository;
-use PDO;
-use Exception;
-use Throwable;
+
+use \PDO;
+use \Exception;
+use \Throwable;
 
 class RegistrationService
 {

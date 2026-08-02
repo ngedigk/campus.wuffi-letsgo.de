@@ -4,7 +4,8 @@ namespace App\Repositories;
 
 use App\Dto\Module;
 use App\Dto\ModuleInput;
-use PDO;
+
+use \PDO;
 
 class ModuleRepository
 {
