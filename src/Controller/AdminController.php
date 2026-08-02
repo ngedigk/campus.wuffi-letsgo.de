@@ -23,6 +23,7 @@ use App\Controller\Admin\AdminCoursesController;
 use App\Controller\Admin\AdminAccessCodesController;
 use App\Controller\Admin\AdminUsersController;
 use App\Controller\Admin\AdminRegistrationCodesController;
+use App\Controller\Admin\AdminAudioAssetsController;
 
 use App\Helpers\ViewRenderer;
 use Exception;
@@ -49,7 +50,8 @@ class AdminController extends AdminPageController
         private AdminCoursesController $coursesController,
         private AdminAccessCodesController $accessCodesController,
         private AdminUsersController $usersController,
-        private AdminRegistrationCodesController $registrationCodesController
+        private AdminRegistrationCodesController $registrationCodesController,
+        private AdminAudioAssetsController $audioAssetsController,
     ) {
         parent::__construct(
             $courseService,
@@ -95,6 +97,9 @@ class AdminController extends AdminPageController
             case 'registration-codes':
                 $this->registrationCodesController->render($context);
                 break;
+            case 'audio-assets':
+                $this->audioAssetsController->render($context);
+                break;
             default:
                 $this->dashboardController->render($context);
                 break;
@@ -138,8 +143,11 @@ class AdminController extends AdminPageController
                 case 'delete_registration_code':
                     $this->registrationCodesController->handlePost($action);
                     break;
+                case 'delete_audio_asset':
+                    $this->audioAssetsController->handlePost($action);
+                    break;
                 default:
-                    throw new Exception('Unsupported admin action.');
+                    throw new Exception("Nicht unterstützte Admin-Aktion \"$action\".");
             }
         } catch (Throwable $e) {
             $_SESSION['admin_error'] = $e->getMessage();
@@ -148,7 +156,14 @@ class AdminController extends AdminPageController
 
     private function validatePage(string $page): string
     {
-        $validPages = ['dashboard', 'courses', 'access-codes', 'users', 'registration-codes'];
+        $validPages = [
+            'dashboard',
+            'courses',
+            'access-codes',
+            'users',
+            'registration-codes',
+            'audio-assets'
+        ];
         return in_array($page, $validPages, true) ? $page : 'dashboard';
     }
 }

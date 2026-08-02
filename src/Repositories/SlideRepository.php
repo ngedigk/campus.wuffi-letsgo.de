@@ -48,6 +48,20 @@ class SlideRepository
         }, $rows);
     }
 
+    public function getSlidesByAudioUrl(string $audioUrl): array {
+        $stmt = $this->pdo->prepare("
+            SELECT *
+            FROM module_slides ms
+            WHERE audio_url = :audioUrl
+        ");
+
+        $stmt->execute(['audioUrl' => $audioUrl]);
+        
+        return array_map(function($row) {
+            return $this->createDto($row);
+        }, $stmt->fetchAll(PDO::FETCH_ASSOC));
+    }
+
     public function create(SlideInput $slide): int {
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides

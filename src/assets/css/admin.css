@@ -1075,6 +1075,10 @@
     grid-template-columns: 1fr 2fr 1fr 1fr 1fr;
 }
 
+.audio-assets-list .list-item {
+    grid-template-columns: 2fr 2fr 1fr;
+}
+
 .list-item {
     display: grid;
     gap: 12px;
@@ -1096,18 +1100,21 @@
     word-wrap: break-word;
 }
 
-/* Access Codes Column Mapping */
 .access-codes-list .list-item .code-cell { grid-column: 1; }
 .access-codes-list .list-item .course-cell { grid-column: 2; }
 .access-codes-list .list-item .status-cell { grid-column: 3; }
 .access-codes-list .list-item .actions-cell { grid-column: 4; justify-self: end; display: flex; gap: 8px; }
 
-/* Registration Codes Column Mapping */
 .registration-codes-list .list-item .code-cell { grid-column: 1; }
 .registration-codes-list .list-item .courses-cell { grid-column: 2; }
 .registration-codes-list .list-item .status-cell { grid-column: 3; }
 .registration-codes-list .list-item .used-at-cell { grid-column: 4; }
 .registration-codes-list .list-item .actions-cell { grid-column: 5; justify-self: end; display: flex; gap: 8px; }
+
+.audio-assets-list .list-item .filename-cell { grid-column: 1; }
+.audio-assets-list .list-item .preview-cell { grid-column: 2; }
+.audio-assets-list .list-item .actions-cell { grid-column: 3; justify-self: end; display: flex; gap: 8px; }
+
 
 .course-list {
     margin: 0;

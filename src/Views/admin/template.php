@@ -60,6 +60,11 @@
                         </a>
                     </li>
                     <li>
+                        <a href="admin.php?page=audio-assets" class="<?= ($viewModel['activePage'] ?? '') === 'audio-assets' ? 'active' : '' ?>">
+                            <span>Audio Assets</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="admin.php?page=registration-codes" class="<?= ($viewModel['activePage'] ?? '') === 'registration-codes' ? 'active' : '' ?>">
                             <span>Registration Codes</span>
                         </a>

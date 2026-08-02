@@ -14,9 +14,8 @@
         <?php endif; ?>
 
         <?php if (!empty($viewModel['currentSlide']->audioUrl)):
-            $audioFile = basename(trim((string)$viewModel['currentSlide']->audioUrl));
-            $audioFile = preg_replace('/\.mp3$/i', '', $audioFile);
-            $audioSrc = '/assets/audio/' . rawurlencode($audioFile) . '.mp3';
+            $audioFile = trim((string)$viewModel['currentSlide']->audioUrl);
+            $audioSrc = '/assets/audio/' . rawurlencode($audioFile);
         ?>
             <div class="slide-audio">
                 <audio controls preload="none">

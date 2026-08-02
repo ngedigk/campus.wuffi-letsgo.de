@@ -37,6 +37,14 @@ class SlideService {
         $this->slideRepository->delete($id);
     }
 
+    public function deleteAudioAssetFromSlides(string $audioUrl): void {
+        $slides = $this->slideRepository->getSlidesByAudioUrl($audioUrl);
+        foreach ($slides as $slide) {
+            $slide->audioUrl = '';
+            $this->slideRepository->update($slide);
+        }
+    }
+
     public function hasQuiz(
         int $slideId
     ): bool {

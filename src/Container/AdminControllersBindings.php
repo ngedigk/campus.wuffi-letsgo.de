@@ -7,6 +7,7 @@ use App\Controller\Admin\AdminCoursesController;
 use App\Controller\Admin\AdminDashboardController;
 use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminUsersController;
+use App\Controller\Admin\AdminAudioAssetsController;
 use App\Controller\AdminController;
 
 use App\Repositories\AccessCodeRepository;
@@ -113,6 +114,23 @@ trait AdminControllersBindings
             $c->get(QuizService::class),
             $c->get(QuizQuestionService::class)
         ));
+        $this->set(AdminAudioAssetsController::class, fn($c) => new AdminAudioAssetsController(
+            $c->get(CourseService::class),
+            $c->get(UserService::class),
+            $c->get(AccessCodeRepository::class),
+            $c->get(SlideService::class),
+            $c->get(ModuleService::class),
+            $c->get(ViewRenderer::class),
+            $c->get(AuthService::class),
+            $c->get(CsrfService::class),
+            $c->get(UuidService::class),
+            $c->get(RegistrationCodeService::class),
+            $c->get(QuizQuestionRepository::class),
+            $c->get(QuestionChoiceRepository::class),
+            $c->get(QuizService::class),
+            $c->get(QuizQuestionService::class),
+            $c->get(AssetsService::class)
+        ));
         $this->set(AdminController::class, fn($c) => new AdminController(
             $c->get(CourseService::class),
             $c->get(UserService::class),
@@ -132,7 +150,8 @@ trait AdminControllersBindings
             $c->get(AdminCoursesController::class),
             $c->get(AdminAccessCodesController::class),
             $c->get(AdminUsersController::class),
-            $c->get(AdminRegistrationCodesController::class)
+            $c->get(AdminRegistrationCodesController::class),
+            $c->get(AdminAudioAssetsController::class),
         ));
     }
 }

@@ -203,4 +203,19 @@ class AssetsService
 
         return json_encode(['success' => true]);
     }
+
+    public function deleteAudioAsset(string $filename): void {
+        $uploadDir = $this->assetsPath . '/audio/';
+        $file = $uploadDir . $filename;
+
+        error_log($file);
+
+        if (!is_file($file)) {
+            throw new Exception('Audio-Datei existiert nicht.');
+        }
+
+        if (!unlink($file)) {
+            throw new Exception('Audio-Datei konnte nicht gelöscht werden.');
+        }
+    }
 }
