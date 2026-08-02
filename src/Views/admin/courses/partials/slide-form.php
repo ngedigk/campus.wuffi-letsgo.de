@@ -85,7 +85,9 @@
                             id="slide-dropdown-audio-preview"
                             controls
                             style="width: 100%;"
+                            <?php if (!empty($viewModel['selectedSlide']->audioUrl)): ?>
                             src="<?= "/assets/audio/" . ($viewModel['selectedSlide']->audioUrl ?? '') ?>"
+                            <?php endif; ?>
                         >
                             Ihr Browser unterstützt kein Audio-Element.
                         </audio>
