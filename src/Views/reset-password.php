@@ -10,8 +10,12 @@
 
                 <?php if (!empty($viewModel['success'])): ?>
 
-                    <h1>Passwort aktualisiert</h1>
-                    <a href="index.php">Login</a>
+                    <div class="general-card">
+                        <h2>Passwort aktualisiert</h2>
+                        <div>
+                            <a href="index.php">Login</a>
+                        </div>
+                    </div>
 
                 <?php else: ?>
 

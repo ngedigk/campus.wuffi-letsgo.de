@@ -12,9 +12,11 @@
 
                     <div class="general-card">
                         <h2>Account erstellt</h2>
-                        <a href="index.php">
-                            Zur Anmeldung
-                        </a>
+                        <div>
+                            <a href="index.php">
+                                Zur Anmeldung
+                            </a>
+                        </div>
                     </div>
 
                 <?php else: ?>

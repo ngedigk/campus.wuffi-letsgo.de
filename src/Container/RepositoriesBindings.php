@@ -2,7 +2,6 @@
 
 namespace App\Container;
 
-use PDO;
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
 use App\Repositories\CourseRepository;
@@ -16,6 +15,8 @@ use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
+
+use \PDO;
 
 trait RepositoriesBindings
 {

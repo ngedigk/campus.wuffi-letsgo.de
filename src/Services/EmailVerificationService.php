@@ -2,16 +2,17 @@
 
 namespace App\Services;
 
+use App\Contracts\TransactionManager;
+
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\UserRepository;
 
-use \PDO;
 use \Throwable;
 
 class EmailVerificationService
 {
     public function __construct(
-        private PDO $pdo,
+        private TransactionManager $transactionManager,
         private EmailVerificationRepository $emailVerificationRepository,
         private UserRepository $userRepository
     ) {}
@@ -24,14 +25,15 @@ class EmailVerificationService
             return ['success' => false, 'error' => 'Ungültiger oder abgelaufener Token.'];
         }
 
-        $this->pdo->beginTransaction();
         try {
-            $this->userRepository->verify($row['user_id']);
-            $this->emailVerificationRepository->deleteByToken($token);
-            $this->pdo->commit();
+            $this->transactionManager->run(
+                function () use ($row, $token) {
+                    $this->userRepository->verify($row['user_id']);
+                    $this->emailVerificationRepository->deleteByToken($token);
+                }
+            );
             return ['success' => true];
         } catch (Throwable $e) {
-            $this->pdo->rollBack();
             return ['success' => false, 'error' => 'E-Mail konnte nicht verifiziert werden.'];
         }
     }

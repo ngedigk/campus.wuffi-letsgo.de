@@ -19,12 +19,11 @@ use App\Services\DashboardService;
 use App\Services\RedeemService;
 use App\Services\RegistrationService;
 use App\Services\EmailVerificationService;
-use App\Services\MailerService;
 use App\Services\CourseSidebarBuilderService;
 use App\Services\ProgressService;
 use App\Services\QuizService;
 use App\Services\SlideService;
-use App\Services\PasswordResetsService;
+use App\Services\PasswordResetService;
 
 use App\Helpers\ViewRenderer;
 
@@ -54,20 +53,16 @@ trait ApplicationControllersBindings
             $c->get(RegistrationService::class),
             $c->get(CsrfService::class),
             $c->get(EmailVerificationService::class),
-            $c->get(ViewRenderer::class),
-            $c->get(MailerService::class)
+            $c->get(ViewRenderer::class)
         ));
         $this->set(ForgotPasswordController::class, fn($c) => new ForgotPasswordController(
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
-            $c->get(UserService::class),
-            $c->get(PasswordResetsService::class),
-            $c->get(MailerService::class),
+            $c->get(PasswordResetService::class),
             $c->get(ViewRenderer::class)
         ));
         $this->set(ResetPasswordController::class, fn($c) => new ResetPasswordController(
-            $c->get(PasswordResetsService::class),
-            $c->get(UserService::class),
+            $c->get(PasswordResetService::class),
             $c->get(CsrfService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class)

@@ -6,9 +6,15 @@
 
                 <?php require_once __DIR__ . '/partials/general-messages.php'; ?>
 
-                <h1><?= $viewModel['headline'] ?></h1>
-                <a href="index.php">Zur Anmeldung</a>
-                
+                <div class="general-card">
+
+                    <h2><?= $viewModel['headline'] ?></h2>
+                    <div>
+                        <a href="index.php">Zur Anmeldung</a>
+                    </div>
+
+                </div>
+
             </div>
         </div>
     </div>

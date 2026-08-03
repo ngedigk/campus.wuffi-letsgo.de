@@ -3,10 +3,12 @@
 namespace App\Container;
 
 use App\Database\Database;
-use PDO;
+use \PDO;
 
 class Container
 {
+    use DatabaseBindings;
+    use MailBindings;
     use RepositoriesBindings;
     use ServicesBindings;
     use HelpersBindings;
@@ -35,6 +37,8 @@ class Container
 
         $this->instances[PDO::class] = $pdo;
 
+        $this->registerDatabase();
+        $this->registerMail();
         $this->registerRepositories();
         $this->registerServices();
         $this->registerHelpers();

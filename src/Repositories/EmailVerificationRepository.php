@@ -27,19 +27,18 @@ class EmailVerificationRepository
         $stmt = $this->pdo->prepare("DELETE FROM email_verifications WHERE token = :token");
         $stmt->execute(['token' => $token]);
     }
-    public function create(
-        string $userId,
-        string $token
-    ): void {
 
+    public function upsert(string $userId, string $token): void {
         $stmt = $this->pdo->prepare("
             INSERT INTO email_verifications (user_id, token, expires_at)
-            VALUES (:userId, :token, DATE_ADD(NOW(), INTERVAL 1 DAY))
+            VALUES (:userId, :insertToken, NOW() + INTERVAL 1 HOUR)
+            ON DUPLICATE KEY UPDATE token = :updateToken, expires_at = NOW() + INTERVAL 1 HOUR
         ");
 
         $stmt->execute([
             'userId' => $userId,
-            'token' => $token
+            'insertToken' => $token,
+            'updateToken' => $token
         ]);
     }
 }

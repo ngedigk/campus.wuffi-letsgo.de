@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Infrastructure\Mail;
+
+use App\Contracts\Mailer;
 
 use \PHPMailer\PHPMailer\PHPMailer;
+use \PHPMailer\PHPMailer\Exception;
 
-use \Exception;
-
-require_once __DIR__ . '/../vendor/autoload.php';
-
-class MailerService
+class PHPMailerMailer implements Mailer
 {
     private PHPMailer $mailer;
 

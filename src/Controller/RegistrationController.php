@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Services\RegistrationService;
 use App\Services\CsrfService;
 use App\Services\EmailVerificationService;
-use App\Services\MailerService;
 
 use App\Helpers\ViewRenderer;
 
@@ -19,7 +18,6 @@ class RegistrationController
         private CsrfService $csrfService,
         private EmailVerificationService $emailVerificationService,
         private ViewRenderer $viewRenderer,
-        private MailerService $mailerService
     ) {}
 
     public function index(): void
@@ -55,7 +53,7 @@ class RegistrationController
             'pageTitle' => $pageTitle,
             'headline' => $headline,
             'isLoggedIn' => false,
-            'error' => $_SESSION['verify_error']
+            'error' => $_SESSION['verify_error'] ?? ''
         ]);
 
         unset($_SESSION['verify_error']);
@@ -105,10 +103,8 @@ class RegistrationController
         }        
 
         try {
-            $result = $this->registrationService->register($email, $password, $registrationCode, $name);
+            $this->registrationService->register($email, $password, $registrationCode, $name);
             
-            $this->sendVerificationEmail($email, $result['token']);
-
             $this->renderForm([
                 'error' => '',
                 'success' => 'Registrierung erfolgreich. Überprüfen Sie Ihre E-Mails.',
@@ -141,18 +137,5 @@ class RegistrationController
         $context['isLoggedIn'] = false;
 
         $this->viewRenderer->renderWithTemplate('register-form', $context);
-    }
-
-    private function sendVerificationEmail(string $email, string $token): void
-    {
-        $link = SITE_URL . "/register.php?action=verify&token=" . urlencode($token);
-
-        $htmlBody = "<h1>Account bestätigen</h1><p>Klicken Sie auf den unteren Link:</p><a href='" . htmlspecialchars($link) . "'>" . htmlspecialchars($link) . "</a>";
-
-        try {
-            $this->mailerService->send($email, 'Bestätigen Sie Ihre E-Mail', $htmlBody);
-        } catch (\Exception $e) {
-            error_log("Email verification failed: " . $e->getMessage());
-        }
     }
 }

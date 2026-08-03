@@ -2,6 +2,9 @@
 
 namespace App\Container;
 
+use App\Contracts\Mailer;
+use App\Contracts\TransactionManager;
+
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
 use App\Services\AuthService;
@@ -10,7 +13,6 @@ use App\Services\CourseSidebarBuilderService;
 use App\Services\CsrfService;
 use App\Services\DashboardService;
 use App\Services\EmailVerificationService;
-use App\Services\MailerService;
 use App\Services\ModuleService;
 use App\Services\ProgressService;
 use App\Services\QuizService;
@@ -24,7 +26,7 @@ use App\Services\QuizQuestionService;
 use App\Services\QuestionChoiceService;
 use App\Services\AssetsService;
 use App\Services\AccessCodeService;
-use App\Services\PasswordResetsService;
+use App\Services\PasswordResetService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -54,7 +56,6 @@ trait ServicesBindings
             $c->get(CsrfService::class)
         ));
         $this->set(UuidService::class, fn() => new UuidService());
-        $this->set(MailerService::class, fn() => new MailerService());
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
@@ -94,7 +95,8 @@ trait ServicesBindings
             $c->get(ProgressService::class)
         ));
         $this->set(RegistrationService::class, fn($c) => new RegistrationService(
-            $c->get(PDO::class),
+            $c->get(TransactionManager::class),
+            $c->get(Mailer::class),
             $c->get(UserRepository::class),
             $c->get(EmailVerificationRepository::class),
             $c->get(RegistrationCodeRepository::class),
@@ -105,7 +107,7 @@ trait ServicesBindings
             $c->get(CourseService::class)
         ));
         $this->set(EmailVerificationService::class, fn($c) => new EmailVerificationService(
-            $c->get(PDO::class),
+            $c->get(TransactionManager::class),
             $c->get(EmailVerificationRepository::class),
             $c->get(UserRepository::class)
         ));
@@ -120,8 +122,11 @@ trait ServicesBindings
             '/assets'
         ));
 
-        $this->set(PasswordResetsService::class, fn($c) => new PasswordResetsService(
-            $c->get(PasswordResetsRepository::class)
+        $this->set(PasswordResetService::class, fn($c) => new PasswordResetService(
+            $c->get(UserRepository::class),
+            $c->get(PasswordResetsRepository::class),
+            $c->get(Mailer::class),
+            $c->get(TransactionManager::class),
         ));
     }
 }
