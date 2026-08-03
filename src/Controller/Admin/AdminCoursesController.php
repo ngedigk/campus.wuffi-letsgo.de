@@ -121,20 +121,22 @@ class AdminCoursesController extends AdminPageController
             $pageTitle = 'Folie bearbeiten: ' . $selectedSlide->title;
         }
 
-        $viewData = [
-            ...$context,
-            'activePage' => 'courses',
-            'breadcrumb' => $breadcrumb,
-            'selectedCourse' => $selectedCourse,
-            'selectedCourseId' => $selectedCourseId,
-            'selectedModule' => $selectedModule,
-            'selectedModuleId' => $selectedModuleId,
-            'selectedSlide' => $selectedSlide,
-            'selectedSlideId' => $selectedSlideId,
-            'slideAssets' => $slideAssets,
-            'audioFiles' => $audioFiles,
-            'pageTitle' => $pageTitle
-        ];
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'courses',
+                'breadcrumb' => $breadcrumb,
+                'selectedCourse' => $selectedCourse,
+                'selectedCourseId' => $selectedCourseId,
+                'selectedModule' => $selectedModule,
+                'selectedModuleId' => $selectedModuleId,
+                'selectedSlide' => $selectedSlide,
+                'selectedSlideId' => $selectedSlideId,
+                'slideAssets' => $slideAssets,
+                'audioFiles' => $audioFiles,
+                'pageTitle' => $pageTitle
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/courses/index', $viewData);
     }

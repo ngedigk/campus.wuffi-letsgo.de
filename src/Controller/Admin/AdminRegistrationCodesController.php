@@ -30,19 +30,21 @@ class AdminRegistrationCodesController extends AdminPageController
             'type' => 'module'
         ];
 
-        $viewData = [
-            ...$context,
-            'activePage' => 'registration-codes',
-            'breadcrumb' => [
-                [
-                    'url' => '',
-                    'title' => 'Registration Codes'
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'registration-codes',
+                'breadcrumb' => [
+                    [
+                        'url' => '',
+                        'title' => 'Registration Codes'
+                    ],
                 ],
-            ],
-            'registrationCodes' => $this->registrationCodeService->getAll(),
-            'allCourses' => $this->courseService->getAll(),
-            'pageTitle' => 'Registration Codes'
-        ];
+                'registrationCodes' => $this->registrationCodeService->getAll(),
+                'allCourses' => $this->courseService->getAll(),
+                'pageTitle' => 'Registration Codes'
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/registration-codes', $viewData);
     }

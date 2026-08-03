@@ -23,14 +23,16 @@ class AdminDashboardController extends AdminPageController
 
     public function render(array $context): void
     {
-        $viewData = [
-            ...$context,
-            'activePage' => 'dashboard',
-            'breadcrumb' => [],
-            'accessCodes' => $this->accessCodeService->getAll(),
-            'allUsers' => $this->userService->getAll(),
-            'pageTitle' => 'Dashboard'
-        ];
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'dashboard',
+                'breadcrumb' => [],
+                'accessCodes' => $this->accessCodeService->getAll(),
+                'allUsers' => $this->userService->getAll(),
+                'pageTitle' => 'Dashboard'
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/dashboard', $viewData);
     }

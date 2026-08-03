@@ -28,18 +28,20 @@ class AdminAccessCodesController extends AdminPageController
             'type' => 'module'
         ];
 
-        $viewData = [
-            ...$context,
-            'activePage' => 'access-codes',
-            'breadcrumb' => [
-                [
-                    'url' => '',
-                    'title' => 'Access Codes'
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'access-codes',
+                'breadcrumb' => [
+                    [
+                        'url' => '',
+                        'title' => 'Access Codes'
+                    ],
                 ],
-            ],
-            'accessCodes' => $this->accessCodeService->getAll(),
-            'pageTitle' => 'Access Codes'
-        ];
+                'accessCodes' => $this->accessCodeService->getAll(),
+                'pageTitle' => 'Access Codes'
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/access-codes', $viewData);
     }

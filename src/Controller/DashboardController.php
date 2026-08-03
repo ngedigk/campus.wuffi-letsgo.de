@@ -28,12 +28,12 @@ class DashboardController
     {
         $courses = $this->dashboardService->getUserDashboardData($context['user']->id);
 
-        $viewData = [
+        $context = array_merge($context['additionalCss'], ['/assets/css/dashboard.css']);
+
+        $viewData = array_merge([
             'pageTitle' => 'Dashboard',
-            ...$context,
-            'courses' => $courses,
-            'additionalCss' => [...$context['additionalCss'], '/assets/css/dashboard.css']
-        ];
+            'courses' => $courses
+        ], $context);
 
         $this->viewRenderer->renderWithTemplate('dashboard', $viewData);
     }

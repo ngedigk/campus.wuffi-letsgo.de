@@ -30,18 +30,20 @@ class AdminAudioAssetsController extends AdminPageController
             'type' => 'module'
         ];
 
-        $viewData = [
-            ...$context,
-            'activePage' => 'audio-assets',
-            'breadcrumb' => [
-                [
-                    'url' => '',
-                    'title' => 'Audio Assets'
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'audio-assets',
+                'breadcrumb' => [
+                    [
+                        'url' => '',
+                        'title' => 'Audio Assets'
+                    ],
                 ],
-            ],
-            'audioFiles' => $this->assetsService->getAudioFiles(),
-            'pageTitle' => 'Audio Assets'
-        ];
+                'audioFiles' => $this->assetsService->getAudioFiles(),
+                'pageTitle' => 'Audio Assets'
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/audio-assets', $viewData);
     }

@@ -48,10 +48,10 @@ class AuthController
             ['src' => '/assets/js/password-toggle.js']
         ];
 
-        $viewData = [
-            'pageTitle' => 'Login',
-            ...$context,
-        ];
+        $viewData = array_merge(
+            ['pageTitle' => 'Login'],
+            $context
+        );
 
         $this->viewRenderer->renderWithTemplate('login-form', $viewData);
     }

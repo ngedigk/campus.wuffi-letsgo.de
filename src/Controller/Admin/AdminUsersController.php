@@ -23,18 +23,20 @@ class AdminUsersController extends AdminPageController
 
     public function render(array $context): void
     {
-        $viewData = [
-            ...$context,
-            'activePage' => 'users',
-            'breadcrumb' => [
-                [
-                    'url' => '',
-                    'title' => 'Benutzer'
+        $viewData = array_merge(
+            $context,
+            [
+                'activePage' => 'users',
+                'breadcrumb' => [
+                    [
+                        'url' => '',
+                        'title' => 'Benutzer'
+                    ],
                 ],
-            ],
-            'allUsers' => $this->userService->getAll(),
-            'pageTitle' => 'Benutzer'
-        ];
+                'allUsers' => $this->userService->getAll(),
+                'pageTitle' => 'Benutzer'
+            ]
+        );
 
         $this->viewRenderer->renderWithAdminTemplate('admin/users', $viewData);
     }
