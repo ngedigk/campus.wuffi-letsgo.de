@@ -1,6 +1,8 @@
 src/vendor/
-src/assets/audio
-src/assets/images/slides
+src/assets/audio/*
+!src/assets/audio/.keep
+src/assets/images/slides/*
+!src/assets/images/slides/.keep
 .env
 db/data/
 .DS_Store
