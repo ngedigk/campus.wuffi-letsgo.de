@@ -28,7 +28,7 @@ class DashboardController
     {
         $courses = $this->dashboardService->getUserDashboardData($context['user']->id);
 
-        $context = array_merge($context['additionalCss'], ['/assets/css/dashboard.css']);
+        $context['additionalCss'] = array_merge($context['additionalCss'], ['/assets/css/dashboard.css']);
 
         $viewData = array_merge([
             'pageTitle' => 'Dashboard',
