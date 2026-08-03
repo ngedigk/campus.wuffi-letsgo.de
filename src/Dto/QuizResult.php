@@ -5,13 +5,13 @@ namespace App\Dto;
 class QuizResult
 {
     public function __construct(
-        public readonly bool $isSubmitted = false,
-        public readonly bool $passed = false,
-        public readonly ?string $feedbackMessage = null,
-        public readonly string $feedbackType = 'info',
-        public readonly array $questions = [],
-        public readonly array $choicesByQuestion = [],
-        public readonly array $results = []
+        public bool $isSubmitted = false,
+        public bool $passed = false,
+        public ?string $feedbackMessage = null,
+        public string $feedbackType = 'info',
+        public array $questions = [],
+        public array $choicesByQuestion = [],
+        public array $results = []
     ) {}
 
     public function getChoiceLabel(array $choice): string
