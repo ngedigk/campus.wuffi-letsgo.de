@@ -4,10 +4,10 @@ namespace App\Controller\Admin;
 
 use App\Services\AdminContextService;
 use App\Services\AuthService;
+use App\Services\RegistrationService;
 use App\Services\UserService;
 
 use App\Helpers\ViewRenderer;
-
 use \Exception;
 
 class AdminUsersController extends AdminPageController
@@ -16,6 +16,7 @@ class AdminUsersController extends AdminPageController
         protected UserService $userService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
+        protected RegistrationService $registrationService,
         protected AdminContextService $adminContextService
     ) {
         parent::__construct($adminContextService, $authService);
@@ -50,11 +51,14 @@ class AdminUsersController extends AdminPageController
             case 'revoke_admin':
                 $this->handleRevokeAdmin();
                 break;
+            case 'resend_verification_email':
+                $this->handleResendVerificationEmail();
+                break;
             case 'manually_verify':
                 $this->handleManuallyVerify();
                 break;
             default:
-                throw new Exception('Administrative Aktion nicht unterstützt.');
+                throw new Exception("Nicht unterstützte Admin-Aktion \"$action\".");
         }
     }
 
@@ -93,5 +97,17 @@ class AdminUsersController extends AdminPageController
 
         $this->userService->verify($email);
         $_SESSION['admin_success'] = 'Benutzer manuell verifiziert.';
+    }
+
+    private function handleResendVerificationEmail(): void
+    {
+        $email = trim($_POST['email'] ?? '');
+        if ($email === '') {
+            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
+        }
+
+        $this->registrationService->resendVerificationEmail($email);
+
+        $_SESSION['admin_success'] = 'Verifizierungsmail wurde gesendet.';
     }
 }

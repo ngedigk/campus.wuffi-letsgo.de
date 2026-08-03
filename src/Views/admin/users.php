@@ -36,8 +36,19 @@
                                 <span class="status-badge pending">Ausstehend</span>
                             <?php endif; ?>
                         </td>
-                        <td class="actions">
+                        <td class="actions vertical-actions">
                             <?php if (!$user->emailVerified): ?>
+                                <form
+                                    id="resend-verify-form"
+                                    method="post"
+                                    action="admin.php?page=users"
+                                    onsubmit="return confirm('Sind Sie sicher, dass Sie die E-Mail nochmal an den Nutzer senden möchten?')"
+                                >
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
+                                    <input type="hidden" name="action" value="resend_verification_email">
+                                    <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
+                                    <button class="btn btn-small btn-warn" type="submit">Verifizierungsmail nochmal senden</button>
+                                </form>
                                 <form
                                     id="manually-verify-form"
                                     method="post"

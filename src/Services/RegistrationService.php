@@ -27,7 +27,6 @@ class RegistrationService
 
     public function register(string $email, string $password, string $registrationCode, string $name): void
     {
-
         $token = bin2hex(random_bytes(32));
 
         $this->transactionManager->run(
@@ -75,6 +74,20 @@ class RegistrationService
             }
         );
         
+        $this->sendVerificationEmail($email, $token);
+    }
+
+    public function resendVerificationEmail(string $email): void
+    {
+        $token = bin2hex(random_bytes(32));
+
+        $user = $this->userRepository->findByEmail($email);
+        if ($user === null) {
+            throw new Exception('Es wurde kein Benutzer mit dieser E-Mail gefunden.');
+        }
+
+        $this->emailVerificationRepository->upsert($user->id, $token);
+
         $this->sendVerificationEmail($email, $token);
     }
 

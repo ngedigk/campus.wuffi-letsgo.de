@@ -75,6 +75,7 @@ class AdminController extends AdminPageController
                 case 'grant_admin':
                 case 'revoke_admin':
                 case 'manually_verify':
+                case 'resend_verification_email':
                     $this->usersController->handlePost($action);
                     break;
                 case 'create_course':

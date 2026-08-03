@@ -1013,6 +1013,10 @@
     gap: 8px;
 }
 
+.actions.vertical-actions {
+    flex-direction: column;
+}
+
 .actions .btn-small {
     white-space: nowrap;
 }

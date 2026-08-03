@@ -25,7 +25,7 @@ use App\Services\QuizQuestionService;
 use App\Services\AccessCodeService;
 
 use App\Helpers\ViewRenderer;
-
+use App\Services\RegistrationService;
 
 trait AdminControllersBindings
 {
@@ -61,6 +61,7 @@ trait AdminControllersBindings
             $c->get(UserService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
+            $c->get(RegistrationService::class),
             $c->get(AdminContextService::class)
         ));
         $this->set(AdminRegistrationCodesController::class, fn($c) => new AdminRegistrationCodesController(
