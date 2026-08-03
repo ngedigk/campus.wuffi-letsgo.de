@@ -1,4 +1,6 @@
 src/vendor/
+src/assets/audio
+src/assets/images/slides
 .env
 db/data/
 .DS_Store
