@@ -38,16 +38,6 @@
 
                 <p><?= nl2br(htmlspecialchars($viewModel['course']->description)) ?></p>
 
-                <?php if ($viewModel['errors'] ?? []): ?>
-                    <div class="course-errors">
-                        <ul>
-                            <?php foreach ($viewModel['errors'] ?? [] as $error): ?>
-                                <li><?= htmlspecialchars($error) ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
-
                 <?php if (!$viewModel['currentModule'] ?? null): ?>
                     <p>Kursmodule sind noch nicht konfiguriert.</p>
                 <?php else: ?>

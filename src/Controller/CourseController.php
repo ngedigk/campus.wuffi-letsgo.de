@@ -33,7 +33,6 @@ class CourseController
     public function handle(string $id, int $moduleId, int $slideIndex): void
     {
         $userUuid = (string)($_SESSION['user_id'] ?? '');
-        $errors = [];
 
         try {
             $result = $this->processCourse($userUuid, $id, $moduleId, $slideIndex);
@@ -43,7 +42,6 @@ class CourseController
                 'isLoggedIn' => $this->authService->isLoggedIn(),
                 'isAdmin' => $this->authService->isAdmin(),
                 'additionalCss' => ['/assets/css/course.css'],
-                'errors' => $errors,
                 'course' => $result['course'],
                 'slidesForModule' => $result['slidesForModule'],
                 'currentSlide' => $result['currentSlide'],
@@ -62,7 +60,6 @@ class CourseController
             $this->viewRenderer->renderWithTemplate('course', $viewData);
 
         } catch (Exception $e) {
-            $errors[] = $e->getMessage();
             error_log($e->getMessage());
         }
     }

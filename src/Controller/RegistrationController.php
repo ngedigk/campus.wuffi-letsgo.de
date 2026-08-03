@@ -42,16 +42,23 @@ class RegistrationController
     {
         $result = $this->emailVerificationService->verify($token);
 
-        if ($result['success']) {
-            $this->viewRenderer->renderWithTemplate('email-verified', [
-                'pageTitle' => 'Email Verified',
-                'isLoggedIn' => false
-            ]);
-        } else {
-            $_SESSION['verify_error'] = $result['message'] ?? 'Ungültiger oder abgelaufener Token.';
-            header('Location: index.php');
-            exit;
+        $pageTitle = 'E-Mail Adresse bestätigt';
+
+        if (!$result['success']) {
+            $pageTitle = 'E-Mail Adresse nicht bestätigt';
+            $_SESSION['verify_error'] = $result['error'] ?? 'Ungültiger oder abgelaufener Token.';
         }
+
+        $headline = $pageTitle;
+
+        $this->viewRenderer->renderWithTemplate('email-verified', [
+            'pageTitle' => $pageTitle,
+            'headline' => $headline,
+            'isLoggedIn' => false,
+            'error' => $_SESSION['verify_error']
+        ]);
+
+        unset($_SESSION['verify_error']);
     }
 
     private function handleRegistration(): void

@@ -21,7 +21,7 @@ class EmailVerificationService
         $row = $this->emailVerificationRepository->findByToken($token);
 
         if (!$row) {
-            return ['success' => false, 'message' => 'Ungültiger oder abgelaufener Token.'];
+            return ['success' => false, 'error' => 'Ungültiger oder abgelaufener Token.'];
         }
 
         $this->pdo->beginTransaction();
@@ -32,7 +32,7 @@ class EmailVerificationService
             return ['success' => true];
         } catch (Throwable $e) {
             $this->pdo->rollBack();
-            return ['success' => false, 'message' => 'E-Mail konnte nicht verifiziert werden.'];
+            return ['success' => false, 'error' => 'E-Mail konnte nicht verifiziert werden.'];
         }
     }
 }

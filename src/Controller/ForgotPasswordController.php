@@ -38,7 +38,7 @@ class ForgotPasswordController
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
         } catch (Exception $e) {
-            $this->renderForm(['message' => $e->getMessage()]);
+            $this->renderForm(['error' => $e->getMessage()]);
             return;
         }
 
@@ -51,7 +51,7 @@ class ForgotPasswordController
             $this->sendResetEmail($email, $token);
         }
 
-        $this->renderForm(['message' => 'Wenn die E-Mail-Adresse existiert, wurde ein Reset-Link gesendet.']);
+        $this->renderForm(['success' => 'Wenn die E-Mail-Adresse existiert, wurde ein Reset-Link gesendet.']);
     }
 
     private function sendResetEmail(string $email, string $token): void

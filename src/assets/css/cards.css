@@ -1,3 +1,4 @@
+.general-card,
 .form-card {
     background: var(--page-bg);
     padding: 30px 35px;
@@ -5,6 +6,7 @@
     box-shadow: 0 0 30px rgba(0, 0, 0, 0.08);
 }
 
+.general-card h2,
 .form-card h2 {
     font-family: 'Asap', sans-serif;
     color: var(--primary);
@@ -15,6 +17,7 @@
     display: inline-block;
 }
 
+.general-card h2::after,
 .form-card h2::after {
     content: "";
     display: block;

@@ -31,6 +31,9 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
+
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
+
                 <p class="heading-meta">Dashboard</p>
 
                 <h2 id="courses-heading">Deine Kurse</h2>
@@ -75,14 +78,8 @@
             <div class="col-sm-12">
 
                 <h4>Weitere Kurse</h4>
-
-                <?php if ($viewModel['redeemError'] ?? ''): ?>
-                    <p style="color: red; font-weight: bold;"><?= htmlspecialchars($viewModel['redeemError'] ?? '') ?></p>
-                <?php endif; ?>
-
-                <?php if ($viewModel['redeemSuccess'] ?? ''): ?>
-                    <p style="color: green; font-weight: bold;"><?= htmlspecialchars($viewModel['redeemSuccess'] ?? '') ?></p>
-                <?php endif; ?>
+                
+                <?php require_once __DIR__ . "/partials/redeem-messages.php"; ?>
 
                 <form method="post" action="">
                     <input type="hidden" name="_action" value="redeem">

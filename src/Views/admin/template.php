@@ -108,17 +108,11 @@
 
             <div class="content-wrapper">
                 <?php if (!empty($viewModel['adminError'])): ?>
-                    <div class="alert alert-error">
-                        <span class="alert-icon"></span>
-                        <?= htmlspecialchars($viewModel['adminError']) ?>
-                    </div>
+                    <div class="alert alert-error"><?= htmlspecialchars($viewModel['adminError']) ?></div>
                 <?php endif; ?>
 
                 <?php if (!empty($viewModel['adminSuccess'])): ?>
-                    <div class="alert alert-success">
-                        <span class="alert-icon"></span>
-                        <?= htmlspecialchars($viewModel['adminSuccess']) ?>
-                    </div>
+                    <div class="alert alert-success"><?= htmlspecialchars($viewModel['adminSuccess']) ?></div>
                 <?php endif; ?>
 
                 <div class="content-body">

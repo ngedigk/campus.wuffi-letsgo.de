@@ -50,13 +50,15 @@ class HomeController
             'loginError' => $_SESSION['login_error'] ?? null,
             'redeemError' => $_SESSION['redeem_error'] ?? null,
             'redeemSuccess' => $_SESSION['redeem_success'] ?? null,
+            'adminError' => $_SESSION['admin_error'] ?? null,
             'additionalCss' => [],
         ];
 
         unset(
             $_SESSION['login_error'],
             $_SESSION['redeem_error'],
-            $_SESSION['redeem_success']
+            $_SESSION['redeem_success'],
+            $_SESSION['admin_error']
         );
 
         return $context;

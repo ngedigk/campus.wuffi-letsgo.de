@@ -26,4 +26,11 @@
 
     --password-match: #22c55e;
     --password-no-match: #ef4444;
+
+    --alert-success: hsl(142, 71%, 45%);
+    --alert-success-bg: hsl(142, 71%, 95%);
+    --alert-message: hsl(45, 93%, 47%);
+    --alert-message-bg: hsl(45, 93%, 95%);
+    --alert-error: hsl(0, 84%, 60%);
+    --alert-error-bg: hsl(0, 84%, 95%);
 }

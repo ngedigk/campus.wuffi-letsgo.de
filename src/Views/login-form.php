@@ -6,9 +6,7 @@
         <div class="row">
             <div class="col-sm-12">
 
-                <?php if (!empty($viewModel['loginError'])): ?>
-                <p><?= htmlspecialchars($viewModel['loginError']) ?></p>
-                <?php endif; ?>
+                <?php require_once __DIR__ . "/partials/login-messages.php"; ?>
 
                 <form method="post" class="form-card">
 

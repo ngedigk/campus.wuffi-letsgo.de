@@ -6,24 +6,19 @@
         <div class="row">
             <div class="col-sm-12">
 
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
+
                 <?php if (!empty($viewModel['success'])): ?>
-                    <h1>Account erstellt</h1>
-                    <p class="success">
-                        <?= htmlspecialchars($viewModel['success']) ?>
-                    </p>
-                    <a href="index.php">
-                        Zur Anmeldung
-                    </a>
+
+                    <div class="general-card">
+                        <h2>Account erstellt</h2>
+                        <a href="index.php">
+                            Zur Anmeldung
+                        </a>
+                    </div>
+
                 <?php else: ?>
 
-                    <?php if (!empty($viewModel['error'])): ?>
-
-                        <p class="error">
-                            <?= htmlspecialchars($viewModel['error']) ?>
-                        </p>
-
-                    <?php endif; ?>
-                        
                     <form method="post" class="form-card">
 
                         <h2>Account erstellen</h2>

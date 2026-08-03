@@ -5,8 +5,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-
-                <p><?= htmlspecialchars($viewModel['message'] ?? '') ?></p>
+                
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
 
                 <form method="post" class="form-card">
                     <h2>Passwort vergessen</h2>

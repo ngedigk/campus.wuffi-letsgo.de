@@ -5,21 +5,21 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
+                
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
 
                 <?php if (!empty($viewModel['success'])): ?>
-                    <h1>Passwort aktualisiert</h1>
-                    <p class="success"><?= htmlspecialchars($viewModel['success']) ?></p>
-                    <a href="index.php">Login</a>
-                <?php else: ?>
-                    <h1>Passwort zurücksetzen</h1>
 
-                    <?php if (!empty($viewModel['error'])): ?>
-                        <p class="error"><?= htmlspecialchars($viewModel['error']) ?></p>
-                    <?php endif; ?>
+                    <h1>Passwort aktualisiert</h1>
+                    <a href="index.php">Login</a>
+
+                <?php else: ?>
 
                     <form method="post" class="form-card">
                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
                         <input type="hidden" name="user_uuid" value="<?= htmlspecialchars($viewModel['userUuid'] ?? '') ?>">
+
+                        <h2>Passwort zurücksetzen</h2>
 
                         <div class="form-group">
                             <label>Neues Passwort

@@ -1,19 +1,24 @@
-.success,
-.error {
+.alert {
     padding: 12px 18px;
     margin: 0 0 25px;
     border-radius: 5px;
     font-size: 15px;
 }
 
-.success {
-    color: #16803c;
-    background: #edf9f1;
-    border-left: 4px solid #22c55e;
+.alert-success {
+    color: var(--alert-success);
+    background: var(--alert-success-bg);
+    border-left: 4px solid var(--alert-success);
 }
 
-.error {
-    color: #b42318;
-    background: #fff1f0;
-    border-left: 4px solid #ef4444;
+.alert-message {
+    color: var(--alert-message);
+    background: var(--alert-message-bg);
+    border-left: 4px solid var(--alert-message);
+}
+
+.alert-error {
+    color: var(--alert-error);
+    background: var(--alert-error-bg);
+    border-left: 4px solid var(--alert-error);
 }

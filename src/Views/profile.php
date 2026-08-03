@@ -38,17 +38,7 @@
         <div class="row">
             <div class="col-sm-12">
 
-                <?php if (!empty($viewModel['success'])): ?>
-                    <p class="success">
-                        <?= htmlspecialchars($viewModel['success']) ?>
-                    </p>
-                <?php endif; ?>
-
-                <?php if (!empty($viewModel['error'])): ?>
-                    <p class="error">
-                        <?= htmlspecialchars($viewModel['error']) ?>
-                    </p>
-                <?php endif; ?>
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
 
                 <div class="container-fluid">
                     <div class="row">
