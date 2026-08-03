@@ -7,10 +7,10 @@ require __DIR__ . '/bootstrap.php';
 
 $container = Container::getInstance();
 $authService = $container->get(AuthService::class);
-$authService->requireLogin(__DIR__);
+$authService->requireLogin();
 
 if (!$authService->isAdmin()) {
-    $_SESSION['admin_error'] = 'Sie haben keine Berechtigung, administative Funktionen zu verwalten.';
+    $_SESSION['admin_error'] = 'Sie haben keine Berechtigung administative Funktionen zu verwalten.';
     header('Location: index.php');
     exit;
 }

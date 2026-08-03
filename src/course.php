@@ -7,7 +7,7 @@ require __DIR__ . '/bootstrap.php';
 
 $container = Container::getInstance();
 $authService = $container->get(AuthService::class);
-$authService->requireLogin(__DIR__);
+$authService->requireLogin();
 
 $courseUuid = trim(($_GET['id'] ?? ''));
 $moduleId = (int)($_GET['module'] ?? 0);
