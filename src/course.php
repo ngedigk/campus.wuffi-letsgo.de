@@ -10,9 +10,9 @@ $authService = $container->get(AuthService::class);
 $authService->requireLogin();
 
 $courseUuid = trim(($_GET['id'] ?? ''));
-$moduleId = (int)($_GET['module'] ?? 0);
+$moduleIndex = (int)($_GET['module'] ?? 0);
 $slideIndex = (int)($_GET['slide'] ?? 0);
 
 $courseController = $container->get(CourseController::class);
-$courseController->handle($courseUuid, $moduleId, $slideIndex);
+$courseController->handle($courseUuid, $moduleIndex, $slideIndex);
 exit;

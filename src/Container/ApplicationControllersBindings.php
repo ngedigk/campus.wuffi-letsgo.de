@@ -24,6 +24,7 @@ use App\Services\ProgressService;
 use App\Services\QuizService;
 use App\Services\SlideService;
 use App\Services\PasswordResetService;
+use App\Services\CourseNavigationService;
 
 use App\Helpers\ViewRenderer;
 
@@ -74,7 +75,8 @@ trait ApplicationControllersBindings
             $c->get(QuizService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
-            $c->get(SlideService::class)
+            $c->get(SlideService::class),
+            $c->get(CourseNavigationService::class)
         ));
         $this->set(ProfileController::class, fn($c) => new ProfileController(
             $c->get(AuthService::class),

@@ -27,6 +27,7 @@ use App\Services\QuestionChoiceService;
 use App\Services\AssetsService;
 use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
+use App\Services\CourseNavigationService;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -41,9 +42,6 @@ use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\PasswordResetsRepository;
-
-
-use PDO;
 
 trait ServicesBindings
 {
@@ -102,6 +100,10 @@ trait ServicesBindings
             $c->get(RegistrationCodeRepository::class),
             $c->get(AccessCodeRepository::class),
             $c->get(UuidService::class)
+        ));
+        $this->set(CourseNavigationService::class, fn($c) => new CourseNavigationService(
+            $c->get(CourseService::class),
+            $c->get(ProgressService::class)
         ));
         $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
             $c->get(CourseService::class)

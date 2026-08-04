@@ -13,7 +13,9 @@ use App\Controller\Admin\AdminUsersController;
 use App\Services\AdminContextService;
 use App\Services\AuthService;
 
-use \Exception;
+use App\Exceptions\AdminException;
+use App\Exceptions\InvalidAdminActionException;
+
 use \Throwable;
 
 class AdminController extends AdminPageController
@@ -108,10 +110,16 @@ class AdminController extends AdminPageController
                     $this->audioAssetsController->handlePost($action);
                     break;
                 default:
-                    throw new Exception("Nicht unterstützte Admin-Aktion \"$action\".");
+                    throw new InvalidAdminActionException(
+                        "Nicht unterstützte Admin-Aktion \"$action\"."
+                    );
             }
-        } catch (Throwable $e) {
+        } catch (AdminException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
+        }catch (Throwable $e) {
+            error_log($e);
+
+            $_SESSION['admin_error'] = 'Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut.';
         }
     }
 
