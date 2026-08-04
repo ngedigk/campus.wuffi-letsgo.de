@@ -25,10 +25,11 @@
                         <label><input type="checkbox" name="choices[0][is_correct]" value="1"> Korrekt</label>
                         <button
                             type="button"
-                            class="btn btn-danger btn-sm remove-choice"
+                            class="btn btn-sm remove-choice"
                             data-action="remove-choice"
-                            style="display:none;"
-                        >&times;</button>
+                        >
+                            🗑
+                        </button>
                     </div>
                 </div>
                 <button

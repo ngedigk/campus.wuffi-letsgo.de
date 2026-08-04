@@ -80,6 +80,7 @@
                                                 aria-label="Passwort anzeigen"
                                                 aria-pressed="false"
                                                 data-target="password"
+                                                tabindex="-1"
                                             >
                                                 <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                             </button>
@@ -103,6 +104,7 @@
                                                 aria-label="Passwort anzeigen"
                                                 aria-pressed="false"
                                                 data-target="password-confirm"
+                                                tabindex="-1"
                                             >
                                                 <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                             </button>

@@ -20,7 +20,12 @@
                 <div id="edit-choices-container">
                     <!-- Choices will be injected here via JS -->
                 </div>
-                <button type="button" class="btn btn-secondary" onclick="addEditChoice()" style="margin-top: 10px;">+ Antwort hinzufügen</button>
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-action="add-edit-choice"
+                    style="margin-top: 10px;"
+                >+ Antwort hinzufügen</button>
             </div>
 
             <div class="modal-actions">

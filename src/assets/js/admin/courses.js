@@ -6,6 +6,7 @@ const actions = {
     'add-question': button => addQuestion(button.dataset.slideId),
     'edit-question': button => editQuestion(button.dataset.questionId, button.dataset.questionText, JSON.parse(button.dataset.choices)),
     'add-choice': () => addChoice(),
+    'add-edit-choice': () => addEditChoice(),
     'remove-choice': button => removeChoice(button),
     'remove-edit-choice': button => removeEditChoice(button),
     'delete-course': button => deleteCourse(button.dataset.courseId),
@@ -121,9 +122,11 @@ function addChoice() {
 
         <button
             type="button"
-            class="btn btn-danger btn-sm"
+            class="btn btn-sm remove-choice"
             data-action="remove-choice"
-        >&times;</button>
+        >
+            🗑
+        </button>
     `;
 
     container.appendChild(row);
@@ -247,9 +250,11 @@ function addEditChoice(text = '', isCorrect = false) {
 
         <button
             type="button"
-            class="btn btn-danger btn-sm"
+            class="btn btn-sm remove-choice"
             data-action="remove-edit-choice"
-        >&times;</button>
+        >
+            🗑
+        </button>
     `;
 
     container.appendChild(row);
