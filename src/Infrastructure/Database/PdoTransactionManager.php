@@ -21,7 +21,9 @@ class PdoTransactionManager implements TransactionManager
             $callback();
             $this->pdo->commit();
         } catch (Throwable $e) {
-            $this->pdo->rollBack();
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
             throw $e;
         }
     }

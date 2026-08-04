@@ -86,7 +86,7 @@ trait ServicesBindings
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepository::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
-            $c->get(PDO::class),
+            $c->get(TransactionManager::class),
             $c->get(AccessCodeRepository::class),
             $c->get(UserCourseRepository::class)
         ));

@@ -30,7 +30,7 @@ class RegistrationService
         $token = bin2hex(random_bytes(32));
 
         $this->transactionManager->run(
-            function () use ( $email, $password, $registrationCode, $name, $token ) {
+            function () use ($email, $password, $registrationCode, $name, $token) {
 
                 if ($this->userRepository->existsByEmail($email)) {
                     throw new Exception("E-Mail existiert bereits.");
