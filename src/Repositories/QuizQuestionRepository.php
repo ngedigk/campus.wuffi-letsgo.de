@@ -49,29 +49,31 @@ class QuizQuestionRepository
         }, $rows);
     }
 
-    public function create(QuizQuestionInput $quizQuestion): int
+    public function create(QuizQuestionInput $quizQuestion): QuizQuestion
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO quiz_questions (slide_id, question_text)
             VALUES (:slideId, :questionText)
         ");
-        $stmt->execute([
-            'slideId' => $quizQuestion->slideId,
-            'questionText' => $quizQuestion->questionText
-        ]);
+        $stmt->execute($quizQuestion->toArray());
 
-        return (int)$this->pdo->lastInsertId();
+        return $this->createDto([
+            'id' => (int)$this->pdo->lastInsertId(),
+            'question_text' => $quizQuestion->questionText
+        ]);
     }
 
-    public function update(QuizQuestion $quizQuestion): void
+    public function update(QuizQuestion $quizQuestion): QuizQuestion
     {
         $stmt = $this->pdo->prepare("
             UPDATE quiz_questions
             SET question_text = :questionText
             WHERE id = :id
         ");
-        $stmt->execute([
-            'questionText' => $quizQuestion->questionText,
+        $stmt->execute($quizQuestion->toArray());
+        
+        return $this->createDto([
+            'question_text' => $quizQuestion->questionText,
             'id' => $quizQuestion->id
         ]);
     }
@@ -130,7 +132,6 @@ class QuizQuestionRepository
     {
         return new QuizQuestion(
             id: $row['id'],
-            slideId: $row['slide_id'],
             questionText: $row['question_text']
         );
     }

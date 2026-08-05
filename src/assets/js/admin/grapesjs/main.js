@@ -20,11 +20,10 @@ const editor = initEditor({
 
     assetManager: {
         assets: window.existingAssets,
-        upload: '/admin.php',
+        upload: '/admin/courses/upload-image',
         uploadName: 'files',
 
         params: {
-            action: 'upload_image',
             csrf_token: csrfToken
         }
     },
@@ -118,13 +117,12 @@ function highlightAsset(src) {
 }
 
 editor.on('asset:remove', asset => {
-    fetch('/admin.php', {
+    fetch('/admin/courses/delete-image', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
         body: new URLSearchParams({
-            action: 'delete_image',
             csrf_token: window.getCsrfToken(),
             src: asset.get('src'),
         }),

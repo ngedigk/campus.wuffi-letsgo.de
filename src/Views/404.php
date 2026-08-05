@@ -18,9 +18,18 @@
                 <h1>404</h1>
 
                 <ul id="breadcrumb">
-                    <li>Startseite</li>
-                    <li aria-hidden="true">></li>
-                    <li>Campus</li>
+                    <?php foreach ($viewModel['breadcrumb'] ?? [] as $index => $breadcrumb): ?>
+                        <?php if ($breadcrumb['url'] ?? false): ?>
+                        <li>
+                            <a href="<?= $breadcrumb['url'] ?>">
+                                <?= $breadcrumb['title'] ?>
+                            </a>
+                        </li>
+                        <li aria-hidden="true">></li>
+                        <?php else: ?>
+                        <li><?= $breadcrumb['title'] ?></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>

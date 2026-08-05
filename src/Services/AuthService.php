@@ -33,7 +33,7 @@ class AuthService
         return isset($_SESSION['user_id']);
     }
 
-    public function requireLogin(string $redirectPath = 'index.php'): void
+    public function requireLogin(string $redirectPath = '/'): void
     {
         if (!$this->isLoggedIn()) {
             header("Location: {$redirectPath}");

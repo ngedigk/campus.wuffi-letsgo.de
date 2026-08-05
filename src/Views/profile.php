@@ -24,9 +24,18 @@
                 </h1>
 
                 <ul id="breadcrumb">
-                    <li>Startseite</li>
-                    <li aria-hidden="true">></li>
-                    <li>Profil</li>
+                    <?php foreach ($viewModel['breadcrumb'] ?? [] as $index => $breadcrumb): ?>
+                        <?php if ($breadcrumb['url'] ?? false): ?>
+                        <li>
+                            <a href="<?= $breadcrumb['url'] ?>">
+                                <?= $breadcrumb['title'] ?>
+                            </a>
+                        </li>
+                        <li aria-hidden="true">></li>
+                        <?php else: ?>
+                        <li><?= $breadcrumb['title'] ?></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -43,7 +52,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col">
-                            <form method="post" class="form-card">
+                            <form method="post" action="/profile" class="form-card">
                                 <h2>Persönliche Informationen</h2>
 
                                 <input
@@ -82,11 +91,10 @@
                             </form>
                         </div>
                         <div class="col">
-                            <form method="post" class="form-card">
+                            <form method="post" action="/profile/password" class="form-card">
 
                                 <h2>Passwort ändern</h2>
 
-                                <input type="hidden" name="action" value="change_password">
                                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
 
                                 <div class="password-fields">
@@ -105,6 +113,7 @@
                                                 aria-label="Passwort anzeigen"
                                                 aria-pressed="false"
                                                 data-target="password"
+                                                tabindex="-1"
                                             >
                                                 <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                             </button>
@@ -126,6 +135,7 @@
                                                 aria-label="Passwort anzeigen"
                                                 aria-pressed="false"
                                                 data-target="password-confirm"
+                                                tabindex="-1"
                                             >
                                                 <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                             </button>

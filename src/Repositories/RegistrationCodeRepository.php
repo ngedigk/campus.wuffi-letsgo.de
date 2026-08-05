@@ -2,7 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\DuplicateRegistrationCodeException;
+
 use \PDO;
+use PDOException;
 
 class RegistrationCodeRepository
 {
@@ -55,25 +58,35 @@ class RegistrationCodeRepository
 
     public function create(string $code, array $courseIds = []): void
     {
-        $stmt = $this->pdo->prepare(
-            "INSERT INTO registration_codes (code) VALUES (:code)"
-        );
-        $stmt->execute([$code]);
-        $id = (int)$this->pdo->lastInsertId();
-
-        if (!empty($courseIds)) {
-            $placeholders = [];
-            $values = [];
-            foreach ($courseIds as $courseId) {
-                $placeholders[] = '(?, ?)';
-                $values[] = $id;
-                $values[] = $courseId;
-            }
-            
+        try {
             $stmt = $this->pdo->prepare(
-                "INSERT INTO registration_code_courses (registration_code_id, course_id) VALUES " . implode(',', $placeholders)
+                "INSERT INTO registration_codes (code) VALUES (:code)"
             );
-            $stmt->execute($values);
+            $stmt->execute([$code]);
+            $id = (int)$this->pdo->lastInsertId();
+
+            if (!empty($courseIds)) {
+                $placeholders = [];
+                $values = [];
+                foreach ($courseIds as $courseId) {
+                    $placeholders[] = '(?, ?)';
+                    $values[] = $id;
+                    $values[] = $courseId;
+                }
+                
+                $stmt = $this->pdo->prepare(
+                    "INSERT INTO registration_code_courses (registration_code_id, course_id) VALUES " . implode(',', $placeholders)
+                );
+                $stmt->execute($values);
+            }
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                throw new DuplicateRegistrationCodeException(
+                    "Dieser Registrierungscode wurde bereits angelegt.",
+                    previous: $e
+                );
+            }
+            throw $e;
         }
     }
 

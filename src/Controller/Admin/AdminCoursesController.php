@@ -4,252 +4,364 @@ namespace App\Controller\Admin;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
-use App\Services\AssetsService;
 use App\Services\AuthService;
-use App\Services\CourseService;
-use App\Services\ModuleService;
-use App\Services\QuestionChoiceService;
-use App\Services\QuizQuestionService;
-use App\Services\SlideService;
-use App\Services\UuidService;
+use App\Services\AssetsService;
 
 use App\Helpers\ViewRenderer;
+use App\Helpers\Redirect;
+
+use App\Dto\Course;
+use App\Dto\CourseInput;
+use App\Dto\Module;
+use App\Dto\ModuleInput;
+use App\Dto\QuestionChoiceInput;
+use App\Dto\QuizQuestion;
+use App\Dto\QuizQuestionInput;
+use App\Dto\Slide;
+use App\Dto\SlideInput;
 
 use Exception;
 
-class AdminCoursesController extends AdminPageController
+class AdminCoursesController
 {
     public function __construct(
-        protected CourseService $courseService,
-        protected SlideService $slideService,
-        protected ModuleService $moduleService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
-        protected UuidService $uuidService,
-        protected QuizQuestionService $quizQuestionService,
-        protected QuestionChoiceService $questionChoicesService,
+        protected AssetsService $assetsService,
         protected AdminContextService $adminContextService,
-        private AssetsService $assetsService,
         private AdminCourseManagementService $courseManagementService
-    ) {
-        parent::__construct($adminContextService, $authService);
+    ) {}
+
+    public function renderCourse(string $courseUuid): void
+    {
+        $viewData = $this->courseManagementService->getCourseEditorData($courseUuid);
+
+        $this->render(
+            'admin/courses/course',
+            $viewData
+        );
     }
 
-    public function render(array $context): void
+    public function renderModule(string $courseUuid, string $moduleId): void
     {
-        $selectedCourse = null;
-        $selectedCourseId = filter_input(INPUT_GET, 'course_id');
-        if ($selectedCourseId) {
-            $selectedCourse = $this->courseService->getWithDetails($selectedCourseId);
+        $viewData = $this->courseManagementService->getModuleEditorData($courseUuid, (int)$moduleId);
+        
+        $this->render(
+            'admin/courses/module',
+            $viewData
+        );
+    }
+
+    public function renderSlide(string $courseUuid, string $moduleId, string $slideId): void
+    {
+        $viewData = $this->courseManagementService->getSlideEditorData($courseUuid, (int)$moduleId, (int) $slideId);
+
+        $this->render(
+            'admin/courses/slide',
+            $viewData,
+            [],
+            [
+                'js' => [
+                    ['src' => 'https://unpkg.com/grapesjs'],
+                    ['src' => 'https://unpkg.com/grapesjs-blocks-basic'],
+                    ['src' => '/assets/js/admin/grapesjs/main.js', 'type' => 'module']
+                ],
+                'css' => [
+                    'https://unpkg.com/grapesjs/dist/css/grapes.min.css'
+                ]
+            ]
+        );
+    }
+
+    public function createCourse(): void
+    {        
+        try {
+            $course = $this->courseManagementService->createCourse(new CourseInput(
+                title: trim((string)($_POST['title'] ?? '')),
+                description: trim((string)($_POST['description'] ?? '')),
+                prerequisiteCourseId: trim((string)($_POST['prerequisite_course_id'] ?? null)),
+                sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
+            ));
+            
+            $_SESSION['admin_success'] = "Kurs \"$course->title\" erstellt.";
+
+            Redirect::to('/admin/courses/' . urlencode($course->uuid));
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin');
+        }
+    }
+
+    public function updateCourse(string $courseUuid): void
+    {
+        try {
+            $course = $this->courseManagementService->updateCourse(new Course(
+                uuid: $courseUuid,
+                title: trim($_POST['title'] ?? ''),
+                description: trim($_POST['description'] ?? ''),
+                prerequisiteCourseId: trim((string)($_POST['prerequisite_course_id'] ?? '')) ?: null,
+                sortOrder: (int) ($_POST['sort_order'] ?? 0),
+            ));
+
+            $_SESSION['admin_success'] = 'Kurs aktualisiert.';
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
         }
 
-        $selectedModule = null;
-        $selectedModuleId = filter_input(INPUT_GET, 'module_id', FILTER_VALIDATE_INT);
-        if ($selectedCourse && $selectedModuleId) {
-            foreach ($selectedCourse->modules as $module) {
-                if ($module->id === $selectedModuleId) {
-                    $selectedModule = $module;
-                    break;
-                }
+        Redirect::to('/admin/courses/' . urlencode($courseUuid));
+    }
+
+    public function deleteCourse(string $courseUuid): void
+    {
+        $this->courseManagementService->deleteCourse($courseUuid);
+
+        $_SESSION['admin_success'] = 'Kurs gelöscht.';
+
+        Redirect::to('/admin');
+    }
+
+    public function createModule(string $courseUuid): void
+    {
+        try {
+            $module = $this->courseManagementService->createModule(new ModuleInput(
+                courseId: $courseUuid,
+                title: trim((string)($_POST['title'] ?? '')),
+                sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
+            ));
+
+            $_SESSION['admin_success'] = "Module \"$module->title\" created.";
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid) . '/modules/' . urlencode($module->id));
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid));
+        }
+    }
+
+    public function updateModule(string $courseUuid, string $moduleId): void
+    {
+        try {
+            $module = $this->courseManagementService->updateModule(new Module(
+                id: $moduleId,
+                title: trim((string)($_POST['title'] ?? '')),
+                sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
+            ));
+
+            $_SESSION['admin_success'] = "Modul \"$module->title\"aktualisiert.";
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
+
+        Redirect::to('/admin/courses/' . urlencode($courseUuid) . '/modules/' . urlencode($moduleId));
+    }
+
+    public function deleteModule(string $courseUuid, string $moduleId): void
+    {
+        $this->courseManagementService->deleteModule((int)$moduleId);
+
+        $_SESSION['admin_success'] = 'Modul gelöscht.';
+
+        Redirect::to('/admin/courses/' . urlencode($courseUuid));
+    }
+
+    public function createSlide(string $courseUuid, string $moduleId): void
+    {
+        try {
+            $audioUrl = trim((string)($_POST['audio_url'] ?? ''));
+
+            $uploadedAudio = $this->assetsService->handleAudioUpload($_FILES);
+            if ($uploadedAudio) {
+                $audioUrl = $uploadedAudio;
             }
-        }
 
-        $selectedSlide = null;
-        $selectedSlideId = filter_input(INPUT_GET, 'slide_id', FILTER_VALIDATE_INT);
-        if ($selectedModule && $selectedSlideId) {
-            foreach ($selectedModule->slides as $slide) {
-                if ($slide->id === $selectedSlideId) {
-                    $selectedSlide = $slide;
-                    break;
-                }
+            $slide = $this->courseManagementService->createSlide(new SlideInput(
+                moduleId: $moduleId,
+                title: trim((string)($_POST['title'] ?? '')),
+                audioUrl: $audioUrl,
+                htmlContent: '',
+                sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
+            ));
+
+            $_SESSION['admin_success'] = "Folie \"$slide->title\" erstellt.";
+
+            Redirect::to(
+                '/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($moduleId) .
+                '/slides/' . urlencode($slide->id)
+            );   
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($moduleId)
+            );
+        }
+    }
+
+    public function updateSlide(string $courseUuid, string $moduleId, string $slideId): void
+    {
+        try {
+            $audioUrl = trim((string)($_POST['audio_url'] ?? ''));
+
+            $uploadedAudio = $this->assetsService->handleAudioUpload($_FILES);
+            if ($uploadedAudio) {
+                $audioUrl = $uploadedAudio;
             }
+
+            $slide = $this->courseManagementService->updateSlide(new Slide(
+                id: $slideId,
+                title: trim((string)($_POST['title'] ?? '')),
+                htmlContent: trim((string)($_POST['html_content'] ?? '')),
+                audioUrl: $audioUrl,
+                sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
+            ));
+
+            $_SESSION['admin_success'] = "Folie \"$slide->title\" aktualisiert.";   
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
         }
 
-        $slideAssets = $this->assetsService->getSlideAssets();
-        $audioFiles = $this->assetsService->getAudioFiles();
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId) .
+            '/slides/' . urlencode($slideId)
+        );
+    }
 
-        $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs'];
-        $context['additionalJs'][] = ['src' => 'https://unpkg.com/grapesjs-blocks-basic'];
+    public function deleteSlide(string $courseUuid, string $moduleId, string $slideId): void
+    {
+        $this->courseManagementService->deleteSlide((int)$slideId);
 
-        if ($selectedSlide) {
-            $context['additionalJs'][] = [
-                'src' => '/assets/js/admin/grapesjs/main.js',
-                'type' => 'module'
-            ];
-        }
-        $context['additionalJs'][] = [
-            'src' => '/assets/js/admin/courses.js',
-            'type' => 'module'
-        ];
+        $_SESSION['admin_success'] = 'Folie gelöscht.';
 
-        $context['additionalCss'][] = 'https://unpkg.com/grapesjs/dist/css/grapes.min.css';
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId)
+        );
+    }
 
-        $quizQuestions = [];
-        $quizChoicesByQuestion = [];
-        if ($selectedSlide && $this->slideService->hasQuiz($selectedSlide->id)) {
-            $questions = $this->quizQuestionService->getBySlideId($selectedSlide->id);
-            foreach ($questions as $question) {
-                $choices = $this->questionChoicesService->getByQuestionId($question->id);
-                $quizChoicesByQuestion[$question->id] = $choices;
+    public function createQuestion(string $courseUuid, string $moduleId, string $slideId): void
+    {
+        try {
+            $choices = [];
+            
+            foreach ($_POST['choices'] ?? [] as $choice) {
+                $choices[] = new QuestionChoiceInput(
+                    choiceText: trim((string) ($choice['text'] ?? '')),
+                    isCorrect: !empty($choice['is_correct'])
+                );
             }
-            $quizQuestions = $questions;
+            
+            $question = $this->courseManagementService->createQuestion(new QuizQuestionInput(
+                slideId: (int) $slideId,
+                questionText: trim((string) ($_POST['question_text'] ?? '')),
+                choices: $choices
+            ));
+            
+            $_SESSION['admin_success'] = "Frage \"{$question->questionText}\" erstellt.";
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
         }
-        $context['quizQuestions'] = $quizQuestions;
-        $context['quizChoicesByQuestion'] = $quizChoicesByQuestion;
+        
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId) .
+            '/slides/' . urlencode($slideId)
+        );
+    }
 
-        $breadcrumb = [];
-        $pageTitle = '';
-        if ($selectedCourse) {
-            $breadcrumb[] = [
-                'url' => "?page=courses&course_id={$selectedCourse->uuid}",
-                'title' => "Kurs: " . $selectedCourse->title
-            ];
-            $pageTitle = 'Kurs bearbeiten: ' . $selectedCourse->title;
-        }
-        if ($selectedModule) {
-            $breadcrumb[] = [
-                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}",
-                'title' => "Modul: " . $selectedModule->title
-            ];
-            $pageTitle = 'Modul bearbeiten: ' . $selectedModule->title;
-        }
-        if ($selectedSlide) {
-            $breadcrumb[] = [
-                'url' => "?page=courses&course_id={$selectedCourse->uuid}&module_id={$selectedModule->id}&slide_id={$selectedSlide->id}",
-                'title' => "Folie: " . $selectedSlide->title
-            ];
-            $pageTitle = 'Folie bearbeiten: ' . $selectedSlide->title;
+    public function updateQuestion(string $courseUuid, string $moduleId, string $slideId, string $questionId): void
+    {
+        try {
+            $choices = [];
+            
+            foreach ($_POST['choices'] ?? [] as $choice) {
+                $choices[] = new QuestionChoiceInput(
+                    choiceText: trim((string) ($choice['text'] ?? '')),
+                    isCorrect: !empty($choice['is_correct'])
+                );
+            }
+
+            $this->courseManagementService->updateQuestion(new QuizQuestion(
+                id: $questionId,
+                questionText: trim(($_POST['question_text'] ?? '')),
+                choices: $choices
+            ));
+
+            $_SESSION['admin_success'] = 'Frage aktualisiert.';
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
         }
 
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId) .
+            '/slides/' . urlencode($slideId)
+        );
+    }
+
+    public function deleteQuestion(string $courseUuid, string $moduleId, string $slideId, string $questionId): void
+    {
+        $this->courseManagementService->deleteQuestion((int)$questionId);
+
+        $_SESSION['admin_success'] = 'Frage gelöscht.';
+
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId) .
+            '/slides/' . urlencode($slideId)
+        );
+    }
+
+    public function uploadImage(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        echo $this->courseManagementService->uploadImage();
+        exit;
+    }
+
+    public function deleteImage(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        echo $this->courseManagementService->deleteImage();
+        exit;
+    }
+
+    private function render(string $view, array $data, array $breadcrumb = [], array $assets = [] ): void {
+        $context = $this->adminContextService->buildContext(
+            $this->authService->currentUser()
+        );
+        
         $viewData = array_merge(
             $context,
             [
                 'activePage' => 'courses',
                 'breadcrumb' => $breadcrumb,
-                'selectedCourse' => $selectedCourse,
-                'selectedCourseId' => $selectedCourseId,
-                'selectedModule' => $selectedModule,
-                'selectedModuleId' => $selectedModuleId,
-                'selectedSlide' => $selectedSlide,
-                'selectedSlideId' => $selectedSlideId,
-                'slideAssets' => $slideAssets,
-                'audioFiles' => $audioFiles,
-                'pageTitle' => $pageTitle
+            ],
+            $data
+        );
+        
+        $viewData['additionalJs'] = array_merge(
+            $context['additionalJs'] ?? [],
+            $data['additionalJs'] ?? [],
+            $assets['js'] ?? [
+                [ 'src' => '/assets/js/admin/courses.js', 'type' => 'module' ]
             ]
         );
+        
+        $viewData['additionalCss'] = array_merge(
+            $context['additionalCss'] ?? [],
+            $data['additionalCss'] ?? [],
+            $assets['css'] ?? []
+        );
 
-        $this->viewRenderer->renderWithAdminTemplate('admin/courses/index', $viewData);
-    }
-
-    public function handlePost(string $action): void
-    {
-        switch ($action) {
-            case 'create_course':
-                $this->handleCreateCourse();
-                break;
-            case 'update_course':
-                $this->handleUpdateCourse();
-                break;
-            case 'create_module':
-                $this->handleCreateModule();
-                break;
-            case 'update_module':
-                $this->handleUpdateModule();
-                break;
-            case 'create_slide':
-                $this->handleCreateSlide();
-                break;
-            case 'update_slide':
-                $this->handleUpdateSlide();
-                break;
-            case 'create_question':
-                $this->handleCreateQuestion();
-                break;
-            case 'update_question':
-                $this->handleUpdateQuestion();
-                break;
-            case 'delete_question':
-                $this->handleDeleteQuestion();
-                break;
-            case 'delete_slide':
-                $this->handleDeleteSlide();
-                break;
-            case 'delete_module':
-                $this->handleDeleteModule();
-                break;
-            case 'delete_course':
-                $this->handleDeleteCourse();
-                break;
-            case 'upload_image':
-                header('Content-Type: application/json; charset=utf-8');
-                echo $this->courseManagementService->handleUploadImage();
-                exit;
-            case 'delete_image':
-                header('Content-Type: application/json; charset=utf-8');
-                echo $this->courseManagementService->handleDeleteImage();
-                exit;
-            default:
-                throw new Exception('Unsupported admin action.');
-        }
-    }
-
-    private function handleCreateCourse(): void
-    {
-        $this->courseManagementService->createCourse($_POST);
-    }
-
-    private function handleUpdateCourse(): void
-    {
-        $this->courseManagementService->updateCourse($_POST);
-    }
-
-    private function handleCreateModule(): void
-    {
-        $this->courseManagementService->createModule($_POST);
-    }
-
-    private function handleUpdateModule(): void
-    {
-        $this->courseManagementService->updateModule($_POST);
-    }
-
-    private function handleCreateSlide(): void
-    {
-        $this->courseManagementService->createSlide($_POST, $_FILES);
-    }
-
-    private function handleUpdateSlide(): void
-    {
-        $this->courseManagementService->updateSlide($_POST, $_FILES);
-    }
-
-    private function handleCreateQuestion(): void
-    {
-        $this->courseManagementService->createQuestion($_POST);
-    }
-
-    private function handleUpdateQuestion(): void
-    {
-        $this->courseManagementService->updateQuestion($_POST);
-    }
-
-    private function handleDeleteQuestion(): void
-    {
-        $this->courseManagementService->deleteQuestion($_POST);
-    }
-
-    private function handleDeleteSlide(): void
-    {
-        $this->courseManagementService->deleteSlide($_POST);
-    }
-
-    private function handleDeleteModule(): void
-    {
-        $this->courseManagementService->deleteModule($_POST);
-    }
-
-    private function handleDeleteCourse(): void
-    {
-        $this->courseManagementService->deleteCourse($_POST);
+        unset(
+            $viewData['additionalJsFromData'],
+            $viewData['additionalCssFromData']
+        );
+        
+        $this->viewRenderer->renderWithAdminTemplate($view, $viewData);
     }
 }

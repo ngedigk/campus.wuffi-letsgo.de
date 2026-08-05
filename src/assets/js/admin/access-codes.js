@@ -1,7 +1,7 @@
 document.addEventListener('click', handleClick);
 
 const actions = {
-    'delete-access-code': button => { deleteAudioAsset(button.dataset.accessCodeId); },
+    'delete-access-code': button => { deleteAccessCode(button.dataset.accessCodeId); },
     'edit-access-code': button => { editAccessCode(
         button.dataset.accessCodeId,
         button.dataset.courseId,
@@ -23,18 +23,21 @@ function handleClick(event) {
     }
 }
 
-function deleteAudioAsset(accessCodeId) {
+function deleteAccessCode(accessCodeId) {
     if (!confirm( 'Sind Sie sicher, dass Sie diesen Access Code löschen möchten?' )) {
         return;
     }
-    
-    document.getElementById('delete-access-code-id').value = accessCodeId;
-    document.getElementById('delete-access-code-form').submit();
+
+    const form = document.getElementById('delete-access-code-form');
+
+    form.action = `/admin/access-codes/${encodeURIComponent(accessCodeId)}/delete`;
+    form.submit();
 }
 
 function editAccessCode(accessCodeId, courseId, code) {
-    document.getElementById('edit-access-code-id').value = accessCodeId;
-    document.getElementById('edit-access-course').value = courseId;
+    const form = document.getElementById('edit-access-code-form');
+    form.action = `/admin/access-codes/${encodeURIComponent(accessCodeId)}/update`;
+
     document.getElementById('edit-access-code').value = code;
     document.getElementById('editAccessCodeModal').style.display = 'flex';
 }

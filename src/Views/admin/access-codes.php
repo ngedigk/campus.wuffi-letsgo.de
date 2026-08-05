@@ -6,15 +6,11 @@
         + Access Code erstellen
     </button>
 </div>
-
 <form
     id="delete-access-code-form"
     method="post"
-    action="admin.php?page=access-codes"
 >
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-    <input type="hidden" name="action" value="delete_access_code">
-    <input type="hidden" id="delete-access-code-id" name="access_code_id" value="">
 </form>
 
 <div class="list-grid access-codes-list">
@@ -34,7 +30,7 @@
                 </div>
                 <div class="cell course-cell">
                     <?php if (!empty($code['course_title'])): ?>
-                        <a href="admin.php?page=courses&course_id=<?= $code['course_id'] ?>">
+                        <a href="/admin?page=courses&course_id=<?= $code['course_id'] ?>">
                             <?= htmlspecialchars($code['course_title']) ?>
                         </a>
                     <?php else: ?>
@@ -76,9 +72,8 @@
             <h3>Access Code erstellen</h3>
             <span class="close" onclick="document.getElementById('createAccessCodeModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" action="admin.php?page=access-codes">
+        <form method="post" action="/admin/access-codes">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_access_code">
             
             <div class="form-group">
                 <label for="access-code">Access Code</label>
@@ -112,10 +107,11 @@
             <h3>Edit Access Code</h3>
             <span class="close" onclick="document.getElementById('editAccessCodeModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" action="admin.php?page=access-codes">
+        <form
+            id="edit-access-code-form"
+            method="post"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="update_access_code">
-            <input type="hidden" id="edit-access-code-id" name="access_code_id" value="">
             
             <div class="form-group">
                 <label for="edit-access-code">Access Code</label>

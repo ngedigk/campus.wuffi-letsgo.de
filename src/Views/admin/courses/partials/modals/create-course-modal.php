@@ -7,9 +7,16 @@
             <h3>Neuen Kurs erstellen</h3>
             <span class="close" onclick="document.getElementById('createCourseModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" action="admin.php?page=courses">
+        
+        <?php
+        $createModuleAction = '/admin/courses';
+        ?>
+        <form
+            id="createCourseForm"
+            method="post"
+            action="<?= $createModuleAction ?>"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_course">
             
             <div class="form-group">
                 <label for="new-course-title">Kurs Titel *</label>

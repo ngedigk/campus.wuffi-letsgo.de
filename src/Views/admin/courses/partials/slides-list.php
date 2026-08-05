@@ -37,7 +37,7 @@
                             <td><?= $slide->sortOrder ?></td>
                             <td>
                                 <a
-                                    href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($viewModel['selectedModule']->id ?? '') ?>&slide_id=<?= urlencode($slide->id) ?>"
+                                    href="/admin/courses/<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>/modules/<?= urlencode($viewModel['selectedModule']->id ?? '') ?>/slides/<?= urlencode($slide->id) ?>"
                                     class="btn btn-small"
                                     title="Folie bearbeiten"
                                 >
@@ -45,6 +45,8 @@
                                 </a>
                                 <button
                                     data-action="delete-slide"
+                                    data-course-id="<?= htmlspecialchars($viewModel['selectedCourse']->uuid) ?>"
+                                    data-module-id="<?= $viewModel['selectedModule']->id ?>"
                                     data-slide-id="<?= $slide->id ?>"
                                 >🗑</button>
                             </td>

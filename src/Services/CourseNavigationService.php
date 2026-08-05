@@ -24,7 +24,7 @@ class CourseNavigationService
 
         if (empty($allSlides)) {
             throw new CourseSlideNotFoundException(
-                'Der Kurs enthält keine Lektionen.'
+                'Der Kurs enthält keine Folien.'
             );
         }
 
@@ -36,7 +36,7 @@ class CourseNavigationService
 
         if ($currentIndex === -1) {
             throw new CourseSlideNotFoundException(
-                'Die angeforderte Lektion wurde nicht gefunden.'
+                'Die angeforderte Folie wurde nicht gefunden.'
             );
         }
 

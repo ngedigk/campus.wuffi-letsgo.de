@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Dto\CourseInput;
 use App\Dto\Course;
+use App\Dto\CourseInput;
 
 use \PDO;
 
@@ -104,7 +104,7 @@ class CourseRepository
         }, $rows);
     }
 
-    public function create(CourseInput $course): string {
+    public function create(string $courseUuid, CourseInput $course): Course {
         $stmt = $this->pdo->prepare("
             INSERT INTO courses
             (
@@ -117,29 +117,34 @@ class CourseRepository
             VALUES (:uuid, :title, :description, :prerequisiteCourseId, :sortOrder)
         ");
 
-        $stmt->execute([
-            'uuid' => $course->uuid,
+        $stmt->execute(array_merge(
+            ['uuid' => $courseUuid],
+            $course->toArray()
+        ));
+
+        return $this->createDto([
+            'id' => $courseUuid,
             'title' => $course->title,
             'description' => $course->description,
-            'prerequisiteCourseId' => $course->prerequisiteCourseId,
-            'sortOrder' => $course->sortOrder
+            'prerequisite_course_id' => $course->prerequisiteCourseId,
+            'sort_order' => $course->sortOrder
         ]);
-
-        return $course->uuid;
     }
 
-    public function update(CourseInput $course): void {
+    public function update(Course $course): Course {
         $stmt = $this->pdo->prepare("
             UPDATE courses
             SET title = :title, description = :description, prerequisite_course_id = :prerequisiteCourseId, sort_order = :sortOrder
             WHERE id = :uuid
         ");
-        $stmt->execute([
+        $stmt->execute($course->toArray());
+
+        return $this->createDto([
+            'id' => $course->uuid,
             'title' => $course->title,
             'description' => $course->description,
-            'prerequisiteCourseId' => $course->prerequisiteCourseId,
-            'sortOrder' => $course->sortOrder,
-            'uuid' => $course->uuid
+            'prerequisite_course_id' => $course->prerequisiteCourseId,
+            'sort_order' => $course->sortOrder
         ]);
     }
 

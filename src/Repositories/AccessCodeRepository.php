@@ -2,7 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Exceptions\AccessCodeGenerationException;
+use App\Exceptions\DuplicateAccessCodeException;
+
 use \PDO;
+use PDOException;
 
 class AccessCodeRepository
 {
@@ -39,19 +43,42 @@ class AccessCodeRepository
 
     public function create(string $code, string $courseUuid): void
     {
-        $stmt = $this->pdo->prepare("
-            INSERT INTO access_codes
-            (
-                code,
-                course_id
-            )
-            VALUES (:code, :courseUuid)
-        ");
+        try {
+            $stmt = $this->pdo->prepare("
+                INSERT INTO access_codes (code, course_id)
+                VALUES (:code, :courseUuid)
+            ");
 
-        $stmt->execute([
-            'code' => $code,
-            'courseUuid' => $courseUuid
-        ]);
+            $stmt->execute([
+                'code' => $code,
+                'courseUuid' => $courseUuid
+            ]);
+        } catch (PDOException $e) {
+            if ($e->errorInfo[1] === 1062) {
+                throw new DuplicateAccessCodeException(
+                    "Dieser Registrierungscode wurde bereits angelegt.",
+                    previous: $e
+                );
+            }
+            throw $e;
+        }
+    }
+
+    public function createForRegistration(string $courseUuid): int
+    {
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $accessCode = bin2hex(random_bytes(16));
+
+            try {
+                $this->create($accessCode, $courseUuid);
+
+                return (int)$this->pdo->lastInsertId();
+            } catch (DuplicateAccessCodeException $e) {
+            }
+        }
+        throw new AccessCodeGenerationException(
+            'Es konnte kein eindeutiger Access Code erzeugt werden.'
+        );
     }
 
     public function update(int $id, string $code, string $courseUuid): void
@@ -66,20 +93,6 @@ class AccessCodeRepository
             'courseUuid' => $courseUuid,
             'id' => $id
         ]);
-    }
-
-    public function createForRegistration(int $registrationCodeId, string $userId, string $courseId): int
-    {
-        $accessCode = bin2hex(random_bytes(16));
-        $stmt = $this->pdo->prepare("
-            INSERT INTO access_codes (code, course_id)
-            VALUES (:code, :courseId)
-        ");
-        $stmt->execute([
-            'code' => $accessCode,
-            'courseId' => $courseId
-        ]);
-        return (int)$this->pdo->lastInsertId();
     }
 
     public function getAll(): array

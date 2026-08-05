@@ -10,7 +10,7 @@
 
                     <h2><?= $viewModel['headline'] ?></h2>
                     <div>
-                        <a href="index.php">Zur Anmeldung</a>
+                        <a href="/">Zur Anmeldung</a>
                     </div>
 
                 </div>

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Helpers\Redirect;
 use App\Services\AdminContextService;
 use App\Services\AssetsService;
 use App\Services\AuthService;
@@ -11,7 +12,7 @@ use App\Helpers\ViewRenderer;
 
 use \Exception;
 
-class AdminAudioAssetsController extends AdminPageController
+class AdminAudioAssetsController
 {
     public function __construct(
         protected SlideService $slideService,
@@ -19,12 +20,14 @@ class AdminAudioAssetsController extends AdminPageController
         protected AuthService $authService,
         protected AdminContextService $adminContextService,
         private AssetsService $assetsService
-    ) {
-        parent::__construct($adminContextService, $authService);
-    }
+    ) {}
 
-    public function render(array $context): void
+    public function render(): void
     {
+        $context = $this->adminContextService->buildContext(
+            $this->authService->currentUser()
+        );
+
         $context['additionalJs'][] = [
             'src' => '/assets/js/admin/audio-assets.js',
             'type' => 'module'
@@ -48,28 +51,17 @@ class AdminAudioAssetsController extends AdminPageController
         $this->viewRenderer->renderWithAdminTemplate('admin/audio-assets', $viewData);
     }
 
-    public function handlePost(string $action): void
+    public function deleteAudioAsset(string $assetFilename): void
     {
-        switch ($action) {
-            case 'delete_audio_asset':
-                $this->handleDeleteAudioAsset();
-                break;
-            default:
-                throw new Exception('Nicht unterstützte Admin-Aktion.');
-        }
-    }
-
-    private function handleDeleteAudioAsset(): void
-    {
-        $filename = trim($_POST['audio_asset_filename'] ?? '');
-
-        if ($filename === '') {
+        if ($assetFilename === '') {
             throw new Exception('Bitte geben Sie einen Dateinamen an.');
         }
 
-        $this->assetsService->deleteAudioAsset($filename);
-        $this->slideService->deleteAudioAssetFromSlides($filename);
+        $this->assetsService->deleteAudioAsset($assetFilename);
+        $this->slideService->deleteAudioAssetFromSlides($assetFilename);
 
         $_SESSION['admin_success'] = 'Audio Asset entfernt.';
+
+        Redirect::to('/admin/audio-assets');
     }
 }

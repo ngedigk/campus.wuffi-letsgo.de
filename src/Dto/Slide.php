@@ -11,4 +11,15 @@ final class Slide
         public ?string $audioUrl,
         public int $sortOrder
     ) {}
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'title' => $this->title,
+            'htmlContent' => $this->htmlContent,
+            'audioUrl' => $this->audioUrl,
+            'sortOrder' => $this->sortOrder
+        ];
+    }
 }

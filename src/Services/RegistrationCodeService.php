@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\CourseRepository;
 
+use App\Exceptions\DuplicateRegistrationCodeException;
+use App\Exceptions\RegistrationCodeException;
+
 class RegistrationCodeService
 {
     public function __construct(
@@ -45,7 +48,14 @@ class RegistrationCodeService
 
     public function create(string $code, array $courseIds): void
     {
-        $this->registrationCodeRepository->create($code, $courseIds);
+        try {
+            $this->registrationCodeRepository->create($code, $courseIds);
+        } catch (DuplicateRegistrationCodeException $e) {
+            throw new RegistrationCodeException(
+                "Dieser Registrierungscode wurde bereits angelegt.",
+                previous: $e
+            );
+        }
     }
 
     public function update(int $registrationCodeId, string $code): void

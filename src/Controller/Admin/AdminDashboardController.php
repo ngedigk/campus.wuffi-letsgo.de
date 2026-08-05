@@ -9,7 +9,7 @@ use App\Services\UserService;
 
 use App\Helpers\ViewRenderer;
 
-class AdminDashboardController extends AdminPageController
+class AdminDashboardController
 {
     public function __construct(
         protected AccessCodeService $accessCodeService,
@@ -17,12 +17,14 @@ class AdminDashboardController extends AdminPageController
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
         protected AdminContextService $adminContextService
-    ) {
-        parent::__construct($adminContextService, $authService);
-    }
+    ) {}
 
-    public function render(array $context): void
+    public function render(): void
     {
+        $context = $this->adminContextService->buildContext(
+            $this->authService->currentUser()
+        );
+
         $viewData = array_merge(
             $context,
             [

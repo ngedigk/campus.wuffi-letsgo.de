@@ -18,11 +18,18 @@
                 <h1>Entdecken. Verstehen. Wissen testen.</h1>
 
                 <ul id="breadcrumb">
-                    <li>Startseite</li>
-                    <li aria-hidden="true">></li>
-                    <li>Campus</li>
-                    <li aria-hidden="true">></li>
-                    <li>Kursübersicht</li>
+                    <?php foreach ($viewModel['breadcrumb'] ?? [] as $index => $breadcrumb): ?>
+                        <?php if ($breadcrumb['url'] ?? false): ?>
+                        <li>
+                            <a href="<?= $breadcrumb['url'] ?>">
+                                <?= $breadcrumb['title'] ?>
+                            </a>
+                        </li>
+                        <li aria-hidden="true">></li>
+                        <?php else: ?>
+                        <li><?= $breadcrumb['title'] ?></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -32,6 +39,8 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
+
+                <?php //\App\Helpers\Debug::dump($viewModel); ?>
 
                 <p class="heading-meta">Kursmaterial</p>
                 <h2 id="courses-heading"><?= htmlspecialchars($viewModel['course']->title) ?></h2>
@@ -50,7 +59,7 @@
                                 <div class="slide-navigation">
                                     <?php if ($viewModel['prevUrl'] ?? ''): ?>
                                         <a href="<?= htmlspecialchars($viewModel['prevUrl'] . "#course-main-marker" ?? '') ?>" class="btn prev-slide">
-                                            <img src="assets/images/icons/chevron-left-solid-full.svg" width="28" height="28">
+                                            <img src="/assets/images/icons/chevron-left-solid-full.svg" width="28" height="28">
                                         </a>
                                     <?php endif; ?>
 
@@ -60,10 +69,10 @@
 
                                     <?php if ($viewModel['nextUrl'] ?? ''): ?>
                                         <a href="<?= htmlspecialchars($viewModel['nextUrl'] . "#course-main-marker" ?? '') ?>" class="btn next-slide">
-                                            <img src="assets/images/icons/angle-right-solid-full.svg" width="28" height="28">
+                                            <img src="/assets/images/icons/angle-right-solid-full.svg" width="28" height="28">
                                         </a>
                                     <?php elseif ($viewModel['isLastSlide'] ?? false): ?>
-                                        <a href="index.php" class="btn finish-course">
+                                        <a href="/" class="btn finish-course">
                                             Zurück zur Kursübersicht →
                                         </a>
                                     <?php endif; ?>

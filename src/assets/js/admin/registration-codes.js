@@ -28,8 +28,10 @@ function deleteRegistrationCode(registrationCodeId) {
         return;
     }
 
-    document.getElementById('delete-registration-code-id').value = registrationCodeId;
-    document.getElementById('delete-registration-code-form').submit();
+    const form = document.getElementById('delete-registration-code-form');
+
+    form.action = `/admin/registration-codes/${encodeURIComponent(registrationCodeId)}/delete`;
+    form.submit();
 }
 
 function editRegistrationCode(registrationCodeId, registrationCode, courseIdsJson) {
@@ -42,8 +44,10 @@ function editRegistrationCode(registrationCodeId, registrationCode, courseIdsJso
             cb.checked = true;
         }
     });
-    
-    document.getElementById('edit-registration-code-id').value = registrationCodeId;
+
+    const form = document.getElementById('edit-registration-code-form');
+    form.action = `/admin/registration-codes/${encodeURIComponent(registrationCodeId)}/update`;
+
     document.getElementById('edit-registration-code').value = registrationCode;
     document.getElementById('editRegistrationCodeModal').style.display = 'flex';
 }

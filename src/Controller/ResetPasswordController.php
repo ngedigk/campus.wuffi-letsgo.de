@@ -31,16 +31,14 @@ class ResetPasswordController
             exit;
         }
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleReset($userUuid);
-            return;
-        }
-
         $this->renderForm([], $userUuid);
     }
 
-    private function handleReset(string $userUuid): void
+    public function reset(): void
     {
+        $token = $_GET['token'] ?? '';
+        $userUuid = $this->passwordResetService->getUserUuidByToken($token);
+
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
         } catch (Exception $e) {

@@ -60,7 +60,7 @@ class RegistrationService
                 $courseIds = $this->registrationCodeRepository->getCourseIds($codeData['id']);
                 $courseAccessPairs = [];
                 foreach ($courseIds as $courseId) {
-                    $accessCodeId = $this->accessCodeRepository->createForRegistration($codeData['id'], $userId, $courseId);
+                    $accessCodeId = $this->accessCodeRepository->createForRegistration($courseId);
                     $courseAccessPairs[] = [
                         'course_id' => $courseId,
                         'access_code_id' => $accessCodeId
@@ -93,7 +93,7 @@ class RegistrationService
 
     private function sendVerificationEmail(string $email, string $token): void
     {
-        $link = SITE_URL . '/register.php?action=verify&token=' . urlencode($token);
+        $link = SITE_URL . '/register/verify?token=' . urlencode($token);
         $link = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
         $htmlBody = "
             <h1>Account bestätigen</h1>

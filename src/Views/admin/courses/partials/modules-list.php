@@ -20,7 +20,7 @@
                     <span class="module-title"><?= htmlspecialchars($module->title) ?></span>
                     <div class="module-actions">
                         <a
-                            href="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>&module_id=<?= urlencode($module->id) ?>"
+                            href="/admin/courses/<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>/modules/<?= urlencode($module->id) ?>"
                             class="btn btn-small"
                             title="Modul bearbeiten"
                         >
@@ -28,7 +28,8 @@
                         </a>
                         <button
                             data-action="delete-module"
-                            data-module-id="<?= htmlspecialchars($module->id) ?>"
+                            data-course-id="<?= htmlspecialchars($viewModel['selectedCourse']->uuid) ?>"
+                            data-module-id="<?= $module->id ?>"
                         >🗑</button>
                     </div>
                 </div>

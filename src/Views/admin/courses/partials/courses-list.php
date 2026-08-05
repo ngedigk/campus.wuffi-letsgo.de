@@ -4,7 +4,7 @@
 <div class="courses-list" id="coursesList">
     <?php foreach ($viewModel['allCourses'] ?? [] as $course): ?>
         <a
-            href="admin.php?page=courses&course_id=<?= $course->uuid ?>"
+            href="/admin/courses/<?= urlencode($course->uuid) ?>"
             class="course-item <?= $course->uuid === ($viewModel['selectedCourseId'] ?? '' ?? '') ? 'active' : '' ?>"
             title="Kurs bearbeiten"
         >

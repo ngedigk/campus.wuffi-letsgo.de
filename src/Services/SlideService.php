@@ -14,19 +14,19 @@ class SlideService {
         private QuizQuestionRepository $quizQuestionRepository
     ) {}
 
-    public function create(SlideInput $slide): int
+    public function create(SlideInput $slide): Slide
     {
         try {
-            $slideId = $this->slideRepository->create($slide);
+            $slide = $this->slideRepository->create($slide);
         } catch (\Exception $e) {
             throw new \Exception("Folienerstellung fehlgeschlagen: " . $e->getMessage());
         }
-        return $slideId;        
+        return $slide;
     }
 
-    public function update(Slide $slide): void
+    public function update(Slide $slide): Slide
     {
-        $this->slideRepository->update($slide);
+        return $this->slideRepository->update($slide);
     }
 
     public function delete(int $id): void

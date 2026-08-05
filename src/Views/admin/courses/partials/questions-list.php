@@ -5,11 +5,7 @@
     <div class="section-header">
         <h3>Quiz Fragen</h3>
         <button
-            type="button"
-            class="btn btn-primary btn-small"
-            data-action="add-question"
-            data-slide-id="<?= $viewModel['selectedSlideId'] ?? 0 ?>"
-        >+ Frage hinzufügen</button>
+            type="button" class="btn btn-primary btn-small" data-action="add-question">+ Frage hinzufügen</button>
     </div>
 
     <?php if (empty($viewModel['quizQuestions'])): ?>
@@ -23,12 +19,18 @@
                     <div class="question-actions">
                         <button
                             data-action="edit-question"
+                            data-course-id="<?= htmlspecialchars($viewModel['selectedCourse']->uuid) ?>"
+                            data-module-id="<?= $viewModel['selectedModule']->id ?>"
+                            data-slide-id="<?= $viewModel['selectedSlide']->id ?>"
                             data-question-id="<?= $question->id ?>"
                             data-question-text="<?= htmlspecialchars($question->questionText) ?>"
                             data-choices='<?= json_encode($viewModel["quizChoicesByQuestion"][$question->id] ?? []) ?>'
                         >✏️</button>
                         <button
                             data-action="delete-question"
+                            data-course-id="<?= htmlspecialchars($viewModel['selectedCourse']->uuid) ?>"
+                            data-module-id="<?= $viewModel['selectedModule']->id ?>"
+                            data-slide-id="<?= $viewModel['selectedSlide']->id ?>"
                             data-question-id="<?= $question->id ?>"
                         >🗑</button>
                     </div>

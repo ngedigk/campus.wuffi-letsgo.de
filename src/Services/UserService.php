@@ -3,9 +3,10 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
+
 use App\Dto\User;
 
-use \Exception;
+use App\Exceptions\UserNotFoundException;
 
 class UserService
 {
@@ -52,7 +53,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('Benutzer nicht gefunden.');
+            throw new UserNotFoundException('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->setAdmin($user->id, true);
@@ -63,7 +64,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('Benutzer nicht gefunden.');
+            throw new UserNotFoundException('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->setAdmin($user->id, false);
@@ -74,7 +75,7 @@ class UserService
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            throw new Exception('Benutzer nicht gefunden.');
+            throw new UserNotFoundException('Benutzer nicht gefunden.');
         }
 
         $this->userRepository->verify($user->id);

@@ -13,7 +13,7 @@
                     <div class="general-card">
                         <h2>Account erstellt</h2>
                         <div>
-                            <a href="index.php">
+                            <a href="/">
                                 Zur Anmeldung
                             </a>
                         </div>
@@ -128,7 +128,7 @@
                         </div>
 
                     </form>
-                    <a href="index.php">
+                    <a href="/">
                         Sie haben bereits einen Account?
                     </a>
                 <?php endif; ?>

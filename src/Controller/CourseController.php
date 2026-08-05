@@ -16,8 +16,10 @@ use App\Dto\Course;
 use App\Dto\Module;
 use App\Dto\Slide;
 use App\Dto\QuizResult;
+
+use App\Exceptions\CourseModuleNotFoundException;
+use App\Exceptions\CourseNotFoundException;
 use App\Exceptions\CourseSlideNotFoundException;
-use \Exception;
 
 class CourseController
 {
@@ -32,13 +34,17 @@ class CourseController
         private CourseNavigationService $courseNavigationService
     ) {}
 
-    public function handle(string $courseUuid, int $moduleIndex, int $slideIndex): void
+    public function index(): void
     {
-        $userUuid = (string)($_SESSION['user_id'] ?? '');
+        $courseUuid = trim($_GET['id'] ?? '');
+        $moduleIndex = (int) ($_GET['module'] ?? 0);
+        $slideIndex = (int) ($_GET['slide'] ?? 0);
+
+        $user = $this->authService->currentUser();
 
         try {
 
-            $result = $this->processCourse($userUuid, $courseUuid, $moduleIndex, $slideIndex);
+            $result = $this->processCourse($user->id, $courseUuid, $moduleIndex, $slideIndex);
             
             $viewData = [
                 'pageTitle' => htmlspecialchars($result['course']->title),
@@ -57,11 +63,31 @@ class CourseController
                 'nextUrl' => $result['nextUrl'],
                 'isLastSlide' => $result['isLastSlide'],
                 'courseSidebar' => $result['courseSidebar'],
-                'hasQuiz' => $result['hasQuiz']
+                'hasQuiz' => $result['hasQuiz'],
+                'breadcrumb' => [
+                    [
+                        'url' => "/",
+                        'title' => "Startseite"
+                    ], [
+                        'url' => $this->courseService->buildCourseUrl(
+                            $courseUuid,
+                            $moduleIndex,
+                            0
+                        ),
+                        'title' => $result['currentModule']->title
+                    ], [
+                        'title' => $result['currentSlide']->title
+                    ]
+                ]
             ];
 
             $this->viewRenderer->renderWithTemplate('course', $viewData);
-        } catch (CourseSlideNotFoundException $e) {
+        } catch (
+            CourseSlideNotFoundException |
+            CourseModuleNotFoundException |
+            CourseNotFoundException
+            $e
+        ) {
             http_response_code(404);
 
             $this->viewRenderer->renderWithTemplate(
@@ -70,7 +96,15 @@ class CourseController
                     'pageTitle' => 'Seite nicht gefunden',
                     'isLoggedIn' => $this->authService->isLoggedIn(),
                     'isAdmin' => $this->authService->isAdmin(),
-                    'message' => 'Die angeforderte Lektion wurde nicht gefunden.'
+                    'message' => $e->getMessage(),
+                    'breadcrumb' => [
+                        [
+                            'url' => "/",
+                            'title' => "Startseite"
+                        ], [
+                            'title' => '404'
+                        ]
+                    ]
                 ]
             );
         }
@@ -81,11 +115,24 @@ class CourseController
         $course = $this->courseService->getWithDetailsForUser($userUuid, $courseUuid);
         $currentModule = $this->getCurrentModule($course, $moduleIndex);
 
+        if (!$currentModule) {
+            throw new CourseModuleNotFoundException('Angeforderters Kurs Modul wurde nicht gefunden.');
+        }
+
         $slidesForModule = $currentModule
             ? $currentModule->slides
             : [];
 
         $currentSlide = $slidesForModule[$slideIndex] ?? null;
+
+        if (!$currentSlide) {
+            throw new CourseSlideNotFoundException('Die angeforderte Folie wurde nicht gefunden.');
+        }
+        
+        $this->progressService->recordSlideView(
+            $userUuid,
+            $currentSlide->id
+        );
 
         $visitedSlideIds = $this->progressService->getVisitedSlideIds(
             $userUuid,
@@ -108,16 +155,6 @@ class CourseController
 
             header('Location: ' . $redirectUrl);
             exit;
-        }
-
-        if ($currentSlide) {
-            $this->progressService->recordSlideView(
-                $userUuid,
-                $currentSlide->id
-            );
-            if (!in_array($currentSlide->id, $visitedSlideIds, true)) {
-                $visitedSlideIds[] = $currentSlide->id;
-            }
         }
 
         $hasQuiz = $currentSlide !== null && $this->slideService->hasQuiz($currentSlide->id);
@@ -150,6 +187,52 @@ class CourseController
         ];
     }
 
+    public function submitQuiz(): void
+    {
+        $courseUuid = trim($_POST['course'] ?? '');
+        $moduleIndex = (int) ($_POST['module'] ?? 0);
+        $slideIndex = (int) ($_POST['slide'] ?? 0);
+        $answers = $_POST['answers'] ?? [];
+
+        $user = $this->authService->currentUser();
+        
+        try {
+            $course = $this->courseService->getWithDetailsForUser($user->id, $courseUuid);
+            $currentModule = $this->getCurrentModule($course, $moduleIndex);
+            $currentSlide = $currentModule?->slides[$slideIndex] ?? null;
+            
+            if (!$currentModule) {
+                throw new CourseModuleNotFoundException('Angeforderters Kurs Modul wurde nicht gefunden.');
+            }
+            
+            if (!$currentSlide) {
+                throw new CourseSlideNotFoundException('Angeforderte Folie wurde nicht gefunden.');
+            }
+            
+            $quizResult = $this->quizService->getQuizData((int) $currentSlide->id);
+            $quizResult = $this->quizService->submitQuiz( $quizResult, $answers );
+            
+            $_SESSION['quiz_result'] = $quizResult;
+            
+            $redirectUrl = $this->courseService->buildCourseUrl($courseUuid, $moduleIndex, $slideIndex);
+            header('Location: ' . $redirectUrl);
+            exit;
+        } catch (
+            CourseSlideNotFoundException |
+            CourseModuleNotFoundException |
+            CourseNotFoundException
+            $e
+        ) {
+            http_response_code(404);
+            $this->viewRenderer->renderWithTemplate('404', [
+                'pageTitle' => 'Seite nicht gefunden',
+                'isLoggedIn' => $this->authService->isLoggedIn(),
+                'isAdmin' => $this->authService->isAdmin(),
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     private function getCurrentModule(Course $course, int $moduleIndex): ?Module
     {
         $modules = array_values($course->modules);
@@ -165,8 +248,14 @@ class CourseController
 
         $quizResult = $this->quizService->getQuizData((int)$currentSlide->id);
 
-        if (isset($_POST['quiz_submit']) && !empty($_POST['answers'])) {
-            $quizResult = $this->quizService->submitQuiz($quizResult, $_POST['answers']);
+        $sessionQuizResult = $_SESSION['quiz_result'] ?? null;
+        
+        if ($sessionQuizResult instanceof QuizResult) {
+            unset($_SESSION['quiz_result']);
+
+            if ($sessionQuizResult->slideId === (int)$currentSlide->id) {
+                $quizResult = $sessionQuizResult;
+            }
         }
 
         return $quizResult;

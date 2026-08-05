@@ -74,6 +74,15 @@
     list-style: none;
 }
 
+#content-header #breadcrumb a {
+    color: var(--breadcrumb);
+}
+
+#content-header #breadcrumb a:hover,
+#content-header #breadcrumb a:focus {
+    border-bottom: 1px solid var(--accent);
+}
+
 #content-header .container {
     position: relative;
     display: flex;

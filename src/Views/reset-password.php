@@ -13,7 +13,7 @@
                     <div class="general-card">
                         <h2>Passwort aktualisiert</h2>
                         <div>
-                            <a href="index.php">Login</a>
+                            <a href="/">Login</a>
                         </div>
                     </div>
 
@@ -41,6 +41,7 @@
                                         aria-label="Passwort anzeigen"
                                         aria-pressed="false"
                                         data-target="password"
+                                        tabindex="-1"
                                     >
                                         <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                     </button>
@@ -64,6 +65,7 @@
                                         aria-label="Passwort anzeigen"
                                         aria-pressed="false"
                                         data-target="password-confirm"
+                                        tabindex="-1"
                                     >
                                         <img src="/assets/images/icons/eye.svg" data-alt-icon="/assets/images/icons/eye-slash.svg" alt="Passwort anzeigen" />
                                     </button>

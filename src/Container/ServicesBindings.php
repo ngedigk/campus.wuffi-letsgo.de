@@ -57,6 +57,7 @@ trait ServicesBindings
         $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
+            $c->get(UuidService::class),
             $c->get(CourseRepository::class),
             $c->get(ModuleRepository::class),
             $c->get(SlideRepository::class)
@@ -76,10 +77,10 @@ trait ServicesBindings
             $c->get(CourseService::class),
             $c->get(ModuleService::class),
             $c->get(SlideService::class),
-            $c->get(UuidService::class),
             $c->get(QuizQuestionService::class),
             $c->get(QuestionChoiceService::class),
-            $c->get(AssetsService::class)
+            $c->get(AssetsService::class),
+            $c->get(TransactionManager::class)
         ));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepository::class)));
@@ -102,8 +103,7 @@ trait ServicesBindings
             $c->get(UuidService::class)
         ));
         $this->set(CourseNavigationService::class, fn($c) => new CourseNavigationService(
-            $c->get(CourseService::class),
-            $c->get(ProgressService::class)
+            $c->get(CourseService::class)
         ));
         $this->set(CourseSidebarBuilderService::class, fn($c) => new CourseSidebarBuilderService(
             $c->get(CourseService::class)

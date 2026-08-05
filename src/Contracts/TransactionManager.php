@@ -4,5 +4,5 @@ namespace App\Contracts;
 
 interface TransactionManager
 {
-    public function run(callable $callback): void;
+    public function run(callable $callback): mixed;
 }

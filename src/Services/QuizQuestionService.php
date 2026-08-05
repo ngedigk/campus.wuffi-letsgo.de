@@ -34,19 +34,19 @@ class QuizQuestionService {
 
     }
 
-    public function create(QuizQuestionInput $quizQuestion): int
+    public function create(QuizQuestionInput $quizQuestion): QuizQuestion
     {
         try {
-            $slideId = $this->quizQuestionRepository->create($quizQuestion);
+            $quizQuestion = $this->quizQuestionRepository->create($quizQuestion);
         } catch (\Exception $e) {
             throw new \Exception("Fragen Erstellung fehlgeschlagen: " . $e->getMessage());
         }
-        return $slideId;        
+        return $quizQuestion;        
     }
 
-    public function update(QuizQuestion $quizQuestion): void
+    public function update(QuizQuestion $quizQuestion): QuizQuestion
     {
-        $this->quizQuestionRepository->update($quizQuestion);
+        return $this->quizQuestionRepository->update($quizQuestion);
     }
 
     public function delete(int $id): void

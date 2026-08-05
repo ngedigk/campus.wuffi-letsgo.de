@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Exceptions\AccessCodeException;
+use App\Exceptions\DuplicateAccessCodeException;
 use App\Repositories\AccessCodeRepository;
 
 class AccessCodeService
@@ -22,7 +24,14 @@ class AccessCodeService
 
     public function create(string $code, string $courseId): void
     {
-        $this->accessCodeRepository->create($code, $courseId);
+        try {
+            $this->accessCodeRepository->create($code, $courseId);
+        } catch (DuplicateAccessCodeException $e) {
+            throw new AccessCodeException(
+                "Dieser Access Code wurde bereits angelegt.",
+                previous: $e
+            );
+        }
     }
 
     public function update(int $accessCodeId, string $code, string $courseId): void

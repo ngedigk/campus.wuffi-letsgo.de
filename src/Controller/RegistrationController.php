@@ -22,11 +22,6 @@ class RegistrationController
 
     public function index(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleRegistration();
-            return;
-        }
-
         $this->renderForm([
             'error' => '',
             'success' => '',
@@ -36,8 +31,9 @@ class RegistrationController
         ]);
     }
 
-    public function verify(string $token): void
+    public function verify(): void
     {
+        $token = $_GET['token'] ?? '';
         $result = $this->emailVerificationService->verify($token);
 
         $pageTitle = 'E-Mail Adresse bestätigt';
@@ -59,7 +55,7 @@ class RegistrationController
         unset($_SESSION['verify_error']);
     }
 
-    private function handleRegistration(): void
+    public function register(): void
     {
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');

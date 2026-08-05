@@ -17,14 +17,14 @@ class QuestionChoiceService {
         return $this->questionChoiceRepository->getByQuestionId($questionId);
     }
 
-    public function create(QuestionChoiceInput $questionChoice): int
+    public function create(int $questionId, QuestionChoiceInput $questionChoice): QuestionChoice
     {
         try {
-            $slideId = $this->questionChoiceRepository->create($questionChoice);
+            $questionChoice = $this->questionChoiceRepository->create($questionId, $questionChoice);
         } catch (\Exception $e) {
             throw new \Exception("Antwort Erstellung fehlgeschlagen: " . $e->getMessage());
         }
-        return $slideId;        
+        return $questionChoice;     
     }
 
     public function update(QuestionChoice $questionChoice): void

@@ -53,7 +53,7 @@ class PasswordResetService
     
     private function sendResetEmail(string $email, string $token): void
     {
-        $link = SITE_URL . '/reset-password.php?token=' . urlencode($token);
+        $link = SITE_URL . '/reset-password?token=' . urlencode($token);
         $link = htmlspecialchars($link, ENT_QUOTES, 'UTF-8');
         $htmlBody = "
             <p>Passwort zurücksetzen:</p>

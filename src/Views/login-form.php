@@ -8,7 +8,7 @@
 
                 <?php require_once __DIR__ . "/partials/login-messages.php"; ?>
 
-                <form method="post" class="form-card">
+                <form method="post" action="/login" class="form-card">
 
                     <h2>Anmelden</h2>
 
@@ -46,9 +46,9 @@
 
                 </form>
 
-                <a href="register.php">Account erstellen</a>
+                <a href="/register">Account erstellen</a>
                 <br>
-                <a href="forgot-password.php">Passwort vergessen?</a>
+                <a href="/forgot-password">Passwort vergessen?</a>
 
             </div>
         </div>

@@ -32,7 +32,12 @@ class DashboardController
 
         $viewData = array_merge([
             'pageTitle' => 'Dashboard',
-            'courses' => $courses
+            'courses' => $courses,
+            'breadcrumb' => [
+                [
+                    'title' => "Startseite"
+                ]
+            ],
         ], $context);
 
         $this->viewRenderer->renderWithTemplate('dashboard', $viewData);
@@ -41,12 +46,12 @@ class DashboardController
     public function redeem(): void
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-            header("Location: index.php");
+            header("Location: /");
             exit;
         }
 
         if (!$this->authService->isLoggedIn()) {
-            header("Location: index.php");
+            header("Location: /");
             exit;
         }
 
@@ -54,7 +59,7 @@ class DashboardController
             $this->csrfService->validateToken($_POST['csrf_token']);
         } catch (Exception $e) {
             $_SESSION['redeem_error'] = $e->getMessage();
-            header("Location: index.php");
+            header("Location: /");
             return;
         }
 
@@ -62,7 +67,7 @@ class DashboardController
 
         if ($code === '') {
             $_SESSION['redeem_error'] = "Ungültiger Code.";
-            header("Location: index.php");
+            header("Location: /");
             exit;
         }
 
@@ -76,7 +81,7 @@ class DashboardController
             $_SESSION['redeem_error'] = "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut.";
         }
 
-        header("Location: index.php");
+        header("Location: /");
         exit;
     }
 }

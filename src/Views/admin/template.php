@@ -35,7 +35,7 @@
             <nav class="sidebar-nav">
                 <ul>
                     <li>
-                        <a href="admin.php?page=dashboard" class="<?= ($viewModel['activePage'] ?? '') === 'dashboard' ? 'active' : '' ?>">
+                        <a href="/admin" class="<?= ($viewModel['activePage'] ?? '') === 'dashboard' ? 'active' : '' ?>">
                             <span>Dashboard</span>
                         </a>
                     </li>
@@ -55,22 +55,22 @@
                         </div>
                     </li>
                     <li>
-                        <a href="admin.php?page=users" class="<?= ($viewModel['activePage'] ?? '') === 'users' ? 'active' : '' ?>">
+                        <a href="/admin/users" class="<?= ($viewModel['activePage'] ?? '') === 'users' ? 'active' : '' ?>">
                             <span>Benutzer</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin.php?page=audio-assets" class="<?= ($viewModel['activePage'] ?? '') === 'audio-assets' ? 'active' : '' ?>">
+                        <a href="/admin/audio-assets" class="<?= ($viewModel['activePage'] ?? '') === 'audio-assets' ? 'active' : '' ?>">
                             <span>Audio Assets</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin.php?page=registration-codes" class="<?= ($viewModel['activePage'] ?? '') === 'registration-codes' ? 'active' : '' ?>">
+                        <a href="/admin/registration-codes" class="<?= ($viewModel['activePage'] ?? '') === 'registration-codes' ? 'active' : '' ?>">
                             <span>Registration Codes</span>
                         </a>
                     </li>
                     <li>
-                        <a href="admin.php?page=access-codes" class="<?= ($viewModel['activePage'] ?? '') === 'access-codes' ? 'active' : '' ?>">
+                        <a href="/admin/access-codes" class="<?= ($viewModel['activePage'] ?? '') === 'access-codes' ? 'active' : '' ?>">
                             <span>Access Codes</span>
                         </a>
                     </li>
@@ -86,14 +86,14 @@
                         <span class="user-email"><?= htmlspecialchars($viewModel['user']->email ?? 'admin@example.com') ?></span>
                     </div>
                 </div>
-                <a href="index.php" class="back-link">← Zurück zur Seite</a>
+                <a href="/" class="back-link">← Zurück zur Seite</a>
             </div>
         </aside>
 
         <main class="admin-content">
             <?php if (!empty($viewModel['breadcrumb'])): ?>
             <div class="breadcrumb">
-                <a href="admin.php?page=dashboard">Dashboard</a>
+                <a href="/admin">Dashboard</a>
                 <?php foreach ($viewModel['breadcrumb'] as $crumb): ?>
                     <?php if (isset($crumb['url'])): ?>
                         <span>/</span>

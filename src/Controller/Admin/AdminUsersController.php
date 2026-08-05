@@ -8,9 +8,13 @@ use App\Services\RegistrationService;
 use App\Services\UserService;
 
 use App\Helpers\ViewRenderer;
+use App\Helpers\Redirect;
+
+use App\Exceptions\UserNotFoundException;
+
 use \Exception;
 
-class AdminUsersController extends AdminPageController
+class AdminUsersController
 {
     public function __construct(
         protected UserService $userService,
@@ -18,12 +22,14 @@ class AdminUsersController extends AdminPageController
         protected AuthService $authService,
         protected RegistrationService $registrationService,
         protected AdminContextService $adminContextService
-    ) {
-        parent::__construct($adminContextService, $authService);
-    }
+    ) {}
 
-    public function render(array $context): void
+    public function render(): void
     {
+        $context = $this->adminContextService->buildContext(
+            $this->authService->currentUser()
+        );
+
         $viewData = array_merge(
             $context,
             [
@@ -42,72 +48,80 @@ class AdminUsersController extends AdminPageController
         $this->viewRenderer->renderWithAdminTemplate('admin/users', $viewData);
     }
 
-    public function handlePost(string $action): void
-    {
-        switch ($action) {
-            case 'grant_admin':
-                $this->handleGrantAdmin();
-                break;
-            case 'revoke_admin':
-                $this->handleRevokeAdmin();
-                break;
-            case 'resend_verification_email':
-                $this->handleResendVerificationEmail();
-                break;
-            case 'manually_verify':
-                $this->handleManuallyVerify();
-                break;
-            default:
-                throw new Exception("Nicht unterstützte Admin-Aktion \"$action\".");
-        }
-    }
-
-    private function handleGrantAdmin(): void
+    public function grantAdmin(): void
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
+        
         if ($email === '') {
-            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie eine E-Mail-Adresse an.';
+            Redirect::to('/admin/users');
         }
 
-        $this->userService->grantAdmin($email);
+        try {
+            $this->userService->grantAdmin($email);
+        } catch (UserNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
+
         $_SESSION['admin_success'] = 'Admin-Berechtigung erteilt.';
+
+        Redirect::to('/admin/users');
     }
 
-    private function handleRevokeAdmin(): void
+    public function revokeAdmin(): void
     {
         $email = strtolower(trim($_POST['email'] ?? ''));
+        
         if ($email === '') {
-            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie eine E-Mail-Adresse an.';
+            Redirect::to('/admin/users');
         }
 
         if ($email === strtolower($this->authService->currentUser()->email)) {
-            throw new Exception("Sie können Ihre eigene Admin-Berechtigung nicht entfernen.");
+            $_SESSION['admin_error'] = 'Sie können Ihre eigene Admin-Berechtigung nicht entfernen.';
+        } else {
+            $this->userService->removeAdmin($email);
+            $_SESSION['admin_success'] = 'Admin-Berechtigung entfernt.';
         }
 
-        $this->userService->removeAdmin($email);
-        $_SESSION['admin_success'] = 'Admin-Berechtigung entfernt.';
+        Redirect::to('/admin/users');
     }
 
-    private function handleManuallyVerify(): void
+    public function manuallyVerify(): void
     {
         $email = trim($_POST['email'] ?? '');
+
         if ($email === '') {
-            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie eine E-Mail-Adresse an.';
+            Redirect::to('/admin/users');
         }
 
-        $this->userService->verify($email);
-        $_SESSION['admin_success'] = 'Benutzer manuell verifiziert.';
+        try {
+            $this->userService->verify($email);
+            $_SESSION['admin_success'] = 'Benutzer manuell verifiziert.';
+        } catch (UserNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
+
+        Redirect::to('/admin/users');
     }
 
-    private function handleResendVerificationEmail(): void
+    public function resendVerificationEmail(): void
     {
         $email = trim($_POST['email'] ?? '');
+
         if ($email === '') {
-            throw new Exception('Bitte geben Sie eine E-Mail-Adresse an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie eine E-Mail-Adresse an.';
+            Redirect::to('/admin/users');
         }
 
-        $this->registrationService->resendVerificationEmail($email);
+        try {
+            $this->registrationService->resendVerificationEmail($email);
+            $_SESSION['admin_success'] = 'Verifizierungsmail wurde gesendet.';
+        } catch (Exception $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
 
-        $_SESSION['admin_success'] = 'Verifizierungsmail wurde gesendet.';
+        Redirect::to('/admin/users');
     }
 }

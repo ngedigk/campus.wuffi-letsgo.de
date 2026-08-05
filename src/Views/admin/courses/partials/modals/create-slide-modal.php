@@ -7,11 +7,21 @@
             <h3>Neue Folie erstellen</h3>
             <span class="close" onclick="document.getElementById('createSlideModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="createSlideForm" action="" enctype="multipart/form-data">
+        
+        <?php
+        $createSlideAction = sprintf(
+            '/admin/courses/%s/modules/%s/slides',
+            htmlspecialchars($viewModel['selectedCourse']->uuid ?? ''),
+            htmlspecialchars($viewModel['selectedModule']->id ?? ''),
+        );
+        ?>
+        <form
+            id="createSlideForm"
+            method="post"
+            action="<?= $createSlideAction ?>"
+            enctype="multipart/form-data"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_slide">
-            <input type="hidden" id="slide-course-id" name="course_id" value="">
-            <input type="hidden" id="slide-module-id" name="module_id" value="">
             
             <div class="form-group">
                 <label for="new-slide-title">Folie Titel *</label>

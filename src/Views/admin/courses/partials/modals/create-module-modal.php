@@ -7,10 +7,19 @@
             <h3>Neues Modul erstellen</h3>
             <span class="close" onclick="document.getElementById('createModuleModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="createModuleForm" action="">
+        
+        <?php
+        $createModuleAction = sprintf(
+            '/admin/courses/%s/modules',
+            htmlspecialchars($viewModel['selectedCourse']->uuid ?? '')
+        );
+        ?>
+        <form
+            id="createModuleForm"
+            method="post"
+            action="<?= $createModuleAction ?>"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_module">
-            <input type="hidden" id="module-course-id" name="course_id" value="">
             
             <div class="form-group">
                 <label for="new-module-title">Modul Titel *</label>

@@ -239,11 +239,6 @@
     margin-bottom: 20px;
 }
 
-/* Admin Courses Layout */
-.admin-courses-layout {
-    min-height: 600px;
-}
-
 /* Courses List Panel */
 .courses-list-panel {
     background: #fff;
@@ -408,14 +403,7 @@
     color: #6b7280;
 }
 
-/* Course Details Panel */
-.course-details-panel {
-    background: #fff;
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
+/* Details Panel */
 .panel-header {
     display: flex;
     justify-content: space-between;
@@ -900,10 +888,6 @@
     .admin-content {
         margin-left: 0;
         padding: 16px;
-    }
-
-    .admin-courses-layout {
-        grid-template-columns: 1fr;
     }
 
     .courses-list-panel {

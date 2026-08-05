@@ -66,7 +66,7 @@ class SlideRepository
         }, $stmt->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    public function create(SlideInput $slide): int
+    public function create(SlideInput $slide): Slide
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO module_slides
@@ -74,30 +74,32 @@ class SlideRepository
             VALUES (:moduleId, :title, :htmlContent, :audioUrl, :sortOrder)
         ");
 
-        $stmt->execute([
-            'moduleId' => $slide->moduleId,
-            'title' => $slide->title,
-            'htmlContent' => $slide->htmlContent,
-            'audioUrl' => $slide->audioUrl,
-            'sortOrder' => $slide->sortOrder
-        ]);
+        $stmt->execute($slide->toArray());
 
-        return (int)$this->pdo->lastInsertId();
+        return $this->createDto([
+            'id' => (int)$this->pdo->lastInsertId(),
+            'title' => $slide->title,
+            'html_content' => $slide->htmlContent,
+            'audio_url' => $slide->audioUrl,
+            'sort_order' => $slide->sortOrder
+        ]);
     }
 
-    public function update(Slide $slide): void
+    public function update(Slide $slide): Slide
     {
         $stmt = $this->pdo->prepare("
             UPDATE module_slides
             SET title = :title, html_content = :htmlContent, audio_url = :audioUrl, sort_order = :sortOrder
-            WHERE id = :slideId
+            WHERE id = :id
         ");
-        $stmt->execute([
+        $stmt->execute($slide->toArray());
+
+        return $this->createDto([
+            'id' => $slide->id,
             'title' => $slide->title,
-            'htmlContent' => $slide->htmlContent,
-            'audioUrl' => $slide->audioUrl,
-            'sortOrder' => $slide->sortOrder,
-            'slideId' => $slide->id
+            'html_content' => $slide->htmlContent,
+            'audio_url' => $slide->audioUrl,
+            'sort_order' => $slide->sortOrder
         ]);
     }
 
@@ -110,11 +112,11 @@ class SlideRepository
     private function createDto(array $row): Slide
     {
         return new Slide(
-            id: $row['id'],
+            id: (int)$row['id'],
             title: $row['title'],
             htmlContent: $row['html_content'],
             audioUrl: $row['audio_url'],
-            sortOrder: $row['sort_order']
+            sortOrder: (int)$row['sort_order']
         );
     }
 }

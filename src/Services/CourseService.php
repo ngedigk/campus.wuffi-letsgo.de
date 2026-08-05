@@ -8,30 +8,32 @@ use App\Repositories\SlideRepository;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;
-
-use \RuntimeException;
+use App\Exceptions\CourseNotFoundException;
+use App\Exceptions\CourseSlideNotFoundException;
 
 class CourseService
 {
     public function __construct(
+        private UuidService $uuidService,
         private CourseRepository $courseRepository,
         private ModuleRepository $moduleRepository,
         private SlideRepository $slideRepository
     ) {}
 
-    public function create(CourseInput $course): string
+    public function create(CourseInput $courseInput): Course
     {
         try {
-            $courseId = $this->courseRepository->create($course);
+            $courseUuid = $this->uuidService->generate();
+
+            return $this->courseRepository->create($courseUuid, $courseInput);
         } catch (\Exception $e) {
             throw new \Exception("Failed to create course: " . $e->getMessage());
         }
-        return $courseId;        
     }
 
-    public function update(CourseInput $course): void
+    public function update(Course $course): Course
     {
-        $this->courseRepository->update($course);
+        return $this->courseRepository->update($course);
     }
 
     public function delete(string $uuid): void
@@ -48,7 +50,7 @@ class CourseService
     {
         $course = $this->courseRepository->get($courseUuid);
 
-        return new Course(
+        return new $course(
             uuid: $course->uuid,
             title: $course->title,
             description: $course->description,
@@ -63,10 +65,10 @@ class CourseService
         $course = $this->courseRepository->getCourseForUser($userUuid, $courseUuid);
         
         if (!$course) {
-            throw new RuntimeException('Access denied.');
+            throw new CourseNotFoundException('Angeforderter Kurs nicht gefunden.');
         }
 
-        return new Course(
+        return new $course(
             uuid: $course->uuid,
             title: $course->title,
             description: $course->description,
@@ -100,7 +102,7 @@ class CourseService
     public function buildCourseUrl(string $courseUuid, int $moduleIndex, int $slideIndex): string
     {
         return sprintf(
-            'course.php?id=%s&module=%s&slide=%d',
+            '/course?id=%s&module=%s&slide=%d',
             urlencode($courseUuid),
             $moduleIndex,
             $slideIndex

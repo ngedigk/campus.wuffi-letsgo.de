@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-lg-7 col-md-8 col-sm-12">
                     <div class="header-phone icon-text-left">
-                        <img src="assets/images/icons/phone-alt.svg" aria-hidden="true" width="13px" height="13px">
+                        <img src="/assets/images/icons/phone-alt.svg" aria-hidden="true" width="13px" height="13px">
                         <a href="tel:+4917630136957">0176 3013 6957</a>
                     </div>
                 </div>
@@ -23,8 +23,8 @@
         <div class="container">
             <div class="row">
                 <div class="header-logo col-md-2 col-sm-2 col-xs-4">
-                    <a href="index.php" class="logo" aria-label="Zur Startseite von WUFFI Let's Go!">
-                        <img src="assets/images/Logo_quer.png" alt="Wuffi Let's Go!" width="150px" height="75px">
+                    <a href="/" class="logo" aria-label="Zur Startseite von WUFFI Let's Go!">
+                        <img src="/assets/images/Logo_quer.png" alt="Wuffi Let's Go!" width="150px" height="75px">
                         <span class="sr-only">Zur Startseite von WUFFI Let's Go!</span>
                     </a>
                 </div>
@@ -34,15 +34,14 @@
                     <?php if (!empty($viewModel['isLoggedIn'])): ?>
                         <div class="profile-container" id="profileContainer">
                             <div class="profile-icon" onclick="toggleDropdown()">
-                                <img src="assets/images/icons/user-solid-full.svg" alt="Benutzer Menu öffnen" width="40px" height="40px">
+                                <img src="/assets/images/icons/user-solid-full.svg" alt="Benutzer Menu öffnen" width="40px" height="40px">
                             </div>
                             <div class="dropdown-menu">
-                                <a href="profile.php">Profil</a>
+                                <a href="/profile">Profil</a>
                                 <?php if (!empty($viewModel['isAdmin'])): ?>
-                                    <a href="admin.php">Admin Panel</a>
+                                    <a href="/admin">Admin Panel</a>
                                 <?php endif; ?>
-                                <form method="post" action="index.php" style="margin: 0;">
-                                    <input type="hidden" name="_action" value="logout">
+                                <form method="post" action="/logout" style="margin: 0;">
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
                                     <button type="submit">Abmelden</button>
                                 </form>
@@ -50,8 +49,8 @@
                         </div>
                     <?php else: ?>
                         <div class="auth-links">
-                            <a href="index.php" style="margin-right: 15px; text-decoration: none; color: #333;">Anmelden</a>
-                            <a href="register.php" style="text-decoration: none; color: #333;">Registrieren</a>
+                            <a href="/" style="margin-right: 15px; text-decoration: none; color: #333;">Anmelden</a>
+                            <a href="/register" style="text-decoration: none; color: #333;">Registrieren</a>
                         </div>
                     <?php endif; ?>
                 </div>

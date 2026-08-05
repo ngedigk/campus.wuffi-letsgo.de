@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Contracts\TransactionManager;
+
+use App\Dto\Course;
 use App\Dto\CourseInput;
 use App\Dto\Module;
 use App\Dto\ModuleInput;
+use App\Dto\QuestionChoice;
 use App\Dto\QuestionChoiceInput;
 use App\Dto\QuizQuestion;
 use App\Dto\QuizQuestionInput;
@@ -19,271 +23,272 @@ class AdminCourseManagementService
         private CourseService $courseService,
         private ModuleService $moduleService,
         private SlideService $slideService,
-        private UuidService $uuidService,
         private QuizQuestionService $quizQuestionService,
         private QuestionChoiceService $questionChoicesService,
-        private AssetsService $assetsService
+        private AssetsService $assetsService,
+        private TransactionManager $transactionManager
     ) {}
 
-    public function createCourse(array $post): void
-    {
-        $title = trim((string)($post['title'] ?? ''));
-        $description = trim((string)($post['description'] ?? ''));
-        $prerequisiteCourseId = trim((string)($post['prerequisite_course_id'] ?? ''));
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
+    public function getCourseEditorData(string $courseUuid): array {
+        $course = $this->courseService->getWithDetails($courseUuid);
 
-        if ($title === '') {
+        return [
+            'selectedCourse' => $course,
+            'pageTitle' => "Kurs bearbeiten: {$course->title}",
+            'breadcrumb' => [
+                [
+                    'url' => "/admin/courses/{$course->uuid}",
+                    'title' => "Kurs: {$course->title}"
+                ]
+            ]
+        ];
+    }
+    
+    public function getModuleEditorData(string $courseUuid, int $moduleId): array {
+        $course = $this->courseService->getWithDetails($courseUuid);
+        $module = $this->findModule($course, $moduleId);
+
+        return [
+            'selectedCourse' => $course,
+            'selectedModule' => $module,
+            'audioFiles' => $this->assetsService->getAudioFiles(),
+            'pageTitle' => "Modul bearbeiten: {$module->title}",
+            'breadcrumb' => [
+                [
+                    'url' => "/admin/courses/{$course->uuid}",
+                    'title' => "Kurs: {$course->title}"
+                ],
+                [
+                    'url' => "/admin/courses/{$course->uuid}/modules/{$module->id}",
+                    'title' => "Modul: {$module->title}"
+                ]
+            ]
+        ];
+    }
+
+    public function getSlideEditorData(string $courseUuid, int $moduleId, int $slideId): array {
+        $course = $this->courseService->getWithDetails($courseUuid);
+        $module = $this->findModule($course, $moduleId);
+        $slide = $this->findSlide($module, $slideId);
+
+        return array_merge(
+            $this->getQuizEditorData($slide->id),
+            [
+                'selectedCourse' => $course,
+                'selectedModule' => $module,
+                'selectedSlide' => $slide,
+                'slideAssets' => $this->assetsService->getSlideAssets(),
+                'audioFiles' => $this->assetsService->getAudioFiles(),
+                'pageTitle' => "Folie bearbeiten: {$slide->title}",
+                'breadcrumb' => [
+                    [
+                        'url' => "/admin/courses/{$course->uuid}",
+                        'title' => "Kurs: {$course->title}"
+                    ], [
+                        'url' => "/admin/courses/{$course->uuid}/modules/{$module->id}",
+                        'title' => "Modul: {$module->title}"
+                    ], [
+                        'url' => "/admin/courses/{$course->uuid}/modules/{$module->id}/slides/{$slide->id}",
+                        'title' => "Folie: {$slide->title}"
+                    ]
+                ]
+            ]
+        );
+    }
+
+    private function getQuizEditorData(int $slideId): array {
+        if (!$this->slideService->hasQuiz($slideId)) {
+            return [
+                'quizQuestions' => [],
+                'quizChoicesByQuestion' => []
+            ];
+        }
+        
+        $questions = $this->quizQuestionService->getBySlideId($slideId);
+        $choicesByQuestion = [];
+
+        foreach ($questions as $question) {
+            $choicesByQuestion[$question->id] = $this->questionChoicesService->getByQuestionId($question->id);
+        }
+        
+        return [
+            'quizQuestions' => $questions,
+            'quizChoicesByQuestion' => $choicesByQuestion
+        ];
+    }
+
+    public function createCourse(CourseInput $course): Course
+    {
+        if ($course->title === '') {
             throw new Exception('Bitte geben Sie einen Kursnamen an.');
         }
 
-        $prerequisiteCourseId = $prerequisiteCourseId !== '' ? $prerequisiteCourseId : null;
-
-        $this->courseService->create(new CourseInput(
-            uuid: $this->uuidService->generate(),
-            title: $title,
-            description: $description,
-            prerequisiteCourseId: $prerequisiteCourseId,
-            sortOrder: $sortOrder
-        ));
-
-        $_SESSION['admin_success'] = 'Kurs erstellt.';
+        return $this->courseService->create($course);
     }
 
-    public function updateCourse(array $post): void
+    public function updateCourse(Course $course): Course
     {
-        $courseId = trim((string)($post['course_id'] ?? ''));
-        $title = trim((string)($post['title'] ?? ''));
-        $description = trim((string)($post['description'] ?? ''));
-        $prerequisiteCourseId = trim((string)($post['prerequisite_course_id'] ?? '')) ?: null;
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
-
-        if ($title === '') {
-            throw new Exception('Bitte geben Sie einen gültigen Kursnamen an.');
+        if ($course->title === '') {
+            throw new Exception('Bitte geben Sie einen Kursnamen an.');
         }
 
-        $this->courseService->update(new CourseInput(
-            uuid: $courseId,
-            title: $title,
-            description: $description,
-            prerequisiteCourseId: $prerequisiteCourseId,
-            sortOrder: $sortOrder
-        ));
-
-        $_SESSION['admin_success'] = 'Kurs aktualisiert.';
+        return $this->courseService->update($course);
     }
 
-    public function createModule(array $post): void
+    public function createModule(ModuleInput $module): Module
     {
-        $courseId = trim((string)($post['course_id'] ?? ''));
-        $title = trim((string)($post['title'] ?? ''));
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
-
-        if ($title === '') {
+        if ($module->title === '') {
             throw new Exception('Bitte geben Sie einen Modulnamen an.');
         }
-
-        $moduleId = $this->moduleService->create(new ModuleInput(
-            courseId: $courseId,
-            title: $title,
-            sortOrder: $sortOrder
-        ));
-
-        $_SESSION['admin_success'] = "Module $moduleId created.";
+        return $this->moduleService->create($module);
     }
 
-    public function updateModule(array $post): void
+    public function updateModule(Module $module): Module
     {
-        $moduleId = (int)trim((string)($post['module_id'] ?? ''));
-        $title = trim((string)($post['title'] ?? ''));
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
-
-        if ($title === '') {
+        if ($module->title === '') {
             throw new Exception('Bitte geben Sie einen Modulnamen an.');
         }
-
-        $this->moduleService->update(new Module(
-            id: $moduleId,
-            title: $title,
-            sortOrder: $sortOrder,
-            slides: null
-        ));
-
-        $_SESSION['admin_success'] = 'Modul aktualisiert.';
+        return $this->moduleService->update($module);
     }
 
-    public function createSlide(array $post, array $files): void
+    public function createSlide(SlideInput $slide): Slide
     {
-        $moduleId = (int)trim((string)($post['module_id'] ?? ''));
-        $title = trim((string)($post['title'] ?? ''));
-        $audioUrl = trim((string)($post['audio_url'] ?? ''));
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
-
-        if ($title === '') {
+        if ($slide->title === '') {
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
-
-        $uploadedAudio = $this->assetsService->handleAudioUpload($files);
-        if ($uploadedAudio) {
-            $audioUrl = $uploadedAudio;
-        }
-
-        $slideId = $this->slideService->create(new SlideInput(
-            moduleId: $moduleId,
-            title: $title,
-            audioUrl: $audioUrl,
-            htmlContent: '',
-            sortOrder: $sortOrder
-        ));
-
-        $_SESSION['admin_success'] = "Folie $slideId erstellt.";
+        return $this->slideService->create($slide);
     }
 
-    public function updateSlide(array $post, array $files): void
+    public function updateSlide(Slide $slide): Slide
     {
-        $slideId = (int)trim((string)($post['slide_id'] ?? ''));
-        $title = trim((string)($post['title'] ?? ''));
-        $htmlContent = trim((string)($post['html_content'] ?? ''));
-        $audioUrl = trim((string)($post['audio_url'] ?? ''));
-        $sortOrder = (int)trim((string)($post['sort_order'] ?? 0));
-
-        if ($title === '') {
+        if ($slide->title === '') {
             throw new Exception('Bitte geben Sie einen Folientitel an.');
         }
-
-        $uploadedAudio = $this->assetsService->handleAudioUpload($files);
-        if ($uploadedAudio) {
-            $audioUrl = $uploadedAudio;
-        }
-
-        $this->slideService->update(new Slide(
-            id: $slideId,
-            title: $title,
-            htmlContent: $htmlContent,
-            audioUrl: $audioUrl,
-            sortOrder: $sortOrder
-        ));
-
-        $_SESSION['admin_success'] = 'Folie aktualisiert.';
+        return $this->slideService->update($slide);
     }
 
-    public function createQuestion(array $post): void
+    public function createQuestion(QuizQuestionInput $input): QuizQuestion
     {
-        $slideId = (int)trim((string)($post['slide_id'] ?? ''));
-        $questionText = trim((string)($post['question_text'] ?? ''));
-        $choices = $post['choices'] ?? [];
-
-        if ($questionText === '') {
+        if ($input->questionText === '') {
             throw new Exception('Bitte geben Sie einen Fragen-Text an.');
         }
-
-        if (empty($choices)) {
+        
+        if ($input->choices === []) {
             throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
         }
+        
+        $this->validateChoices($input->choices);
 
-        $this->validateChoices($choices);
+        return $this->transactionManager->run(function () use ($input) {
+            $question = $this->quizQuestionService->create($input);
+            
+            foreach ($input->choices as $choice) {
+                $this->questionChoicesService->create(
+                    $question->id,
+                    new QuestionChoiceInput(
+                        choiceText: $choice->choiceText,
+                        isCorrect: $choice->isCorrect
+                    )
+                );
+            }
 
-        $questionId = $this->quizQuestionService->create(new QuizQuestionInput(
-            slideId: $slideId,
-            questionText: $questionText
-        ));
-
-        foreach ($choices as $choiceData) {
-            $this->questionChoicesService->create(new QuestionChoiceInput(
-                questionId: $questionId,
-                choiceText: trim((string)($choiceData['text'] ?? '')),
-                isCorrect: !empty($choiceData['is_correct'])
-            ));
-        }
-
-        $_SESSION['admin_success'] = "Frage $questionId erstellt.";
+            return $question;
+        });
     }
 
-    public function updateQuestion(array $post): void
+    public function updateQuestion(QuizQuestion $question): QuizQuestion
     {
-        $questionId = (int)trim((string)($post['question_id'] ?? ''));
-        $slideId = (int)trim((string)($post['slide_id'] ?? ''));
-        $questionText = trim((string)($post['question_text'] ?? ''));
-        $choices = $post['choices'] ?? [];
-
-        if ($questionId === 0 || $questionText === '') {
+        if ($question->questionText === '') {
             throw new Exception('Bitte geben Sie einen gültigen Fragen-Text an.');
         }
 
-        if (empty($choices)) {
+        if (empty($question->choices)) {
             throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
         }
 
-        $this->validateChoices($choices);
+        $this->validateChoices($question->choices);
 
-        $this->quizQuestionService->update(new QuizQuestion(
-            id: $questionId,
-            slideId: $slideId,
-            questionText: $questionText
-        ));
+        return $this->transactionManager->run(
+            function () use ($question): QuizQuestion {
+                $questionUpdate = $this->quizQuestionService->update($question);
 
-        try {
-            $this->questionChoicesService->deleteByQuestionId($questionId);
-            foreach ($choices as $choiceData) {
-                $this->questionChoicesService->create(new QuestionChoiceInput(
-                    questionId: $questionId,
-                    choiceText: trim((string)($choiceData['text'] ?? '')),
-                    isCorrect: !empty($choiceData['is_correct'])
-                ));
+                $this->questionChoicesService->deleteByQuestionId($question->id);
+
+                foreach ($question->choices as $choice) {
+                    $this->questionChoicesService->create(
+                        $question->id,
+                        new QuestionChoiceInput(
+                            choiceText: $choice->choiceText,
+                            isCorrect: $choice->isCorrect
+                        )
+                    );
+                }
+
+                return $questionUpdate;
             }
-        } catch (Exception $e) {
-            throw new Exception('Fehler beim Aktualisieren der Antworten: ' . $e->getMessage());
-        }
-
-        $_SESSION['admin_success'] = 'Frage aktualisiert.';
+        );
     }
 
-    public function deleteQuestion(array $post): void
+    public function deleteQuestion(int $questionId): void
     {
-        $questionId = (int)trim((string)($post['question_id'] ?? ''));
         $this->quizQuestionService->delete($questionId);
-        $_SESSION['admin_success'] = 'Frage gelöscht.';
     }
 
-    public function deleteSlide(array $post): void
+    public function deleteSlide(int $slideId): void
     {
-        $slideId = (int)trim((string)($post['slide_id'] ?? ''));
         $this->slideService->delete($slideId);
-        $_SESSION['admin_success'] = 'Folie gelöscht.';
     }
 
-    public function deleteModule(array $post): void
+    public function deleteModule(int $moduleId): void
     {
-        $moduleId = (int)trim((string)($post['module_id'] ?? ''));
         $this->moduleService->delete($moduleId);
-        $_SESSION['admin_success'] = 'Modul gelöscht.';
     }
 
-    public function deleteCourse(array $post): void
+    public function deleteCourse(string $courseUuid): void
     {
-        $courseId = trim((string)($post['course_id'] ?? ''));
-        $this->courseService->delete($courseId);
-        $_SESSION['admin_success'] = 'Kurs gelöscht.';
+        $this->courseService->delete($courseUuid);
     }
 
-    public function handleUploadImage(): string
+    public function uploadImage(): string
     {
         return $this->assetsService->handleUploadImage();
     }
 
-    public function handleDeleteImage(): string
+    public function deleteImage(): string
     {
         return $this->assetsService->handleDeleteImage();
+    }
+    
+    private function findModule(Course $course, int $moduleId): Module {
+        foreach ($course->modules as $module) {
+            if ($module->id === $moduleId) {
+                return $module;
+            }
+        }
+        
+        throw new \RuntimeException("Module {$moduleId} not found.");
+    }
+    
+    private function findSlide(Module $module, int $slideId): Slide {
+        foreach ($module->slides as $slide) {
+            if ($slide->id === $slideId) {
+                return $slide;
+            }
+        }
+        
+        throw new \RuntimeException("Slide {$slideId} not found.");
     }
 
     private function validateChoices(array $choices): void
     {
         $hasCorrect = false;
 
+        /** @var QuestionChoice $choice */
         foreach ($choices as $choice) {
-            if (trim((string)($choice['text'] ?? '')) === '') {
+            if ($choice->choiceText === '') {
                 throw new Exception('Antwort Text darf nicht leer sein.');
             }
-            if (!empty($choice['is_correct'])) {
+            if ($choice->isCorrect) {
                 $hasCorrect = true;
             }
         }

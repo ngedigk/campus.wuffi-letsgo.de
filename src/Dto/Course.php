@@ -13,6 +13,17 @@ final class Course
         public string $description,
         public ?string $prerequisiteCourseId,
         public int $sortOrder,
-        public ?array $modules,
+        public ?array $modules = null,
     ) {}
+
+    public function toArray(): array
+    {
+        return [
+            'uuid' => $this->uuid,
+            'title' => $this->title,
+            'description' => $this->description,
+            'prerequisiteCourseId' => $this->prerequisiteCourseId,
+            'sortOrder' => $this->sortOrder
+        ];
+    }
 }

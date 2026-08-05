@@ -22,7 +22,9 @@ function deleteAudioAsset(filename) {
     if (!confirm( 'Sind Sie sicher, dass Sie diese Audio Datei löschen möchten?' )) {
         return;
     }
-    
-    document.getElementById('delete-audio-asset-filename').value = filename;
-    document.getElementById('delete-audio-asset-form').submit();
+
+    const form = document.getElementById('delete-audio-asset-form');
+
+    form.action = `/admin/audio-assets/${encodeURIComponent(filename)}/delete`;
+    form.submit();
 }

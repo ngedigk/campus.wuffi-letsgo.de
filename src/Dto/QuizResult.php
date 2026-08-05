@@ -11,7 +11,8 @@ class QuizResult
         public string $feedbackType = 'info',
         public array $questions = [],
         public array $choicesByQuestion = [],
-        public array $results = []
+        public array $results = [],
+        public ?int $slideId = null
     ) {}
 
     public function getChoiceLabel(array $choice): string

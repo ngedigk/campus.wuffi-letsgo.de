@@ -29,6 +29,8 @@ class QuizService
         }
 
         return new QuizResult(
+            isSubmitted: false,
+            slideId: $slideId,
             questions: $questions,
             choicesByQuestion: $choices
         );
@@ -90,7 +92,8 @@ class QuizService
             feedbackType: $feedbackType,
             questions: $baseQuiz->questions,
             choicesByQuestion: $baseQuiz->choicesByQuestion,
-            results: $results
+            results: $results,
+            slideId: $baseQuiz->slideId
         );
     }
 }

@@ -17,9 +17,18 @@
                 <h1>Herzlich Willkommen<?= !empty($viewModel['user']->name) ? ', ' . htmlspecialchars($viewModel['user']->name) : '' ?>!</h1>
 
                 <ul id="breadcrumb">
-                    <li>Startseite</li>
-                    <li aria-hidden="true">></li>
-                    <li>Campus</li>
+                    <?php foreach ($viewModel['breadcrumb'] ?? [] as $index => $breadcrumb): ?>
+                        <?php if ($breadcrumb['url'] ?? false): ?>
+                        <li>
+                            <a href="<?= $breadcrumb['url'] ?>">
+                                <?= $breadcrumb['title'] ?>
+                            </a>
+                        </li>
+                        <li aria-hidden="true">></li>
+                        <?php else: ?>
+                        <li><?= $breadcrumb['title'] ?></li>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </ul>
             </div>
         </div>
@@ -57,7 +66,7 @@
                                     <h3><?= htmlspecialchars($course->title) ?></h3>
                                     <div class="course-description"><?= htmlspecialchars($course->description) ?></div>
                                     <?php if (!empty($course->isUnlocked)): ?>
-                                        <a href="course.php?id=<?= urlencode($course->uuid) ?>" class="button-primary">
+                                        <a href="/course?id=<?= urlencode($course->uuid) ?>" class="button-primary">
                                             Zum Kurs
                                         </a>
                                     <?php else: ?>
@@ -81,8 +90,7 @@
                 
                 <?php require_once __DIR__ . "/partials/redeem-messages.php"; ?>
 
-                <form method="post" action="">
-                    <input type="hidden" name="_action" value="redeem">
+                <form method="post" action="/redeem">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
                     <input type="text" name="code" placeholder="Freischaltcode" required>
                     <button type="submit" class="button-primary">Freischalten</button>

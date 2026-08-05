@@ -13,17 +13,21 @@ class PdoTransactionManager implements TransactionManager
         private PDO $pdo
     ) {}
 
-    public function run(callable $callback): void
+    public function run(callable $callback): mixed
     {
         $this->pdo->beginTransaction();
 
         try {
-            $callback();
+            $result = $callback();
+            
             $this->pdo->commit();
+
+            return $result;
         } catch (Throwable $e) {
             if ($this->pdo->inTransaction()) {
                 $this->pdo->rollBack();
             }
+
             throw $e;
         }
     }

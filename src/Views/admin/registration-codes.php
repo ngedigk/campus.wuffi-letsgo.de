@@ -10,11 +10,8 @@
 <form
     id="delete-registration-code-form"
     method="post"
-    action="admin.php?page=registration-codes"
 >
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-    <input type="hidden" name="action" value="delete_registration_code">
-    <input type="hidden" id="delete-registration-code-id" name="registration_code_id" value="">
 </form>
 
 <div class="list-grid registration-codes-list">
@@ -38,7 +35,7 @@
                         <ul class="course-list">
                             <?php foreach ($code['courses'] as $course): ?>
                                 <li>
-                                    <a href="admin.php?page=courses&course_id=<?= htmlspecialchars($course['id']) ?>">
+                                    <a href="/admin?page=courses&course_id=<?= htmlspecialchars($course['id']) ?>">
                                         <?= htmlspecialchars($course['title']) ?>
                                     </a>
                                 </li>
@@ -90,9 +87,8 @@
             <h3>Registration Code erstellen</h3>
             <span class="close" onclick="document.getElementById('createRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" action="admin.php?page=registration-codes">
+        <form method="post" action="/admin/registration-codes">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_registration_code">
             
             <div class="form-group">
                 <label for="reg-code">Registration Code</label>
@@ -126,10 +122,11 @@
             <h3>Registration Code bearbeiten</h3>
             <span class="close" onclick="document.getElementById('editRegistrationCodeModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" action="admin.php?page=registration-codes">
+        <form
+            id="edit-registration-code-form"
+            method="post"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="update_registration_code">
-            <input type="hidden" id="edit-registration-code-id" name="registration_code_id" value="">
 
             <div class="form-group">
                 <label for="reg-code">Registration Code</label>

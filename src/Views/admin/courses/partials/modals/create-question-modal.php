@@ -7,10 +7,21 @@
             <h3>Neue Frage erstellen</h3>
             <span class="close" onclick="document.getElementById('createQuestionModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="createQuestionForm">
+        
+        <?php
+        $createQuestionAction = sprintf(
+            '/admin/courses/%s/modules/%s/slides/%s/questions',
+            htmlspecialchars($viewModel['selectedCourse']->uuid ?? ''),
+            htmlspecialchars($viewModel['selectedModule']->id ?? ''),
+            htmlspecialchars($viewModel['selectedSlide']->id ?? ''),
+        );
+        ?>
+        <form
+            id="createQuestionForm"
+            method="post"
+            action="<?= $createQuestionAction ?>"
+        >
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="create_question">
-            <input type="hidden" id="question-slide-id" name="slide_id" value="">
             
             <div class="form-group">
                 <label for="new-question-text">Frage *</label>

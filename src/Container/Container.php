@@ -14,6 +14,7 @@ class Container
     use HelpersBindings;
     use AdminControllersBindings;
     use ApplicationControllersBindings;
+    use MiddlewareBindings;
 
     private static ?Container $instance = null;
     private array $bindings = [];
@@ -43,6 +44,7 @@ class Container
         $this->registerServices();
         $this->registerHelpers();
         $this->registerControllers();
+        $this->registerMiddleware();
     }
 
     private function registerControllers(): void

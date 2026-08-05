@@ -4,11 +4,8 @@
             <h3>Frage bearbeiten</h3>
             <span class="close" onclick="document.getElementById('editQuestionModal').style.display='none'">&times;</span>
         </div>
-        <form method="post" id="editQuestionForm">
+        <form method="post" id="edit-question-form">
             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-            <input type="hidden" name="action" value="update_question">
-            <input type="hidden" id="edit-question-id" name="question_id" value="">
-            <input type="hidden" id="edit-question-slide-id" name="slide_id" value="">
             
             <div class="form-group">
                 <label for="edit-question-text">Frage *</label>
@@ -17,9 +14,7 @@
             
             <div class="form-group">
                 <label>Antworten *</label>
-                <div id="edit-choices-container">
-                    <!-- Choices will be injected here via JS -->
-                </div>
+                <div id="edit-choices-container"></div>
                 <button
                     type="button"
                     class="btn btn-secondary"

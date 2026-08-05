@@ -7,22 +7,25 @@ use App\Services\AdminContextService;
 use App\Services\AuthService;
 
 use App\Helpers\ViewRenderer;
+use App\Helpers\Redirect;
 
 use \Exception;
 
-class AdminAccessCodesController extends AdminPageController
+class AdminAccessCodesController
 {
     public function __construct(
         protected AccessCodeService $accessCodeService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
         protected AdminContextService $adminContextService
-    ) {
-        parent::__construct($adminContextService, $authService);
-    }
+    ) {}
 
-    public function render(array $context): void
+    public function render(): void
     {
+        $context = $this->adminContextService->buildContext(
+            $this->authService->currentUser()
+        );
+
         $context['additionalJs'][] = [
             'src' => '/assets/js/admin/access-codes.js',
             'type' => 'module'
@@ -46,24 +49,7 @@ class AdminAccessCodesController extends AdminPageController
         $this->viewRenderer->renderWithAdminTemplate('admin/access-codes', $viewData);
     }
 
-    public function handlePost(string $action): void
-    {
-        switch ($action) {
-            case 'create_access_code':
-                $this->handleCreateAccessCode();
-                break;
-            case 'update_access_code':
-                $this->handleUpdateAccessCode();
-                break;
-            case 'delete_access_code':
-                $this->handleDeleteAccessCode();
-                break;
-            default:
-                throw new Exception('Nicht unterstützte Admin-Aktion.');
-        }
-    }
-
-    private function handleCreateAccessCode(): void
+    public function createAccessCode(): void
     {
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
@@ -78,11 +64,12 @@ class AdminAccessCodesController extends AdminPageController
 
         $this->accessCodeService->create($code, $courseId);
         $_SESSION['admin_success'] = 'Access Code erstellt.';
+        
+        Redirect::to('/admin/access-codes');
     }
 
-    private function handleUpdateAccessCode(): void
+    public function updateAccessCode(string $accessCodeId): void
     {
-        $accessCodeId = trim($_POST['access_code_id'] ?? '');
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
@@ -90,14 +77,17 @@ class AdminAccessCodesController extends AdminPageController
             throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
         }
 
-        $this->accessCodeService->update($accessCodeId, $code, $courseId);
+        $this->accessCodeService->update((int)$accessCodeId, $code, $courseId);
         $_SESSION['admin_success'] = 'Access Code aktualisiert.';
+
+        Redirect::to('/admin/access-codes');
     }
 
-    private function handleDeleteAccessCode(): void
+    public function deleteAccessCode(string $accessCodeId): void
     {
-        $accessCodeId = trim($_POST['access_code_id'] ?? '');
-        $this->accessCodeService->delete($accessCodeId);
+        $this->accessCodeService->delete((int)$accessCodeId);
         $_SESSION['admin_success'] = 'Access Code gelöscht und Benutzerzugriff entfernt.';
+        
+        Redirect::to('/admin/access-codes');
     }
 }

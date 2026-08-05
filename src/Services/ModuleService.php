@@ -12,19 +12,19 @@ class ModuleService {
         private ModuleRepository $moduleRepository
     ) {}
 
-    public function create(ModuleInput $module): int
+    public function create(ModuleInput $module): Module
     {
         try {
-            $moduleId = $this->moduleRepository->create($module);
+            $module = $this->moduleRepository->create($module);
         } catch (\Exception $e) {
             throw new \Exception("Modul Erstellung fehlgeschlagen: " . $e->getMessage());
         }
-        return $moduleId;        
+        return $module;        
     }
 
-    public function update(Module $module): void
+    public function update(Module $module): Module
     {
-        $this->moduleRepository->update($module);
+        return $this->moduleRepository->update($module);
     }
 
     public function delete(int $id): void

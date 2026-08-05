@@ -1,31 +1,35 @@
 <?php
 /** @var array $viewModel */
 ?>
+<div class="panel-header">
+    <h3>Kurs Details</h3>
+    
+    <div class="panel-actions">
+        <button
+            type="button"
+            class="btn btn-danger btn-small"
+            data-action="delete-course"
+            data-course-id="<?= $viewModel['selectedCourse']->uuid ?? '' ?>"
+        >
+            Kurs löschen
+        </button>
+        <button type="submit" form="course-form" class="btn btn-primary btn-small">Kurs speichern</button>
+    </div>
+</div>
+
+<?php
+$updateCourseAction = sprintf(
+    '/admin/courses/%s/update',
+    htmlspecialchars($viewModel['selectedCourse']->uuid ?? ''),
+);
+?>
+
 <form
     id="course-form"
     method="post"
-    action="admin.php?page=courses&course_id=<?= urlencode($viewModel['selectedCourse']->uuid ?? '') ?>"
+    action="<?= $updateCourseAction ?>"
 >
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-    <input type="hidden" name="action" value="update_course">
-    <input type="hidden" name="course_id" value="<?= htmlspecialchars($viewModel['selectedCourse']->uuid ?? '') ?>">
-
-    <div class="panel-header">
-        <h3>Kurs Details</h3>
-        <div class="panel-actions">
-            <button
-                type="button"
-                class="btn btn-danger btn-small"
-                data-action="delete-course"
-                data-course-id="<?= $viewModel['selectedSlideId']->uuid ?? '' ?>"
-            >
-                Kurs löschen
-            </button>
-            <button type="submit" class="btn btn-primary btn-small">
-                Kurs speichern
-            </button>
-        </div>
-    </div>
         
     <div class="course-form">
         <div class="form-row">

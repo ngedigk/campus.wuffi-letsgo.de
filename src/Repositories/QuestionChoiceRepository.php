@@ -22,19 +22,24 @@ class QuestionChoiceRepository
         return array_map(fn($row) => $this->createDto($row), $rows);
     }
 
-    public function create(QuestionChoiceInput $questionChoice): int
+    public function create(int $questionId, QuestionChoiceInput $questionChoice): QuestionChoice
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO question_choices (question_id, choice_text, is_correct)
             VALUES (:questionId, :choiceText, :isCorrect)
         ");
-        $stmt->execute([
-            'questionId' => $questionChoice->questionId,
-            'choiceText' => $questionChoice->choiceText,
-            'isCorrect' => (int)$questionChoice->isCorrect
+        $stmt->execute(array_merge(
+            ['questionId' => $questionId],
+            $questionChoice->toArray()
+        ));
+
+        return $this->createDto([
+            'id' => (int)$this->pdo->lastInsertId(),
+            'question_id' => $questionId,
+            'choice_text' => $questionChoice->choiceText,
+            'is_correct' => (int)$questionChoice->isCorrect
         ]);
 
-        return (int)$this->pdo->lastInsertId();
     }
 
     public function update(QuestionChoice $questionChoice): void

@@ -17,7 +17,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png">
     <link rel="icon" type="image/svg+xml" href="/assets/images/favicon/favicon.svg">
     <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     
 
     <?php if (!empty($viewModel['additionalCss'])): ?>
@@ -36,8 +36,8 @@
 
     <?php require_once __DIR__ . '/footer.php'; ?>
 
-    <script type="text/javascript" src="assets/js/sticky-header.js"></script>
-    <script type="text/javascript" src="assets/js/menu.js"></script>
+    <script type="text/javascript" src="/assets/js/sticky-header.js"></script>
+    <script type="text/javascript" src="/assets/js/menu.js"></script>
     <?php if (!empty($viewModel['additionalJs'])): ?>
         <?php foreach ($viewModel['additionalJs'] as $jsFile): ?>
             <script type="<?= htmlspecialchars($jsFile['type'] ?? 'text/javascript') ?>" src="<?= htmlspecialchars($jsFile['src']) ?>"></script>

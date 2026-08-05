@@ -24,54 +24,15 @@ class ProfileController
 
     public function index(): void
     {
-        if (!$this->authService->isLoggedIn()) {
-            header('Location: index.php');
-            exit;
-        }
-
         $user = $this->authService->currentUser();
-
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            if (isset($_POST['action']) && $_POST['action'] === 'change_password') {
-                $this->handleChangePassword($user);
-                return;
-            }
-            $this->handleProfileUpdate($user);
-            return;
-        }
 
         $this->renderForm($user, []);
     }
 
-    private function handleChangePassword(User $user): void
+    public function update(): void
     {
-        try {
-            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (Exception $e) {
-            $this->renderForm($user, ['error' => $e->getMessage()]);
-            return;
-        }
+        $user = $this->authService->currentUser();
 
-        $password = $_POST['password'] ?? '';
-        $passwordConfirm = $_POST['password_confirm'] ?? '';
-
-        if ($password !== $passwordConfirm) {
-            $this->renderForm($user, ['error' => 'Passwörter stimmen nicht überein.']);
-            return;
-        }
-
-        try {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $this->userService->setPassword($user->id, $hash);
-            $this->renderForm($user, ['success' => 'Passwort erfolgreich aktualisiert.']);
-        } catch (Throwable $e) {
-            error_log("Password change failed: " . $e->getMessage());
-            $this->renderForm($user, ['error' => 'Bei der Aktualisierung des Passworts ist ein Fehler aufgetreten.']);
-        }
-    }
-
-    private function handleProfileUpdate(User $user): void
-    {
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
         } catch (Exception $e) {
@@ -103,18 +64,64 @@ class ProfileController
         }
     }
 
+    public function changePassword(): void
+    {
+        $user = $this->authService->currentUser();
+
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (Exception $e) {
+            $this->renderForm($user, ['error' => $e->getMessage()]);
+            return;
+        }
+
+        $password = $_POST['password'] ?? '';
+        $passwordConfirm = $_POST['password_confirm'] ?? '';
+
+        if ($password !== $passwordConfirm) {
+            $this->renderForm($user, ['error' => 'Passwörter stimmen nicht überein.']);
+            return;
+        }
+
+        try {
+            $hash = password_hash($password, PASSWORD_DEFAULT);
+            $this->userService->setPassword($user->id, $hash);
+            $this->renderForm($user, ['success' => 'Passwort erfolgreich aktualisiert.']);
+        } catch (Throwable $e) {
+            error_log("Password change failed: " . $e->getMessage());
+            $this->renderForm($user, ['error' => 'Bei der Aktualisierung des Passworts ist ein Fehler aufgetreten.']);
+        }
+    }
+
     private function renderForm(User $user, array $context): void
     {
-        $context['csrfToken'] = $this->csrfService->generateToken();
-        $context['pageTitle'] = 'Profil';
-        $context['isLoggedIn'] = true;
-        $context['isAdmin'] = $user->isAdmin;
-        $context['user'] = $user;
-        $context['additionalJs'] = [
-            ['src' => '/assets/js/password-toggle.js'],
-            ['src' => '/assets/js/password-meter.js']
-        ];
-        $context['additionalCss'] = ['/assets/css/password-meter.css', '/assets/css/profile.css'];
+        $context = array_merge(
+            $context,
+            [
+                'csrfToken' => $this->csrfService->generateToken(),
+                'pageTitle' => 'Profil',
+                'isLoggedIn' => true,
+                'isAdmin' => $user->isAdmin,
+                'user' => $user,
+                'additionalJs' => [
+                    ['src' => '/assets/js/password-toggle.js'],
+                    ['src' => '/assets/js/password-meter.js']
+                ],
+                'additionalCss' => [
+                    '/assets/css/password-meter.css',
+                    '/assets/css/profile.css'
+                ],
+                'breadcrumb' => [
+                    [
+                        'url' => "/",
+                        'title' => "Startseite"
+                    ], [
+                        'title' => 'Profil'
+                    ]
+                ]
+            ]
+        );
+        
 
         $this->viewRenderer->renderWithTemplate('profile', $context);
     }

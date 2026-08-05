@@ -21,15 +21,10 @@ class ForgotPasswordController
 
     public function index(): void
     {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $this->handleForgotPassword();
-            return;
-        }
-
         $this->renderForm([]);
     }
 
-    private function handleForgotPassword(): void
+    public function requestReset(): void
     {
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');

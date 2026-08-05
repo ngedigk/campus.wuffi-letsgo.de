@@ -21,16 +21,16 @@ class AuthController
     {
         if (!isset($_POST['email'], $_POST['password'])) {
             $_SESSION['login_error'] = 'Bitte füllen Sie alle Felder aus.';
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
 
         try {
-            $this->csrfService->validateToken($_POST['csrf_token']);
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
         } catch (CsrfException $e) {
             error_log($e);
             $_SESSION['login_error'] = 'Die Anfrage konnte nicht validiert werden.';
-            header('Location: index.php');
+            header('Location: /');
             exit;
         }
 
@@ -43,7 +43,7 @@ class AuthController
             $_SESSION['login_error'] = $result->error;
         }
 
-        header('Location: index.php');
+        header('Location: /');
         exit;
     }
 
@@ -64,7 +64,7 @@ class AuthController
     public function logout(): void
     {
         $this->authService->logout();
-        header('Location: index.php');
+        header('Location: /');
         exit;
     }
 }

@@ -48,33 +48,35 @@ class ModuleRepository
         }, $rows);
     }
 
-    public function create(ModuleInput $module): int {
+    public function create(ModuleInput $module): Module {
         $stmt = $this->pdo->prepare("
             INSERT INTO course_modules
             (course_id, title, sort_order)
             VALUES (:courseId, :title, :sortOrder)
         ");
 
-        $stmt->execute([
-            'courseId' => $module->courseId,
-            'title' => $module->title,
-            'sortOrder' => $module->sortOrder
-        ]);
+        $stmt->execute($module->toArray());
 
-        return (int)$this->pdo->lastInsertId();
+        return $this->createDto([
+            'id' => (int)$this->pdo->lastInsertId(),
+            'title' => $module->title,
+            'sort_order' => $module->sortOrder
+        ]);
     }
 
-    public function update(Module $module): void
+    public function update(Module $module): Module
     {
         $stmt = $this->pdo->prepare("
             UPDATE course_modules
             SET title = :title, sort_order = :sortOrder
-            WHERE id = :moduleId
+            WHERE id = :id
         ");
-        $stmt->execute([
+        $stmt->execute($module->toArray());
+
+        return $this->createDto([
+            'id' => $module->id,
             'title' => $module->title,
-            'sortOrder' => $module->sortOrder,
-            'moduleId' => $module->id
+            'sort_order' => $module->sortOrder
         ]);
     }
 
@@ -85,10 +87,9 @@ class ModuleRepository
 
     private function createDto(array $row): Module {
         return new Module(
-            id: $row['id'],
+            id: (int)$row['id'],
             title: $row['title'],
-            sortOrder: $row['sort_order'],
-            slides: null
+            sortOrder: (int)$row['sort_order']
         );
     }
 }

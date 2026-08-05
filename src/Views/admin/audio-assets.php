@@ -5,11 +5,8 @@
 <form
     id="delete-audio-asset-form"
     method="post"
-    action="admin.php?page=audio-assets"
 >
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-    <input type="hidden" name="action" value="delete_audio_asset">
-    <input type="hidden" id="delete-audio-asset-filename" name="audio_asset_filename" value="">
 </form>
 
 <div class="list-grid audio-assets-list">

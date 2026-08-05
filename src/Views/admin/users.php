@@ -41,21 +41,19 @@
                                 <form
                                     id="resend-verify-form"
                                     method="post"
-                                    action="admin.php?page=users"
+                                    action="/admin/users/resend-verification"
                                     onsubmit="return confirm('Sind Sie sicher, dass Sie die E-Mail nochmal an den Nutzer senden möchten?')"
                                 >
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-                                    <input type="hidden" name="action" value="resend_verification_email">
                                     <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                     <button class="btn btn-small btn-warn" type="submit">Verifizierungsmail nochmal senden</button>
                                 </form>
                                 <form
                                     id="manually-verify-form"
                                     method="post"
-                                    action="admin.php?page=users"
+                                    action="/admin/users/verify"
                                 >
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-                                    <input type="hidden" name="action" value="manually_verify">
                                     <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                     <button class="btn btn-small btn-warn" type="submit">Manuell bestätigen</button>
                                 </form>
@@ -64,10 +62,9 @@
                                     <form
                                         id="grant-admin-form"
                                         method="post"
-                                        action="admin.php?page=users"
+                                        action="/admin/users/grant-admin"
                                     >
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-                                        <input type="hidden" name="action" value="grant_admin">
                                         <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                         <button class="btn btn-small" type="submit">Admin-Rechte verleihen</button>
                                     </form>
@@ -75,10 +72,9 @@
                                     <form
                                         id="revoke-admin-form"
                                         method="post"
-                                        action="admin.php?page=users"
+                                        action="/admin/users/revoke-admin"
                                     >
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($viewModel['csrfToken'] ?? '') ?>">
-                                        <input type="hidden" name="action" value="revoke_admin">
                                         <input type="hidden" name="email" value="<?= htmlspecialchars($user->email) ?>">
                                         <button class="btn btn-small btn-danger" type="submit">Admin-Rechte entziehen</button>
                                     </form>
