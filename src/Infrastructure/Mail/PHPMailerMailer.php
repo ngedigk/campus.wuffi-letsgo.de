@@ -20,31 +20,54 @@ class PHPMailerMailer implements Mailer
 
     private function configureSMTP(): void
     {
-        $host = getenv('SMTP_HOST') ?: 'localhost';
-        $port = (int)(getenv('SMTP_PORT') ?: 587);
-
         $this->mailer->isSMTP();
+
+        $host = getenv('SMTP_HOST') ?: 'localhost';
+        $port = (int) (getenv('SMTP_PORT') ?: 1025);
+
         $this->mailer->Host = $host;
         $this->mailer->Port = $port;
 
-        if ($host === 'mailhog' || $host === 'localhost') {
-            $this->mailer->SMTPAuth = false;
-            $this->mailer->SMTPSecure = ''; 
-            $this->mailer->SMTPAutoTLS = false;
-        } else {
-            $this->mailer->SMTPAuth = true;
+        $smtpAuth = filter_var(
+            getenv('SMTP_AUTH') ?: 'false',
+            FILTER_VALIDATE_BOOLEAN
+        );
+
+        $this->mailer->SMTPAuth = $smtpAuth;
+
+        if ($smtpAuth) {
             $this->mailer->Username = getenv('SMTP_USER') ?: '';
             $this->mailer->Password = getenv('SMTP_PASS') ?: '';
-            
-            if ($port === 465) {
-                $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-            } else {
-                $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+
+            $encryption = strtolower(
+                getenv('SMTP_ENCRYPTION') ?: 'tls'
+            );
+
+            switch ($encryption) {
+                case 'ssl':
+                case 'smtps':
+                    $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                    break;
+
+                case 'tls':
+                case 'starttls':
+                    $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    break;
+
+                case '':
+                case 'none':
+                    $this->mailer->SMTPSecure = '';
+                    break;
+
+                default:
+                    throw new \RuntimeException(
+                        "Unsupported SMTP encryption: {$encryption}"
+                    );
             }
-            
-            $this->mailer->SMTPAutoTLS = true;
+        } else {
+            $this->mailer->SMTPSecure = '';
+            $this->mailer->SMTPAutoTLS = false;
         }
-        
     }
 
     private function configureDefaults(): void
