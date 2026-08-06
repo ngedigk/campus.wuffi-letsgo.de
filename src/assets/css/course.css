@@ -5,11 +5,6 @@
     position: relative;
 }
 
-#course-main-marker {
-    position: absolute;
-    top: -138px;
-}
-
 .course-sidebar {
     background: #fff;
     box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.1);

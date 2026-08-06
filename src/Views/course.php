@@ -35,55 +35,5 @@
         </div>
     </div>
 </header>
-<section aria-labelledby="courses-heading">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
 
-                <?php //\App\Helpers\Debug::dump($viewModel); ?>
-
-                <p class="heading-meta">Kursmaterial</p>
-                <h2 id="courses-heading"><?= htmlspecialchars($viewModel['course']->title) ?></h2>
-
-                <p><?= nl2br(htmlspecialchars($viewModel['course']->description)) ?></p>
-
-                <?php if (!$viewModel['currentModule'] ?? null): ?>
-                    <p>Kursmodule sind noch nicht konfiguriert.</p>
-                <?php else: ?>
-                    <div class="course-layout">
-                        <?php require __DIR__ . '/course/sidebar.php'; ?>
-
-                        <main id="course-main">
-                            <div id="course-main-marker"></div>
-                            <div class="slide-panel">
-                                <div class="slide-navigation">
-                                    <?php if ($viewModel['prevUrl'] ?? ''): ?>
-                                        <a href="<?= htmlspecialchars($viewModel['prevUrl'] . "#course-main-marker" ?? '') ?>" class="btn prev-slide">
-                                            <img src="/assets/images/icons/chevron-left-solid-full.svg" width="28" height="28">
-                                        </a>
-                                    <?php endif; ?>
-
-                                    <?php if (count($viewModel['slidesForModule'] ?? []) > 0): ?>
-                                        <p>Seite <?= ($viewModel['currentSlideIndex'] ?? 0) + 1 ?> von <?= count($viewModel['slidesForModule'] ?? []) ?></p>
-                                    <?php endif; ?>
-
-                                    <?php if ($viewModel['nextUrl'] ?? ''): ?>
-                                        <a href="<?= htmlspecialchars($viewModel['nextUrl'] . "#course-main-marker" ?? '') ?>" class="btn next-slide">
-                                            <img src="/assets/images/icons/angle-right-solid-full.svg" width="28" height="28">
-                                        </a>
-                                    <?php elseif ($viewModel['isLastSlide'] ?? false): ?>
-                                        <a href="/" class="btn finish-course">
-                                            Zurück zur Kursübersicht →
-                                        </a>
-                                    <?php endif; ?>
-                                </div>
-
-                                <?php require __DIR__ . '/course/slide.php'; ?>
-                            </div>
-                        </main>
-                    </div>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</section>
+<?php require __DIR__ . '/course/content.php'; ?>

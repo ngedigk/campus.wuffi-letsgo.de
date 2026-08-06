@@ -69,9 +69,9 @@
                         <?php endforeach; ?>
                     </div>
                 <?php else: ?>
-                    <form method="post" action="/course/quiz">
-                        <input type="hidden" name="course" value="<?= htmlspecialchars($viewModel['course']->uuid) ?>" >
-                        <input type="hidden" name="module" value="<?= (int) $viewModel['currentModule']->index ?>" >
+                    <form method="post" action="/course/quiz" data-course-nav>
+                        <input type="hidden" name="course" value="<?= htmlspecialchars($viewModel['courseUuid']) ?>" >
+                        <input type="hidden" name="module" value="<?= (int) $viewModel['currentModuleIndex'] ?>" >
                         <input type="hidden" name="slide" value="<?= (int) $viewModel['currentSlideIndex'] ?>" >
                         <?php foreach ($viewModel['quizResult']->questions ?? [] as $question): ?>
                             <fieldset>
