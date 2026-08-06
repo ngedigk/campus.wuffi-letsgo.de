@@ -97,6 +97,9 @@
     border-bottom: 1px solid transparent;
     transition: border-color 0.15s linear;
 }
+
+.module-item > a:hover,
+.module-item > a:focus,
 .slide-item > a:hover,
 .slide-item > a:focus {
     border-bottom: 1px solid var(--primary);
