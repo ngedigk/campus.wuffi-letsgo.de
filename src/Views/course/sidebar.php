@@ -6,11 +6,11 @@
     <ul class="module-list">
         <?php foreach ($viewModel['courseSidebar'] ?? [] as $module): ?>
 
-            <li class="module-item<?= $module->isActive ? ' active' : '' ?><?php if ($module->isLocked) echo ' locked'; ?>">
+            <li class="module-item<?= $module->isActive ? ' active' : '' ?><?= $module->isLocked ? ' locked' : '' ?>">
                 <?php if ($module->isLocked): ?>
                     <span class="module-title"><?= htmlspecialchars($module->title) ?></span>
                 <?php else: ?>
-                    <a href="<?= htmlspecialchars($module->url) . "#course-main-marker"?>">
+                    <a href="<?= htmlspecialchars($module->url) ?>" class="course-nav-link" data-course-nav>
                         <?= htmlspecialchars($module->title) ?>
                     </a>
                 <?php endif; ?>
@@ -18,13 +18,13 @@
                 <?php if ($module->isActive): ?>
                     <ul class="slide-list">
                         <?php foreach ($module->slides as $slide): ?>
-                            <li class="slide-item<?= $slide->isActive ? ' active' : '' ?><?= $slide->isLocked ? '' : ' locked' ?>">
+                            <li class="slide-item<?= $slide->isActive ? ' active' : '' ?><?= $slide->isLocked ? ' locked' : '' ?>">
                                 <?php if ($slide->isLocked): ?>
                                     <img src="/assets/images/icons/paw-solid-full-inactive.svg" aria-hidden="true" width="15" height="15">
                                     <span class="slide-title"><?= htmlspecialchars($slide->title) ?></span>
                                 <?php else: ?>
                                     <img src="/assets/images/icons/paw-solid-full.svg" aria-hidden="true" width="15" height="15">
-                                    <a href="<?= htmlspecialchars($slide->url) . "#course-main-marker" ?>">
+                                    <a href="<?= htmlspecialchars($slide->url) ?>" class="course-nav-link" data-course-nav>
                                         <?= htmlspecialchars($slide->title) ?>
                                         <?php if ($slide->isVisited): ?>
                                             <span class="visited-indicator">
