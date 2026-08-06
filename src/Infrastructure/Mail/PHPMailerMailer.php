@@ -22,25 +22,25 @@ class PHPMailerMailer implements Mailer
     {
         $this->mailer->isSMTP();
 
-        $host = getenv('SMTP_HOST') ?: 'localhost';
-        $port = (int) (getenv('SMTP_PORT') ?: 1025);
+        $host = $_ENV['SMTP_HOST'] ?: 'localhost';
+        $port = (int) ($_ENV['SMTP_PORT'] ?: 1025);
 
         $this->mailer->Host = $host;
         $this->mailer->Port = $port;
 
         $smtpAuth = filter_var(
-            getenv('SMTP_AUTH') ?: 'false',
+            $_ENV['SMTP_AUTH'] ?: 'false',
             FILTER_VALIDATE_BOOLEAN
         );
 
         $this->mailer->SMTPAuth = $smtpAuth;
 
         if ($smtpAuth) {
-            $this->mailer->Username = getenv('SMTP_USER') ?: '';
-            $this->mailer->Password = getenv('SMTP_PASS') ?: '';
+            $this->mailer->Username = $_ENV['SMTP_USER'] ?: '';
+            $this->mailer->Password = $_ENV['SMTP_PASS'] ?: '';
 
             $encryption = strtolower(
-                getenv('SMTP_ENCRYPTION') ?: 'tls'
+                $_ENV['SMTP_ENCRYPTION'] ?: 'tls'
             );
 
             switch ($encryption) {
