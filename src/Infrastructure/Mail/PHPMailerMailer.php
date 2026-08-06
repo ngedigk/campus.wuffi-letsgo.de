@@ -36,11 +36,13 @@ class PHPMailerMailer implements Mailer
             $this->mailer->Username = getenv('SMTP_USER') ?: '';
             $this->mailer->Password = getenv('SMTP_PASS') ?: '';
             
-            $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            
             if ($port === 465) {
                 $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+            } else {
+                $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             }
+            
+            $this->mailer->SMTPAutoTLS = true;
         }
         
     }
