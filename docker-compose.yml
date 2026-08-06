@@ -11,7 +11,7 @@ services:
       - ./src:/var/www/html
       - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
     env_file:
-      - .env
+      - ./src/.env
     depends_on:
       - db
       - mailhog
@@ -21,7 +21,7 @@ services:
     container_name: mariadb_db
     restart: always
     env_file:
-      - .env
+      - ./src/.env
     ports:
       - "3306:3306"
     volumes:
@@ -42,11 +42,12 @@ services:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
     restart: always
+    env_file:
+      - ./src/.env
     ports:
       - "8081:80"
     environment:
       PMA_HOST: db
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db
 
