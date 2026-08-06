@@ -58,10 +58,14 @@
     padding: 0 20px;
 }
 
+.module-item {
+    margin-bottom: 1rem;
+}
+
 .module-item,
+.module-item > a,
 .module-item > a:visited {
     color: var(--text);
-    margin-bottom: 1rem;
     font-family: 'Asap', sans-serif;
 }
 
@@ -83,9 +87,9 @@
     margin-bottom: 0.35rem;
 }
 
+.slide-item,
 .slide-item > a,
-.slide-item > a:visited,
-.slide-item > span {
+.slide-item > a:visited {
     color: var(--text);
 }
 
