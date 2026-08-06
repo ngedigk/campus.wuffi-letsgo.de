@@ -1,4 +1,4 @@
-src/vendor/
+vendor
 src/assets/audio/*
 !src/assets/audio/.keep
 src/assets/images/slides/*

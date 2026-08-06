@@ -2,10 +2,12 @@
 use App\Container\Container;
 use App\Services\AuthService;
 
+require_once __DIR__ . '/../vendor/autoload.php';
+
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
 require_once __DIR__ . '/config.php';
-require_once __DIR__ . '/autoload.php';
-require_once __DIR__ . '/Container/Container.php';
-require_once __DIR__ . '/Database/Database.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_set_cookie_params([
