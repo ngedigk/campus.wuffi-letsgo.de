@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Dto\Course;
 use App\Dto\Module;
+use App\Dto\CourseNavigation;
 
 use App\ViewModels\CourseSidebarItem;
 use App\ViewModels\CourseSidebarSlideItem;
@@ -14,8 +15,7 @@ class CourseSidebarBuilderService
         private CourseService $courseService
     ) {}
 
-    public function build(Course $course, ?Module $currentModule, array $allowedSlideIds, array $visitedSlideIds
-    ): array
+    public function build(Course $course, ?Module $currentModule, CourseNavigation $navigation): array
     {
         $items = [];
 
@@ -24,7 +24,7 @@ class CourseSidebarBuilderService
             $firstSlide = $module->slides[0] ?? null;
 
             $moduleLocked = $firstSlide
-                ? !in_array($firstSlide->id, $allowedSlideIds)
+                ? !in_array($firstSlide->id, $navigation->allowedSlideIds)
                 : true;
 
             $slides = [];
@@ -35,16 +35,16 @@ class CourseSidebarBuilderService
 
                     $allowed = in_array(
                         $slide->id,
-                        $allowedSlideIds
+                        $navigation->allowedSlideIds
                     );
 
                     $slides[] = new CourseSidebarSlideItem(
                         title: $slide->title,
                         isLocked: !$allowed,
-                        isActive: false,
+                        isActive: $navigation->currentSlideIndex === $slideIndex,
                         isVisited: in_array(
                             $slide->id,
-                            $visitedSlideIds
+                            $navigation->visitedSlideIds
                         ),
                         url: $allowed
                             ? $this->courseService->buildCourseUrl(
@@ -67,7 +67,7 @@ class CourseSidebarBuilderService
                         0
                     )
                     : null,
-                isActive: $currentModule !== null && $module->id === $currentModule->id,
+                isActive: $navigation->currentModuleIndex === $moduleIndex,
                 slides: $slides
             );
         }

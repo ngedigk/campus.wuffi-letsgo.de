@@ -58,7 +58,9 @@
     padding: 0 20px;
 }
 
-.module-item {
+.module-item,
+.module-item > a:visited {
+    color: var(--text);
     margin-bottom: 1rem;
     font-family: 'Asap', sans-serif;
 }
@@ -82,10 +84,13 @@
 }
 
 .slide-item > a,
-.slide-item.active > a,
-.slide-item.visited > a,
-.slide-item.visited > span {
+.slide-item > a:visited,
+.slide-item > span {
     color: var(--text);
+}
+
+.slide-item.active > a {
+    color: var(--primary);
 }
 
 .slide-item > a {

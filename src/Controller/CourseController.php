@@ -188,8 +188,7 @@ class CourseController
         $sidebarItems = $this->courseSidebarBuilderService->build(
             $course,
             $currentModule,
-            $navigation->allowedSlideIds,
-            $navigation->visitedSlideIds
+            $navigation
         );
 
         return [
