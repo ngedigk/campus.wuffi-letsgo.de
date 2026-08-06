@@ -6,6 +6,8 @@ class CourseNavigation
 {
     public function __construct(
         public int $currentIndex,
+        public int $currentModuleIndex,
+        public int $currentSlideIndex,
         public ?string $previousUrl,
         public ?string $nextUrl,
         public bool $isLastSlide,

@@ -55,6 +55,8 @@ class CourseNavigationService
 
             return new CourseNavigation(
                 currentIndex: $currentIndex,
+                currentModuleIndex: $moduleIndex,
+                currentSlideIndex: $slideIndex,
                 previousUrl: null,
                 nextUrl: null,
                 isLastSlide: false,
@@ -73,6 +75,8 @@ class CourseNavigationService
 
         return new CourseNavigation(
             currentIndex: $currentIndex,
+            currentModuleIndex: $moduleIndex,
+            currentSlideIndex: $slideIndex,
             previousUrl: $this->getPreviousUrl(
                 $allSlides,
                 $currentIndex,
