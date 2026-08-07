@@ -74,12 +74,12 @@ class AdminCoursesController
     }
 
     public function createCourse(): void
-    {        
+    {
         try {
             $course = $this->courseManagementService->createCourse(new CourseInput(
                 title: trim((string)($_POST['title'] ?? '')),
                 description: trim((string)($_POST['description'] ?? '')),
-                prerequisiteCourseId: trim((string)($_POST['prerequisite_course_id'] ?? null)),
+                prerequisiteCourseId: trim($_POST['prerequisite_course_id'] ?? '') ?: null,
                 sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
             ));
             
