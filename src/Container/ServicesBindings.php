@@ -10,6 +10,7 @@ use App\Contracts\Repositories\AccessCodeRepositoryInterface;
 use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 use App\Contracts\Repositories\ModuleRepositoryInterface;
+use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -42,7 +43,6 @@ use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\PasswordResetsRepository;
 
 trait ServicesBindings
 {
@@ -127,7 +127,7 @@ trait ServicesBindings
 
         $this->set(PasswordResetService::class, fn($c) => new PasswordResetService(
             $c->get(UserRepository::class),
-            $c->get(PasswordResetsRepository::class),
+            $c->get(PasswordResetsRepositoryInterface::class),
             $c->get(MailerInterface::class),
             $c->get(TransactionManagerInterface::class),
         ));

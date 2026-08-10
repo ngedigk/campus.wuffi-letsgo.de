@@ -4,15 +4,15 @@ namespace App\Services;
 
 use App\Contracts\Mail\MailerInterface;
 use App\Contracts\Database\TransactionManagerInterface;
+use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 
 use App\Repositories\UserRepository;
-use App\Repositories\PasswordResetsRepository;
 
 class PasswordResetService
 {
     public function __construct(
         private UserRepository $userRepository,
-        private PasswordResetsRepository $passwordResetsRepository,
+        private PasswordResetsRepositoryInterface $passwordResetsRepository,
         private MailerInterface $mailer,
         private TransactionManagerInterface $transactionManager
     ) {}

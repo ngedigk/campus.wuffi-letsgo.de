@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
+
 use \PDO;
 
-class PasswordResetsRepository
+class PasswordResetsRepository implements PasswordResetsRepositoryInterface
 {
     public function __construct(
         private PDO $pdo

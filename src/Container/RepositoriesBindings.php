@@ -7,6 +7,7 @@ use App\Contracts\Repositories\AuthRepositoryInterface;
 use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 use App\Contracts\Repositories\ModuleRepositoryInterface;
+use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -40,6 +41,6 @@ trait RepositoriesBindings
         $this->set(AccessCodeRepositoryInterface::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));
         $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class)));
         $this->set(AuthRepositoryInterface::class, fn($c) => new AuthRepository($c->get(PDO::class)));
-        $this->set(PasswordResetsRepository::class, fn($c) => new PasswordResetsRepository($c->get(PDO::class)));
+        $this->set(PasswordResetsRepositoryInterface::class, fn($c) => new PasswordResetsRepository($c->get(PDO::class)));
     }
 }
