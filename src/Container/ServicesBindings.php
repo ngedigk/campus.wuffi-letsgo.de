@@ -16,7 +16,7 @@ use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
 use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 use App\Contracts\Repositories\SlideRepositoryInterface;
-
+use App\Contracts\Repositories\UserCourseRepositoryInterface;
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
 use App\Services\AuthService;
@@ -41,7 +41,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
 
 trait ServicesBindings
@@ -90,7 +89,7 @@ trait ServicesBindings
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(TransactionManagerInterface::class),
             $c->get(AccessCodeRepositoryInterface::class),
-            $c->get(UserCourseRepository::class)
+            $c->get(UserCourseRepositoryInterface::class)
         ));
         $this->set(DashboardService::class, fn($c) => new DashboardService(
             $c->get(CourseService::class),

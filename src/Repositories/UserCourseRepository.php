@@ -2,11 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\UserCourseRepositoryInterface;
+
 use App\Exceptions\CourseAlreadyAddedException;
+
 use \PDO;
 use \PDOException;
 
-class UserCourseRepository
+class UserCourseRepository implements UserCourseRepositoryInterface
 {
     public function __construct(
         private PDO $pdo

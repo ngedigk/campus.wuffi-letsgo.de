@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Contracts\Database\TransactionManagerInterface;
 use App\Contracts\Repositories\AccessCodeRepositoryInterface;
-
-use App\Repositories\UserCourseRepository;
+use App\Contracts\Repositories\UserCourseRepositoryInterface;
 
 use App\Exceptions\RedeemException;
 use App\Exceptions\CourseAlreadyAddedException;
@@ -15,7 +14,7 @@ class RedeemService
     public function __construct(
         private TransactionManagerInterface $transactionManager,
         private AccessCodeRepositoryInterface $accessCodeRepository,
-        private UserCourseRepository $userCourseRepository
+        private UserCourseRepositoryInterface $userCourseRepository
     ) {}
 
     public function redeem(string $userUuid, string $code): void
