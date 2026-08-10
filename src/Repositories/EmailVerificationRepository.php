@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Contracts\EmailVerificationRepositoryInterface;
+use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 
 use \PDO;
 

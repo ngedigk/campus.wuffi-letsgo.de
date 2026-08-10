@@ -2,7 +2,7 @@
 
 namespace App\Container;
 
-use App\Contracts\Mailer;
+use App\Contracts\Mail\MailerInterface;
 
 use App\Infrastructure\Mail\PHPMailerMailer;
 
@@ -11,7 +11,7 @@ trait MailBindings
     private function registerMail(): void
     {
         $this->set(
-            Mailer::class,
+            MailerInterface::class,
             fn ($c) => new PHPMailerMailer()
         );
     }

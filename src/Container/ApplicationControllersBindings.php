@@ -2,6 +2,8 @@
 
 namespace App\Container;
 
+use App\Contracts\Services\UserServiceInterface;
+
 use App\Controller\AuthController;
 use App\Controller\CourseController;
 use App\Controller\DashboardController;
@@ -10,8 +12,6 @@ use App\Controller\HomeController;
 use App\Controller\ProfileController;
 use App\Controller\RegistrationController;
 use App\Controller\ResetPasswordController;
-
-use App\Contracts\UserServiceInterface;
 
 use App\Services\AuthService;
 use App\Services\CourseService;

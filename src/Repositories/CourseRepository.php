@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Contracts\CourseRepositoryInterface;
+use App\Contracts\Repositories\CourseRepositoryInterface;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;

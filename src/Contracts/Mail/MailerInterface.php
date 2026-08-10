@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Contracts;
+namespace App\Contracts\Mail;
 
-interface Mailer
+interface MailerInterface
 {
     public function send(
         string $to,

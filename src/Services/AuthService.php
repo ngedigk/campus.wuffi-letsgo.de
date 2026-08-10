@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Contracts\UserServiceInterface;
-use App\Contracts\AuthRepositoryInterface;
+use App\Contracts\Services\UserServiceInterface;
+use App\Contracts\Repositories\AuthRepositoryInterface;
 
 use App\Dto\User;
 use App\Dto\AuthenticationResult;

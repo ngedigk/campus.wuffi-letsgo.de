@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Contracts\Mailer;
-use App\Contracts\TransactionManager;
+use App\Contracts\Mail\MailerInterface;
+use App\Contracts\Database\TransactionManagerInterface;
 
 use App\Repositories\UserRepository;
 use App\Repositories\PasswordResetsRepository;
@@ -13,8 +13,8 @@ class PasswordResetService
     public function __construct(
         private UserRepository $userRepository,
         private PasswordResetsRepository $passwordResetsRepository,
-        private Mailer $mailer,
-        private TransactionManager $transactionManager
+        private MailerInterface $mailer,
+        private TransactionManagerInterface $transactionManager
     ) {}
 
     public function requestReset(string $email): void

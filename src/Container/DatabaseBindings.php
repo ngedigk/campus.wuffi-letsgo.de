@@ -2,7 +2,7 @@
 
 namespace App\Container;
 
-use App\Contracts\TransactionManager;
+use App\Contracts\Database\TransactionManagerInterface;
 
 use App\Infrastructure\Database\PdoTransactionManager;
 
@@ -13,7 +13,7 @@ trait DatabaseBindings
     private function registerDatabase(): void
     {
         $this->set(
-            TransactionManager::class,
+            TransactionManagerInterface::class,
             fn ($c) => new PdoTransactionManager($c->get(PDO::class))
         );
     }

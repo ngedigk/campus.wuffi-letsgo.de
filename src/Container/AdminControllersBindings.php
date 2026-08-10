@@ -9,7 +9,7 @@ use App\Controller\Admin\AdminDashboardController;
 use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminUsersController;
 
-use App\Contracts\UserServiceInterface;
+use App\Contracts\Services\UserServiceInterface;
 
 use App\Services\AdminCourseManagementService;
 use App\Services\AdminContextService;

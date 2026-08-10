@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Contracts\UserServiceInterface;
+use App\Contracts\Services\UserServiceInterface;
 
 use App\Services\AccessCodeService;
 use App\Services\AdminContextService;

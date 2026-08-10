@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Contracts\AccessCodeRepositoryInterface;
+use App\Contracts\Repositories\AccessCodeRepositoryInterface;
 
 use App\Exceptions\AccessCodeGenerationException;
 use App\Exceptions\DuplicateAccessCodeException;

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\CourseRepositoryInterface;
+use App\Contracts\Repositories\CourseRepositoryInterface;
 
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;

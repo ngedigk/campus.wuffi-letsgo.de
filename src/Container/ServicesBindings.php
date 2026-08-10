@@ -2,13 +2,13 @@
 
 namespace App\Container;
 
-use App\Contracts\Mailer;
-use App\Contracts\TransactionManager;
-use App\Contracts\UserServiceInterface;
-use App\Contracts\AuthRepositoryInterface;
-use App\Contracts\AccessCodeRepositoryInterface;
-use App\Contracts\CourseRepositoryInterface;
-use App\Contracts\EmailVerificationRepositoryInterface;
+use App\Contracts\Mail\MailerInterface;
+use App\Contracts\Database\TransactionManagerInterface;
+use App\Contracts\Services\UserServiceInterface;
+use App\Contracts\Repositories\AuthRepositoryInterface;
+use App\Contracts\Repositories\AccessCodeRepositoryInterface;
+use App\Contracts\Repositories\CourseRepositoryInterface;
+use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -81,12 +81,12 @@ trait ServicesBindings
             $c->get(QuizQuestionService::class),
             $c->get(QuestionChoiceService::class),
             $c->get(AssetsService::class),
-            $c->get(TransactionManager::class)
+            $c->get(TransactionManagerInterface::class)
         ));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
         $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepositoryInterface::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
-            $c->get(TransactionManager::class),
+            $c->get(TransactionManagerInterface::class),
             $c->get(AccessCodeRepositoryInterface::class),
             $c->get(UserCourseRepository::class)
         ));
@@ -95,8 +95,8 @@ trait ServicesBindings
             $c->get(ProgressService::class)
         ));
         $this->set(RegistrationService::class, fn($c) => new RegistrationService(
-            $c->get(TransactionManager::class),
-            $c->get(Mailer::class),
+            $c->get(TransactionManagerInterface::class),
+            $c->get(MailerInterface::class),
             $c->get(UserRepository::class),
             $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(RegistrationCodeRepository::class),
@@ -110,7 +110,7 @@ trait ServicesBindings
             $c->get(CourseService::class)
         ));
         $this->set(EmailVerificationService::class, fn($c) => new EmailVerificationService(
-            $c->get(TransactionManager::class),
+            $c->get(TransactionManagerInterface::class),
             $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(UserRepository::class)
         ));
@@ -128,8 +128,8 @@ trait ServicesBindings
         $this->set(PasswordResetService::class, fn($c) => new PasswordResetService(
             $c->get(UserRepository::class),
             $c->get(PasswordResetsRepository::class),
-            $c->get(Mailer::class),
-            $c->get(TransactionManager::class),
+            $c->get(MailerInterface::class),
+            $c->get(TransactionManagerInterface::class),
         ));
     }
 }

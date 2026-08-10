@@ -2,10 +2,10 @@
 
 namespace App\Container;
 
-use App\Contracts\AccessCodeRepositoryInterface;
-use App\Contracts\AuthRepositoryInterface;
-use App\Contracts\CourseRepositoryInterface;
-use App\Contracts\EmailVerificationRepositoryInterface;
+use App\Contracts\Repositories\AccessCodeRepositoryInterface;
+use App\Contracts\Repositories\AuthRepositoryInterface;
+use App\Contracts\Repositories\CourseRepositoryInterface;
+use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;

@@ -2,9 +2,10 @@
 
 namespace App\Controller;
 
+use App\Contracts\Services\UserServiceInterface;
+
 use App\Services\AuthService;
 use App\Services\CsrfService;
-use App\Contracts\UserServiceInterface;
 
 use App\Helpers\ViewRenderer;
 

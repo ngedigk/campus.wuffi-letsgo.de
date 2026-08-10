@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Contracts\AuthRepositoryInterface;
+use App\Contracts\Repositories\AuthRepositoryInterface;
 
 use \PDO;
 

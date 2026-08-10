@@ -2,7 +2,7 @@
 
 namespace App\Container;
 
-use App\Database\Database;
+use App\Infrastructure\Database\Database;
 use \PDO;
 
 class Container

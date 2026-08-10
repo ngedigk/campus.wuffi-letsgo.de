@@ -2,12 +2,12 @@
 
 namespace App\Infrastructure\Database;
 
-use App\Contracts\TransactionManager;
+use App\Contracts\Database\TransactionManagerInterface;
 
 use \PDO;
 use \Throwable;
 
-class PdoTransactionManager implements TransactionManager
+class PdoTransactionManager implements TransactionManagerInterface
 {
     public function __construct(
         private PDO $pdo

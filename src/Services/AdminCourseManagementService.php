@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Contracts\TransactionManager;
+use App\Contracts\Database\TransactionManagerInterface;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;
@@ -26,7 +26,7 @@ class AdminCourseManagementService
         private QuizQuestionService $quizQuestionService,
         private QuestionChoiceService $questionChoicesService,
         private AssetsService $assetsService,
-        private TransactionManager $transactionManager
+        private TransactionManagerInterface $transactionManager
     ) {}
 
     public function getCourseEditorData(string $courseUuid): array {

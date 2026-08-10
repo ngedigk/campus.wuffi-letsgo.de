@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-use App\Contracts\AccessCodeRepositoryInterface;
-use App\Contracts\EmailVerificationRepositoryInterface;
-use App\Contracts\TransactionManager;
-use App\Contracts\Mailer;
+use App\Contracts\Repositories\AccessCodeRepositoryInterface;
+use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
+use App\Contracts\Database\TransactionManagerInterface;
+use App\Contracts\Mail\MailerInterface;
 
 use App\Repositories\UserRepository;
 use App\Repositories\RegistrationCodeRepository;
@@ -16,8 +16,8 @@ use \Throwable;
 class RegistrationService
 {
     public function __construct(
-        private TransactionManager $transactionManager,
-        private Mailer $mailer,
+        private TransactionManagerInterface $transactionManager,
+        private MailerInterface $mailer,
         private UserRepository $userRepository,
         private EmailVerificationRepositoryInterface $emailVerificationRepository,
         private RegistrationCodeRepository $registrationCodeRepository,
