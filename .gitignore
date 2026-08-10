@@ -7,3 +7,4 @@ src/assets/images/slides/*
 db/data/
 .DS_Store
 .continue
+.phpunit.cache
