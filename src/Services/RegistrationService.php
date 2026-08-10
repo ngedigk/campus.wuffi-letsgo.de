@@ -2,13 +2,13 @@
 
 namespace App\Services;
 
+use App\Contracts\AccessCodeRepositoryInterface;
 use App\Contracts\TransactionManager;
 use App\Contracts\Mailer;
 
 use App\Repositories\UserRepository;
 use App\Repositories\EmailVerificationRepository;
 use App\Repositories\RegistrationCodeRepository;
-use App\Repositories\AccessCodeRepository;
 
 use \Exception;
 use \Throwable;
@@ -21,7 +21,7 @@ class RegistrationService
         private UserRepository $userRepository,
         private EmailVerificationRepository $emailVerificationRepository,
         private RegistrationCodeRepository $registrationCodeRepository,
-        private AccessCodeRepository $accessCodeRepository,
+        private AccessCodeRepositoryInterface $accessCodeRepository,
         private UuidService $uuidService
     ) {}
 

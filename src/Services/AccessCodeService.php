@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
+use App\Contracts\AccessCodeRepositoryInterface;
+
 use App\Exceptions\AccessCodeException;
 use App\Exceptions\DuplicateAccessCodeException;
-use App\Repositories\AccessCodeRepository;
 
 class AccessCodeService
 {
     public function __construct(
-        private AccessCodeRepository $accessCodeRepository
+        private AccessCodeRepositoryInterface $accessCodeRepository
     ) {}
 
     public function getAll(): array

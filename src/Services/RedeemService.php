@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\TransactionManager;
-use App\Repositories\AccessCodeRepository;
+use App\Contracts\AccessCodeRepositoryInterface;
+
 use App\Repositories\UserCourseRepository;
 
 use App\Exceptions\RedeemException;
@@ -13,7 +14,7 @@ class RedeemService
 {
     public function __construct(
         private TransactionManager $transactionManager,
-        private AccessCodeRepository $accessCodeRepository,
+        private AccessCodeRepositoryInterface $accessCodeRepository,
         private UserCourseRepository $userCourseRepository
     ) {}
 

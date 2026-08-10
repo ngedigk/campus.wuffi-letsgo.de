@@ -6,6 +6,7 @@ use App\Contracts\Mailer;
 use App\Contracts\TransactionManager;
 use App\Contracts\UserServiceInterface;
 use App\Contracts\AuthRepositoryInterface;
+use App\Contracts\AccessCodeRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -31,7 +32,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\AccessCodeRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
@@ -84,10 +84,10 @@ trait ServicesBindings
             $c->get(TransactionManager::class)
         ));
         $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
-        $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepository::class)));
+        $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepositoryInterface::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(TransactionManager::class),
-            $c->get(AccessCodeRepository::class),
+            $c->get(AccessCodeRepositoryInterface::class),
             $c->get(UserCourseRepository::class)
         ));
         $this->set(DashboardService::class, fn($c) => new DashboardService(
@@ -100,7 +100,7 @@ trait ServicesBindings
             $c->get(UserRepository::class),
             $c->get(EmailVerificationRepository::class),
             $c->get(RegistrationCodeRepository::class),
-            $c->get(AccessCodeRepository::class),
+            $c->get(AccessCodeRepositoryInterface::class),
             $c->get(UuidService::class)
         ));
         $this->set(CourseNavigationService::class, fn($c) => new CourseNavigationService(

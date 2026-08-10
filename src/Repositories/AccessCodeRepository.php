@@ -2,13 +2,15 @@
 
 namespace App\Repositories;
 
+use App\Contracts\AccessCodeRepositoryInterface;
+
 use App\Exceptions\AccessCodeGenerationException;
 use App\Exceptions\DuplicateAccessCodeException;
 
 use \PDO;
 use PDOException;
 
-class AccessCodeRepository
+class AccessCodeRepository implements AccessCodeRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
