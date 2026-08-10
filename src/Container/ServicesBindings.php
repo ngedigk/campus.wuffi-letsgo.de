@@ -130,7 +130,7 @@ trait ServicesBindings
             $c->get(UserRepositoryInterface::class),
             $c->get(PasswordResetsRepositoryInterface::class),
             $c->get(MailerInterface::class),
-            $c->get(TransactionManagerInterface::class),
+            $c->get(TransactionManagerInterface::class)
         ));
     }
 }
