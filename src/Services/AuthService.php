@@ -30,7 +30,7 @@ class AuthService
 
     public function isLoggedIn(): bool
     {
-        return isset($_SESSION['user_id']);
+        return isset($_SESSION['user_id']) && trim((string) $_SESSION['user_id']) !== '';
     }
 
     public function requireLogin(string $redirectPath = '/'): void
