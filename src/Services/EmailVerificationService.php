@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Contracts\EmailVerificationRepositoryInterface;
 use App\Contracts\TransactionManager;
 
-use App\Repositories\EmailVerificationRepository;
 use App\Repositories\UserRepository;
 
 use \Throwable;
@@ -13,7 +13,7 @@ class EmailVerificationService
 {
     public function __construct(
         private TransactionManager $transactionManager,
-        private EmailVerificationRepository $emailVerificationRepository,
+        private EmailVerificationRepositoryInterface $emailVerificationRepository,
         private UserRepository $userRepository
     ) {}
 

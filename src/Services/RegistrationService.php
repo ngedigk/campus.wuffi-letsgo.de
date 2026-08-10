@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Contracts\AccessCodeRepositoryInterface;
+use App\Contracts\EmailVerificationRepositoryInterface;
 use App\Contracts\TransactionManager;
 use App\Contracts\Mailer;
 
 use App\Repositories\UserRepository;
-use App\Repositories\EmailVerificationRepository;
 use App\Repositories\RegistrationCodeRepository;
 
 use \Exception;
@@ -19,7 +19,7 @@ class RegistrationService
         private TransactionManager $transactionManager,
         private Mailer $mailer,
         private UserRepository $userRepository,
-        private EmailVerificationRepository $emailVerificationRepository,
+        private EmailVerificationRepositoryInterface $emailVerificationRepository,
         private RegistrationCodeRepository $registrationCodeRepository,
         private AccessCodeRepositoryInterface $accessCodeRepository,
         private UuidService $uuidService

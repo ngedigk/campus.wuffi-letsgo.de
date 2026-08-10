@@ -8,6 +8,7 @@ use App\Contracts\UserServiceInterface;
 use App\Contracts\AuthRepositoryInterface;
 use App\Contracts\AccessCodeRepositoryInterface;
 use App\Contracts\CourseRepositoryInterface;
+use App\Contracts\EmailVerificationRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -37,7 +38,6 @@ use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\QuizQuestionRepository;
 use App\Repositories\QuestionChoiceRepository;
-use App\Repositories\EmailVerificationRepository;
 use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
@@ -98,7 +98,7 @@ trait ServicesBindings
             $c->get(TransactionManager::class),
             $c->get(Mailer::class),
             $c->get(UserRepository::class),
-            $c->get(EmailVerificationRepository::class),
+            $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(RegistrationCodeRepository::class),
             $c->get(AccessCodeRepositoryInterface::class),
             $c->get(UuidService::class)
@@ -111,7 +111,7 @@ trait ServicesBindings
         ));
         $this->set(EmailVerificationService::class, fn($c) => new EmailVerificationService(
             $c->get(TransactionManager::class),
-            $c->get(EmailVerificationRepository::class),
+            $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(UserRepository::class)
         ));
         $this->set(RegistrationCodeService::class, fn($c) => new RegistrationCodeService(

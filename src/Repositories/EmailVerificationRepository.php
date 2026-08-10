@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Contracts\EmailVerificationRepositoryInterface;
+
 use \PDO;
 
-class EmailVerificationRepository
+class EmailVerificationRepository implements EmailVerificationRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
@@ -28,7 +30,8 @@ class EmailVerificationRepository
         $stmt->execute(['token' => $token]);
     }
 
-    public function upsert(string $userId, string $token): void {
+    public function upsert(string $userId, string $token): void
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO email_verifications (user_id, token, expires_at)
             VALUES (:userId, :insertToken, NOW() + INTERVAL 1 HOUR)
