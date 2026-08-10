@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Repositories\ProgressRepository;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
 
 class ProgressService
 {
     public function __construct(
-        private ProgressRepository $progressRepo
+        private ProgressRepositoryInterface $progressRepo
     ) {}
 
     public function recordSlideView(string $userId, int $slideId): void

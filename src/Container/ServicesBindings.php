@@ -11,6 +11,7 @@ use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 use App\Contracts\Repositories\ModuleRepositoryInterface;
 use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
+use App\Contracts\Repositories\ProgressRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -39,7 +40,6 @@ use App\Services\CourseNavigationService;
 use App\Repositories\SlideRepository;
 use App\Repositories\QuizQuestionRepository;
 use App\Repositories\QuestionChoiceRepository;
-use App\Repositories\ProgressRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
@@ -83,7 +83,7 @@ trait ServicesBindings
             $c->get(AssetsService::class),
             $c->get(TransactionManagerInterface::class)
         ));
-        $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepository::class)));
+        $this->set(ProgressService::class, fn($c) => new ProgressService($c->get(ProgressRepositoryInterface::class)));
         $this->set(AccessCodeService::class, fn($c) => new AccessCodeService($c->get(AccessCodeRepositoryInterface::class)));
         $this->set(RedeemService::class, fn($c) => new RedeemService(
             $c->get(TransactionManagerInterface::class),

@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\ProgressRepositoryInterface;
+
 use \PDO;
 
-class ProgressRepository
+class ProgressRepository implements ProgressRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
