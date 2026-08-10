@@ -11,6 +11,7 @@ use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
 use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
+use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -39,7 +40,7 @@ trait RepositoriesBindings
         $this->set(QuestionChoiceRepositoryInterface::class, fn($c) => new QuestionChoiceRepository($c->get(PDO::class)));
         $this->set(ProgressRepositoryInterface::class, fn($c) => new ProgressRepository($c->get(PDO::class)));
         $this->set(UserRepository::class, fn($c) => new UserRepository($c->get(PDO::class)));
-        $this->set(RegistrationCodeRepository::class, fn($c) => new RegistrationCodeRepository($c->get(PDO::class)));
+        $this->set(RegistrationCodeRepositoryInterface::class, fn($c) => new RegistrationCodeRepository($c->get(PDO::class)));
         $this->set(EmailVerificationRepositoryInterface::class, fn($c) => new EmailVerificationRepository($c->get(PDO::class)));
         $this->set(AccessCodeRepositoryInterface::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));
         $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class)));

@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
+
 use App\Exceptions\DuplicateRegistrationCodeException;
 
 use \PDO;
 use PDOException;
 
-class RegistrationCodeRepository
+class RegistrationCodeRepository implements RegistrationCodeRepositoryInterface
 {
     public function __construct(
         private PDO $pdo

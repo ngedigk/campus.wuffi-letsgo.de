@@ -3,8 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\CourseRepositoryInterface;
-
-use App\Repositories\RegistrationCodeRepository;
+use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 
 use App\Exceptions\DuplicateRegistrationCodeException;
 use App\Exceptions\RegistrationCodeException;
@@ -12,7 +11,7 @@ use App\Exceptions\RegistrationCodeException;
 class RegistrationCodeService
 {
     public function __construct(
-        private RegistrationCodeRepository $registrationCodeRepository,
+        private RegistrationCodeRepositoryInterface $registrationCodeRepository,
         private CourseRepositoryInterface $courseRepository
     ) {}
 

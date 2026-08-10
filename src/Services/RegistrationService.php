@@ -6,9 +6,9 @@ use App\Contracts\Repositories\AccessCodeRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 use App\Contracts\Database\TransactionManagerInterface;
 use App\Contracts\Mail\MailerInterface;
+use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 
 use App\Repositories\UserRepository;
-use App\Repositories\RegistrationCodeRepository;
 
 use \Exception;
 use \Throwable;
@@ -20,7 +20,7 @@ class RegistrationService
         private MailerInterface $mailer,
         private UserRepository $userRepository,
         private EmailVerificationRepositoryInterface $emailVerificationRepository,
-        private RegistrationCodeRepository $registrationCodeRepository,
+        private RegistrationCodeRepositoryInterface $registrationCodeRepository,
         private AccessCodeRepositoryInterface $accessCodeRepository,
         private UuidService $uuidService
     ) {}
