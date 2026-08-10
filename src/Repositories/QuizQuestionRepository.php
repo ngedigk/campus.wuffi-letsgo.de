@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
+
 use App\Dto\QuizQuestion;
 use App\Dto\QuizQuestionInput;
 
 use \PDO;
 
-class QuizQuestionRepository
+class QuizQuestionRepository implements QuizQuestionRepositoryInterface
 {
     public function __construct(
         private PDO $pdo

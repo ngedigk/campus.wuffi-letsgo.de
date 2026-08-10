@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Repositories\QuizQuestionRepository;
+use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 
 use App\Dto\QuizResult;
 
 class QuizService
 {
     public function __construct(
-        private QuizQuestionRepository $quizQuestionRepository
+        private QuizQuestionRepositoryInterface $quizQuestionRepository
     ) {}
 
     public function getQuizData(int $slideId): QuizResult

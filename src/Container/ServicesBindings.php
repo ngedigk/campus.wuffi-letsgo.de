@@ -13,6 +13,7 @@ use App\Contracts\Repositories\ModuleRepositoryInterface;
 use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
+use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -39,7 +40,6 @@ use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
 use App\Repositories\SlideRepository;
-use App\Repositories\QuizQuestionRepository;
 use App\Repositories\RegistrationCodeRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
@@ -66,11 +66,11 @@ trait ServicesBindings
         $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepositoryInterface::class)));
         $this->set(SlideService::class, fn($c) => new SlideService(
             $c->get(SlideRepository::class),
-            $c->get(QuizQuestionRepository::class)
+            $c->get(QuizQuestionRepositoryInterface::class)
         ));
-        $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepository::class)));
+        $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepositoryInterface::class)));
         $this->set(QuizQuestionService::class, fn($c) => new QuizQuestionService(
-            $c->get(QuizQuestionRepository::class),
+            $c->get(QuizQuestionRepositoryInterface::class),
             $c->get(QuestionChoiceService::class)
         ));
         $this->set(QuestionChoiceService::class, fn($c) => new QuestionChoiceService(

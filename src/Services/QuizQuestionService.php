@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\QuizQuestionRepository;
+use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 
 use App\Services\QuestionChoiceService;
 
@@ -11,7 +11,7 @@ use App\Dto\QuizQuestionInput;
 
 class QuizQuestionService {
     public function __construct(
-        private QuizQuestionRepository $quizQuestionRepository,
+        private QuizQuestionRepositoryInterface $quizQuestionRepository,
         private QuestionChoiceService $questionChoiceService
     ) {}
 
