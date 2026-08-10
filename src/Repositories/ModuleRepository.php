@@ -2,18 +2,21 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\ModuleRepositoryInterface;
+
 use App\Dto\Module;
 use App\Dto\ModuleInput;
 
 use \PDO;
 
-class ModuleRepository
+class ModuleRepository implements ModuleRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
     ) {}
 
-    public function get(int $moduleId) {
+    public function get(int $moduleId): Module
+    {
         $stmt = $this->pdo->prepare("
             SELECT *
             FROM course_modules
@@ -28,7 +31,8 @@ class ModuleRepository
         return $this->createDto($row);
     }
 
-    public function getByCourseId(string $courseId): array {
+    public function getByCourseId(string $courseId): array
+    {
         $stmt = $this->pdo->prepare("
             SELECT
                 cm.*
@@ -48,7 +52,8 @@ class ModuleRepository
         }, $rows);
     }
 
-    public function create(ModuleInput $module): Module {
+    public function create(ModuleInput $module): Module
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO course_modules
             (course_id, title, sort_order)
@@ -80,12 +85,14 @@ class ModuleRepository
         ]);
     }
 
-    public function delete(int $moduleId): void {
+    public function delete(int $moduleId): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM course_modules WHERE id = :moduleId");
         $stmt->execute(['moduleId' => $moduleId]);
     }
 
-    private function createDto(array $row): Module {
+    private function createDto(array $row): Module
+    {
         return new Module(
             id: (int)$row['id'],
             title: $row['title'],

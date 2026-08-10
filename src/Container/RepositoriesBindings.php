@@ -6,6 +6,7 @@ use App\Contracts\Repositories\AccessCodeRepositoryInterface;
 use App\Contracts\Repositories\AuthRepositoryInterface;
 use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
+use App\Contracts\Repositories\ModuleRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -28,7 +29,7 @@ trait RepositoriesBindings
     private function registerRepositories(): void
     {
         $this->set(CourseRepositoryInterface::class, fn($c) => new CourseRepository($c->get(PDO::class)));
-        $this->set(ModuleRepository::class, fn($c) => new ModuleRepository($c->get(PDO::class)));
+        $this->set(ModuleRepositoryInterface::class, fn($c) => new ModuleRepository($c->get(PDO::class)));
         $this->set(SlideRepository::class, fn($c) => new SlideRepository($c->get(PDO::class)));
         $this->set(QuizQuestionRepository::class, fn($c) => new QuizQuestionRepository($c->get(PDO::class)));
         $this->set(QuestionChoiceRepository::class, fn($c) => new QuestionChoiceRepository($c->get(PDO::class)));

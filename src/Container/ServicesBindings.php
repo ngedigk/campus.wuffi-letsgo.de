@@ -9,6 +9,7 @@ use App\Contracts\Repositories\AuthRepositoryInterface;
 use App\Contracts\Repositories\AccessCodeRepositoryInterface;
 use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
+use App\Contracts\Repositories\ModuleRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -34,7 +35,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\QuizQuestionRepository;
 use App\Repositories\QuestionChoiceRepository;
@@ -60,10 +60,10 @@ trait ServicesBindings
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(UuidService::class),
             $c->get(CourseRepositoryInterface::class),
-            $c->get(ModuleRepository::class),
+            $c->get(ModuleRepositoryInterface::class),
             $c->get(SlideRepository::class)
         ));
-        $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepository::class)));
+        $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepositoryInterface::class)));
         $this->set(SlideService::class, fn($c) => new SlideService(
             $c->get(SlideRepository::class),
             $c->get(QuizQuestionRepository::class)

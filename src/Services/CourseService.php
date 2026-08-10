@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\CourseRepositoryInterface;
+use App\Contracts\Repositories\ModuleRepositoryInterface;
 
-use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 
 use App\Dto\Course;
@@ -16,7 +16,7 @@ class CourseService
     public function __construct(
         private UuidService $uuidService,
         private CourseRepositoryInterface $courseRepository,
-        private ModuleRepository $moduleRepository,
+        private ModuleRepositoryInterface $moduleRepository,
         private SlideRepository $slideRepository
     ) {}
 
