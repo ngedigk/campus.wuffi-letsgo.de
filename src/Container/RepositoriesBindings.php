@@ -4,6 +4,7 @@ namespace App\Container;
 
 use App\Contracts\AccessCodeRepositoryInterface;
 use App\Contracts\AuthRepositoryInterface;
+use App\Contracts\CourseRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -25,7 +26,7 @@ trait RepositoriesBindings
 {
     private function registerRepositories(): void
     {
-        $this->set(CourseRepository::class, fn($c) => new CourseRepository($c->get(PDO::class)));
+        $this->set(CourseRepositoryInterface::class, fn($c) => new CourseRepository($c->get(PDO::class)));
         $this->set(ModuleRepository::class, fn($c) => new ModuleRepository($c->get(PDO::class)));
         $this->set(SlideRepository::class, fn($c) => new SlideRepository($c->get(PDO::class)));
         $this->set(QuizQuestionRepository::class, fn($c) => new QuizQuestionRepository($c->get(PDO::class)));

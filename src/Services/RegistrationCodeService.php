@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
+use App\Contracts\CourseRepositoryInterface;
+
 use App\Repositories\RegistrationCodeRepository;
-use App\Repositories\CourseRepository;
 
 use App\Exceptions\DuplicateRegistrationCodeException;
 use App\Exceptions\RegistrationCodeException;
@@ -12,7 +13,7 @@ class RegistrationCodeService
 {
     public function __construct(
         private RegistrationCodeRepository $registrationCodeRepository,
-        private CourseRepository $courseRepository
+        private CourseRepositoryInterface $courseRepository
     ) {}
 
     public function getAll(): array

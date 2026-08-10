@@ -2,20 +2,20 @@
 
 namespace App\Services;
 
-use App\Repositories\CourseRepository;
+use App\Contracts\CourseRepositoryInterface;
+
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;
 use App\Exceptions\CourseNotFoundException;
-use App\Exceptions\CourseSlideNotFoundException;
 
 class CourseService
 {
     public function __construct(
         private UuidService $uuidService,
-        private CourseRepository $courseRepository,
+        private CourseRepositoryInterface $courseRepository,
         private ModuleRepository $moduleRepository,
         private SlideRepository $slideRepository
     ) {}

@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\CourseRepositoryInterface;
+
 use App\Dto\Course;
 use App\Dto\CourseInput;
 
 use \PDO;
 
-class CourseRepository
+class CourseRepository implements CourseRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
@@ -104,7 +106,8 @@ class CourseRepository
         }, $rows);
     }
 
-    public function create(string $courseUuid, CourseInput $course): Course {
+    public function create(string $courseUuid, CourseInput $course): Course
+    {
         $stmt = $this->pdo->prepare("
             INSERT INTO courses
             (
@@ -131,7 +134,8 @@ class CourseRepository
         ]);
     }
 
-    public function update(Course $course): Course {
+    public function update(Course $course): Course
+    {
         $stmt = $this->pdo->prepare("
             UPDATE courses
             SET title = :title, description = :description, prerequisite_course_id = :prerequisiteCourseId, sort_order = :sortOrder
@@ -148,12 +152,14 @@ class CourseRepository
         ]);
     }
 
-    public function delete(string $uuid): void {
+    public function delete(string $uuid): void
+    {
         $stmt = $this->pdo->prepare("DELETE FROM courses WHERE id = :uuid");
         $stmt->execute(['uuid' => $uuid]);
     }
 
-    private function createDto(array $row): Course {
+    private function createDto(array $row): Course
+    {
         return new Course(
             uuid: $row['id'],
             title: $row['title'],

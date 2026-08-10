@@ -7,6 +7,7 @@ use App\Contracts\TransactionManager;
 use App\Contracts\UserServiceInterface;
 use App\Contracts\AuthRepositoryInterface;
 use App\Contracts\AccessCodeRepositoryInterface;
+use App\Contracts\CourseRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -32,7 +33,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
 use App\Repositories\QuizQuestionRepository;
@@ -59,7 +59,7 @@ trait ServicesBindings
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserServiceInterface::class), $c->get(AuthRepositoryInterface::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(UuidService::class),
-            $c->get(CourseRepository::class),
+            $c->get(CourseRepositoryInterface::class),
             $c->get(ModuleRepository::class),
             $c->get(SlideRepository::class)
         ));
@@ -116,7 +116,7 @@ trait ServicesBindings
         ));
         $this->set(RegistrationCodeService::class, fn($c) => new RegistrationCodeService(
             $c->get(RegistrationCodeRepository::class),
-            $c->get(CourseRepository::class)
+            $c->get(CourseRepositoryInterface::class)
         ));
         $this->set(AssetsService::class, fn($c) => new AssetsService(
             $c->get(AuthService::class),
