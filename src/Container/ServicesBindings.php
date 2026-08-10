@@ -4,6 +4,8 @@ namespace App\Container;
 
 use App\Contracts\Mailer;
 use App\Contracts\TransactionManager;
+use App\Contracts\UserServiceInterface;
+use App\Contracts\AuthRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -30,7 +32,6 @@ use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
 use App\Repositories\AccessCodeRepository;
-use App\Repositories\AuthRepository;
 use App\Repositories\CourseRepository;
 use App\Repositories\ModuleRepository;
 use App\Repositories\SlideRepository;
@@ -54,8 +55,8 @@ trait ServicesBindings
             $c->get(CsrfService::class)
         ));
         $this->set(UuidService::class, fn() => new UuidService());
-        $this->set(UserService::class, fn($c) => new UserService($c->get(UserRepository::class)));
-        $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserService::class), $c->get(AuthRepository::class)));
+        $this->set(UserServiceInterface::class, fn($c) => new UserService($c->get(UserRepository::class)));
+        $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserServiceInterface::class), $c->get(AuthRepositoryInterface::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(UuidService::class),
             $c->get(CourseRepository::class),

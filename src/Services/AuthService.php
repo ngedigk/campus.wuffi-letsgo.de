@@ -2,7 +2,8 @@
 
 namespace App\Services;
 
-use App\Repositories\AuthRepository;
+use App\Contracts\UserServiceInterface;
+use App\Contracts\AuthRepositoryInterface;
 
 use App\Dto\User;
 use App\Dto\AuthenticationResult;
@@ -12,8 +13,8 @@ class AuthService
     private ?User $userCache = null;
 
     public function __construct(
-        private UserService $userService,
-        private AuthRepository $authRepository
+        private UserServiceInterface $userService,
+        private AuthRepositoryInterface $authRepository
     ) {}
 
     public function start(): void

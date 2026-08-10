@@ -11,10 +11,11 @@ use App\Controller\ProfileController;
 use App\Controller\RegistrationController;
 use App\Controller\ResetPasswordController;
 
+use App\Contracts\UserServiceInterface;
+
 use App\Services\AuthService;
 use App\Services\CourseService;
 use App\Services\CsrfService;
-use App\Services\UserService;
 use App\Services\DashboardService;
 use App\Services\RedeemService;
 use App\Services\RegistrationService;
@@ -81,7 +82,7 @@ trait ApplicationControllersBindings
         $this->set(ProfileController::class, fn($c) => new ProfileController(
             $c->get(AuthService::class),
             $c->get(CsrfService::class),
-            $c->get(UserService::class),
+            $c->get(UserServiceInterface::class),
             $c->get(ViewRenderer::class)
         ));
     }

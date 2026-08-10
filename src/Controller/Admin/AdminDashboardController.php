@@ -2,10 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Contracts\UserServiceInterface;
+
 use App\Services\AccessCodeService;
 use App\Services\AdminContextService;
 use App\Services\AuthService;
-use App\Services\UserService;
 
 use App\Helpers\ViewRenderer;
 
@@ -13,7 +14,7 @@ class AdminDashboardController
 {
     public function __construct(
         protected AccessCodeService $accessCodeService,
-        protected UserService $userService,
+        protected UserServiceInterface $userService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
         protected AdminContextService $adminContextService

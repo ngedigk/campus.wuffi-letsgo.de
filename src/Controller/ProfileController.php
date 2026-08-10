@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Services\AuthService;
 use App\Services\CsrfService;
-use App\Services\UserService;
+use App\Contracts\UserServiceInterface;
 
 use App\Helpers\ViewRenderer;
 
@@ -18,7 +18,7 @@ class ProfileController
     public function __construct(
         private AuthService $authService,
         private CsrfService $csrfService,
-        private UserService $userService,
+        private UserServiceInterface $userService,
         private ViewRenderer $viewRenderer
     ) {}
 

@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Contracts\UserServiceInterface;
 use App\Repositories\UserRepository;
 
 use App\Dto\User;
 
 use App\Exceptions\UserNotFoundException;
 
-class UserService
+class UserService implements UserServiceInterface
 {
     public function __construct(
         private UserRepository $userRepository

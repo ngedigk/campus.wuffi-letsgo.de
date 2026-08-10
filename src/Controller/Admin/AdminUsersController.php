@@ -2,10 +2,11 @@
 
 namespace App\Controller\Admin;
 
+use App\Contracts\UserServiceInterface;
+
 use App\Services\AdminContextService;
 use App\Services\AuthService;
 use App\Services\RegistrationService;
-use App\Services\UserService;
 
 use App\Helpers\ViewRenderer;
 use App\Helpers\Redirect;
@@ -17,7 +18,7 @@ use \Exception;
 class AdminUsersController
 {
     public function __construct(
-        protected UserService $userService,
+        protected UserServiceInterface $userService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
         protected RegistrationService $registrationService,

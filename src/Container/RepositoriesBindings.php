@@ -2,6 +2,8 @@
 
 namespace App\Container;
 
+use App\Contracts\AuthRepositoryInterface;
+
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
 use App\Repositories\CourseRepository;
@@ -33,7 +35,7 @@ trait RepositoriesBindings
         $this->set(EmailVerificationRepository::class, fn($c) => new EmailVerificationRepository($c->get(PDO::class)));
         $this->set(AccessCodeRepository::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));
         $this->set(UserCourseRepository::class, fn($c) => new UserCourseRepository($c->get(PDO::class)));
-        $this->set(AuthRepository::class, fn($c) => new AuthRepository($c->get(PDO::class)));
+        $this->set(AuthRepositoryInterface::class, fn($c) => new AuthRepository($c->get(PDO::class)));
         $this->set(PasswordResetsRepository::class, fn($c) => new PasswordResetsRepository($c->get(PDO::class)));
     }
 }

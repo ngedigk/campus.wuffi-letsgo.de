@@ -9,6 +9,8 @@ use App\Controller\Admin\AdminDashboardController;
 use App\Controller\Admin\AdminRegistrationCodesController;
 use App\Controller\Admin\AdminUsersController;
 
+use App\Contracts\UserServiceInterface;
+
 use App\Services\AdminCourseManagementService;
 use App\Services\AdminContextService;
 use App\Services\AssetsService;
@@ -16,7 +18,6 @@ use App\Services\AuthService;
 use App\Services\CourseService;
 use App\Services\RegistrationCodeService;
 use App\Services\SlideService;
-use App\Services\UserService;
 use App\Services\AccessCodeService;
 
 use App\Helpers\ViewRenderer;
@@ -28,7 +29,7 @@ trait AdminControllersBindings
     {
         $this->set(AdminDashboardController::class, fn($c) => new AdminDashboardController(
             $c->get(AccessCodeService::class),
-            $c->get(UserService::class),
+            $c->get(UserServiceInterface::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
             $c->get(AdminContextService::class)
@@ -47,7 +48,7 @@ trait AdminControllersBindings
             $c->get(AdminContextService::class)
         ));
         $this->set(AdminUsersController::class, fn($c) => new AdminUsersController(
-            $c->get(UserService::class),
+            $c->get(UserServiceInterface::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
             $c->get(RegistrationService::class),

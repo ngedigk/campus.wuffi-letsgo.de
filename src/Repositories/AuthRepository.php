@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Contracts\AuthRepositoryInterface;
+
 use \PDO;
 
-class AuthRepository
+class AuthRepository implements AuthRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
