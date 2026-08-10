@@ -4,8 +4,7 @@ namespace App\Services;
 
 use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\ModuleRepositoryInterface;
-
-use App\Repositories\SlideRepository;
+use App\Contracts\Repositories\SlideRepositoryInterface;
 
 use App\Dto\Course;
 use App\Dto\CourseInput;
@@ -17,7 +16,7 @@ class CourseService
         private UuidService $uuidService,
         private CourseRepositoryInterface $courseRepository,
         private ModuleRepositoryInterface $moduleRepository,
-        private SlideRepository $slideRepository
+        private SlideRepositoryInterface $slideRepository
     ) {}
 
     public function create(CourseInput $courseInput): Course

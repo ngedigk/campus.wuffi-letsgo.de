@@ -3,15 +3,14 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
-
-use App\Repositories\SlideRepository;
+use App\Contracts\Repositories\SlideRepositoryInterface;
 
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
 class SlideService {
     public function __construct(
-        private SlideRepository $slideRepository,
+        private SlideRepositoryInterface $slideRepository,
         private QuizQuestionRepositoryInterface $quizQuestionRepository
     ) {}
 

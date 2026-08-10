@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\SlideRepositoryInterface;
+
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
 use \PDO;
 
-class SlideRepository
+class SlideRepository implements SlideRepositoryInterface
 {
     public function __construct(
         private PDO $pdo

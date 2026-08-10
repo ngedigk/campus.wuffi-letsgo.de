@@ -15,6 +15,7 @@ use App\Contracts\Repositories\ProgressRepositoryInterface;
 use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
 use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
+use App\Contracts\Repositories\SlideRepositoryInterface;
 
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
@@ -40,7 +41,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\SlideRepository;
 use App\Repositories\UserCourseRepository;
 use App\Repositories\UserRepository;
 
@@ -61,11 +61,11 @@ trait ServicesBindings
             $c->get(UuidService::class),
             $c->get(CourseRepositoryInterface::class),
             $c->get(ModuleRepositoryInterface::class),
-            $c->get(SlideRepository::class)
+            $c->get(SlideRepositoryInterface::class)
         ));
         $this->set(ModuleService::class, fn($c) => new ModuleService($c->get(ModuleRepositoryInterface::class)));
         $this->set(SlideService::class, fn($c) => new SlideService(
-            $c->get(SlideRepository::class),
+            $c->get(SlideRepositoryInterface::class),
             $c->get(QuizQuestionRepositoryInterface::class)
         ));
         $this->set(QuizService::class, fn($c) => new QuizService($c->get(QuizQuestionRepositoryInterface::class)));
