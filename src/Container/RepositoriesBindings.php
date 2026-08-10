@@ -14,6 +14,7 @@ use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 use App\Contracts\Repositories\SlideRepositoryInterface;
 use App\Contracts\Repositories\UserCourseRepositoryInterface;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 use App\Repositories\AccessCodeRepository;
 use App\Repositories\AuthRepository;
@@ -41,7 +42,7 @@ trait RepositoriesBindings
         $this->set(QuizQuestionRepositoryInterface::class, fn($c) => new QuizQuestionRepository($c->get(PDO::class)));
         $this->set(QuestionChoiceRepositoryInterface::class, fn($c) => new QuestionChoiceRepository($c->get(PDO::class)));
         $this->set(ProgressRepositoryInterface::class, fn($c) => new ProgressRepository($c->get(PDO::class)));
-        $this->set(UserRepository::class, fn($c) => new UserRepository($c->get(PDO::class)));
+        $this->set(UserRepositoryInterface::class, fn($c) => new UserRepository($c->get(PDO::class)));
         $this->set(RegistrationCodeRepositoryInterface::class, fn($c) => new RegistrationCodeRepository($c->get(PDO::class)));
         $this->set(EmailVerificationRepositoryInterface::class, fn($c) => new EmailVerificationRepository($c->get(PDO::class)));
         $this->set(AccessCodeRepositoryInterface::class, fn($c) => new AccessCodeRepository($c->get(PDO::class)));

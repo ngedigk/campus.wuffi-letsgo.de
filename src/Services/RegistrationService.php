@@ -7,8 +7,7 @@ use App\Contracts\Repositories\EmailVerificationRepositoryInterface;
 use App\Contracts\Database\TransactionManagerInterface;
 use App\Contracts\Mail\MailerInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
-
-use App\Repositories\UserRepository;
+use App\Contracts\Repositories\UserRepositoryInterface;
 
 use \Exception;
 use \Throwable;
@@ -18,7 +17,7 @@ class RegistrationService
     public function __construct(
         private TransactionManagerInterface $transactionManager,
         private MailerInterface $mailer,
-        private UserRepository $userRepository,
+        private UserRepositoryInterface $userRepository,
         private EmailVerificationRepositoryInterface $emailVerificationRepository,
         private RegistrationCodeRepositoryInterface $registrationCodeRepository,
         private AccessCodeRepositoryInterface $accessCodeRepository,

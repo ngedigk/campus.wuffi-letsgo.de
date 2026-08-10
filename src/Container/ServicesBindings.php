@@ -17,6 +17,8 @@ use App\Contracts\Repositories\QuizQuestionRepositoryInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 use App\Contracts\Repositories\SlideRepositoryInterface;
 use App\Contracts\Repositories\UserCourseRepositoryInterface;
+use App\Contracts\Repositories\UserRepositoryInterface;
+
 use App\Services\AdminContextService;
 use App\Services\AdminCourseManagementService;
 use App\Services\AuthService;
@@ -41,8 +43,6 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
-use App\Repositories\UserRepository;
-
 trait ServicesBindings
 {
     private function registerServices(): void
@@ -54,7 +54,7 @@ trait ServicesBindings
             $c->get(CsrfService::class)
         ));
         $this->set(UuidService::class, fn() => new UuidService());
-        $this->set(UserServiceInterface::class, fn($c) => new UserService($c->get(UserRepository::class)));
+        $this->set(UserServiceInterface::class, fn($c) => new UserService($c->get(UserRepositoryInterface::class)));
         $this->set(AuthService::class, fn($c) => new AuthService($c->get(UserServiceInterface::class), $c->get(AuthRepositoryInterface::class)));
         $this->set(CourseService::class, fn($c) => new CourseService(
             $c->get(UuidService::class),
@@ -98,7 +98,7 @@ trait ServicesBindings
         $this->set(RegistrationService::class, fn($c) => new RegistrationService(
             $c->get(TransactionManagerInterface::class),
             $c->get(MailerInterface::class),
-            $c->get(UserRepository::class),
+            $c->get(UserRepositoryInterface::class),
             $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(RegistrationCodeRepositoryInterface::class),
             $c->get(AccessCodeRepositoryInterface::class),
@@ -113,7 +113,7 @@ trait ServicesBindings
         $this->set(EmailVerificationService::class, fn($c) => new EmailVerificationService(
             $c->get(TransactionManagerInterface::class),
             $c->get(EmailVerificationRepositoryInterface::class),
-            $c->get(UserRepository::class)
+            $c->get(UserRepositoryInterface::class)
         ));
         $this->set(RegistrationCodeService::class, fn($c) => new RegistrationCodeService(
             $c->get(RegistrationCodeRepositoryInterface::class),
@@ -127,7 +127,7 @@ trait ServicesBindings
         ));
 
         $this->set(PasswordResetService::class, fn($c) => new PasswordResetService(
-            $c->get(UserRepository::class),
+            $c->get(UserRepositoryInterface::class),
             $c->get(PasswordResetsRepositoryInterface::class),
             $c->get(MailerInterface::class),
             $c->get(TransactionManagerInterface::class),

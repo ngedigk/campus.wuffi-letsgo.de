@@ -2,9 +2,8 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Services\UserServiceInterface;
-
-use App\Repositories\UserRepository;
 
 use App\Dto\User;
 
@@ -13,7 +12,7 @@ use App\Exceptions\UserNotFoundException;
 class UserService implements UserServiceInterface
 {
     public function __construct(
-        private UserRepository $userRepository
+        private UserRepositoryInterface $userRepository
     ) {}
 
     public function get(string $id): ?User

@@ -2,11 +2,13 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\UserRepositoryInterface;
+
 use App\Dto\User;
 
 use \PDO;
 
-class UserRepository
+class UserRepository implements UserRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
@@ -147,7 +149,8 @@ class UserRepository
         string $passwordHash,
         string $name,
         bool $isAdmin = false
-    ): void {
+    ): void
+    {
 
         $stmt = $this->pdo->prepare("
             INSERT INTO users (id, email, name, password_hash, is_admin )
