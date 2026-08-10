@@ -2,14 +2,14 @@
 
 namespace App\Services;
 
-use App\Repositories\QuestionChoiceRepository;
+use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
 
 use App\Dto\QuestionChoice;
 use App\Dto\QuestionChoiceInput;
 
 class QuestionChoiceService {
     public function __construct(
-        private QuestionChoiceRepository $questionChoiceRepository
+        private QuestionChoiceRepositoryInterface $questionChoiceRepository
     ) {}
 
     public function getByQuestionId(int $questionId): array

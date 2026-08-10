@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Contracts\Repositories\QuestionChoiceRepositoryInterface;
+
 use App\Dto\QuestionChoice;
 use App\Dto\QuestionChoiceInput;
 
 use \PDO;
 
-class QuestionChoiceRepository
+class QuestionChoiceRepository implements QuestionChoiceRepositoryInterface
 {
     public function __construct(
         private PDO $pdo
