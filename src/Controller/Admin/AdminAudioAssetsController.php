@@ -2,15 +2,17 @@
 
 namespace App\Controller\Admin;
 
+use App\Exceptions\AssetsException;
 use App\Helpers\Redirect;
 use App\Services\AdminContextService;
 use App\Services\AssetsService;
 use App\Services\AuthService;
+use App\Services\CsrfService;
 use App\Services\SlideService;
 
 use App\Helpers\ViewRenderer;
 
-use \Exception;
+use InvalidArgumentException;
 
 class AdminAudioAssetsController
 {
@@ -19,7 +21,8 @@ class AdminAudioAssetsController
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
         protected AdminContextService $adminContextService,
-        private AssetsService $assetsService
+        private AssetsService $assetsService,
+        private CsrfService $csrfService
     ) {}
 
     public function render(): void
@@ -54,14 +57,31 @@ class AdminAudioAssetsController
     public function deleteAudioAsset(string $assetFilename): void
     {
         if ($assetFilename === '') {
-            throw new Exception('Bitte geben Sie einen Dateinamen an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Dateinamen an.');
         }
 
-        $this->assetsService->deleteAudioAsset($assetFilename);
-        $this->slideService->deleteAudioAssetFromSlides($assetFilename);
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['admin_error'] = 'Nicht autorisiert.';
+            Redirect::to('/admin/audio-assets');
+        }
 
-        $_SESSION['admin_success'] = 'Audio Asset entfernt.';
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (\App\Exceptions\CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/audio-assets');
+        }
 
-        Redirect::to('/admin/audio-assets');
+        try {
+            $this->assetsService->deleteAudioAsset($assetFilename);
+            $this->slideService->deleteAudioAssetFromSlides($assetFilename);
+
+            $_SESSION['admin_success'] = 'Audio Asset entfernt.';
+
+            Redirect::to('/admin/audio-assets');
+        } catch (AssetsException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+            Redirect::to('/admin/audio-assets');
+        }
     }
 }

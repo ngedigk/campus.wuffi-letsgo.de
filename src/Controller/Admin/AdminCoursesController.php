@@ -26,7 +26,7 @@ use App\Exceptions\CourseSlideNotFoundException;
 use App\Exceptions\QuizQuestionNotFoundException;
 
 use InvalidArgumentException;
-use Throwable;
+use RuntimeException;
 
 class AdminCoursesController
 {
@@ -40,43 +40,64 @@ class AdminCoursesController
 
     public function renderCourse(string $courseUuid): void
     {
-        $viewData = $this->courseManagementService->getCourseEditorData($courseUuid);
+        try {
+            $viewData = $this->courseManagementService->getCourseEditorData($courseUuid);
 
-        $this->render(
-            'admin/courses/course',
-            $viewData
-        );
+            $this->render(
+                'admin/courses/course',
+                $viewData
+            );
+        } catch (CourseNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin');
+        }
     }
 
     public function renderModule(string $courseUuid, string $moduleId): void
     {
-        $viewData = $this->courseManagementService->getModuleEditorData($courseUuid, (int)$moduleId);
-        
-        $this->render(
-            'admin/courses/module',
-            $viewData
-        );
+        try {
+            $viewData = $this->courseManagementService->getModuleEditorData($courseUuid, (int)$moduleId);
+            
+            $this->render(
+                'admin/courses/module',
+                $viewData
+            );
+        } catch (CourseNotFoundException|CourseModuleNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid));
+        }
     }
 
     public function renderSlide(string $courseUuid, string $moduleId, string $slideId): void
     {
-        $viewData = $this->courseManagementService->getSlideEditorData($courseUuid, (int)$moduleId, (int) $slideId);
+        try {
+            $viewData = $this->courseManagementService->getSlideEditorData($courseUuid, (int)$moduleId, (int) $slideId);
 
-        $this->render(
-            'admin/courses/slide',
-            $viewData,
-            [],
-            [
-                'js' => [
-                    ['src' => 'https://unpkg.com/grapesjs'],
-                    ['src' => 'https://unpkg.com/grapesjs-blocks-basic'],
-                    ['src' => '/assets/js/admin/grapesjs/main.js', 'type' => 'module']
-                ],
-                'css' => [
-                    'https://unpkg.com/grapesjs/dist/css/grapes.min.css'
+            $this->render(
+                'admin/courses/slide',
+                $viewData,
+                [],
+                [
+                    'js' => [
+                        ['src' => 'https://unpkg.com/grapesjs'],
+                        ['src' => 'https://unpkg.com/grapesjs-blocks-basic'],
+                        ['src' => '/assets/js/admin/grapesjs/main.js', 'type' => 'module']
+                    ],
+                    'css' => [
+                        'https://unpkg.com/grapesjs/dist/css/grapes.min.css'
+                    ]
                 ]
-            ]
-        );
+            );
+        } catch (CourseNotFoundException|CourseModuleNotFoundException|CourseSlideNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to(
+                '/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($moduleId)
+            );
+        }
     }
 
     public function createCourse(): void
@@ -142,7 +163,10 @@ class AdminCoursesController
 
             $_SESSION['admin_success'] = "Module \"$module->title\" created.";
 
-            Redirect::to('/admin/courses/' . urlencode($courseUuid) . '/modules/' . urlencode($module->id));
+            Redirect::to(
+                '/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($module->id)
+            );
         } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
 
@@ -159,12 +183,15 @@ class AdminCoursesController
                 sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
             ));
 
-            $_SESSION['admin_success'] = "Modul \"$module->title\"aktualisiert.";
+            $_SESSION['admin_success'] = "Modul \"$module->title\" aktualisiert.";
         } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 
-        Redirect::to('/admin/courses/' . urlencode($courseUuid) . '/modules/' . urlencode($moduleId));
+        Redirect::to(
+            '/admin/courses/' . urlencode($courseUuid) .
+            '/modules/' . urlencode($moduleId)
+        );
     }
 
     public function deleteModule(string $courseUuid, string $moduleId): void
@@ -205,10 +232,11 @@ class AdminCoursesController
                 '/modules/' . urlencode($moduleId) .
                 '/slides/' . urlencode($slide->id)
             );
-        } catch (Throwable $e) {
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
 
-            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
+            Redirect::to(
+                '/admin/courses/' . urlencode($courseUuid) .
                 '/modules/' . urlencode($moduleId)
             );
         }
@@ -232,13 +260,9 @@ class AdminCoursesController
                 sortOrder: (int)trim((string)($_POST['sort_order'] ?? 0))
             ));
 
-            $_SESSION['admin_success'] = "Folie \"$slide->title\" aktualisiert.";   
-        } catch (Throwable $e) {
+            $_SESSION['admin_success'] = "Folie \"$slide->title\" aktualisiert.";
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
-
-            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
-                '/modules/' . urlencode($moduleId)
-            );
         }
 
         Redirect::to(
@@ -283,14 +307,10 @@ class AdminCoursesController
             ));
             
             $_SESSION['admin_success'] = "Frage \"{$question->questionText}\" erstellt.";
-        } catch (Throwable $e) {
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
-
-            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
-                '/modules/' . urlencode($moduleId)
-            );
         }
-        
+
         Redirect::to(
             '/admin/courses/' . urlencode($courseUuid) .
             '/modules/' . urlencode($moduleId) .
@@ -312,12 +332,12 @@ class AdminCoursesController
 
             $this->courseManagementService->updateQuestion(new QuizQuestion(
                 id: $questionId,
-                questionText: trim(($_POST['question_text'] ?? '')),
+                questionText: trim($_POST['question_text'] ?? ''),
                 choices: $choices
             ));
 
             $_SESSION['admin_success'] = 'Frage aktualisiert.';
-        } catch (Throwable $e) {
+        } catch (InvalidArgumentException|RuntimeException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 
@@ -348,14 +368,34 @@ class AdminCoursesController
     public function uploadImage(): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        echo $this->courseManagementService->uploadImage();
+
+        try {
+            echo $this->courseManagementService->uploadImage();
+        } catch (RuntimeException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
         exit;
     }
 
     public function deleteImage(): void
     {
         header('Content-Type: application/json; charset=utf-8');
-        echo $this->courseManagementService->deleteImage();
+
+        try {
+            echo $this->courseManagementService->deleteImage();
+        } catch (RuntimeException $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        } catch (InvalidArgumentException $e) {
+            http_response_code(400);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+
         exit;
     }
 

@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Exceptions\AssetsException;
+use App\Exceptions\AudioAssetInvalidTypeException;
+use App\Exceptions\AudioAssetNotFoundException;
+use App\Exceptions\AudioAssetTooBigException;
 use App\Exceptions\CsrfException;
-use \Exception;
 
 class AssetsService
 {
@@ -62,21 +65,21 @@ class AssetsService
     {
         if (!isset($files['audio_file']) || $files['audio_file']['error'] !== UPLOAD_ERR_OK) {
             if (isset($files['audio_file']['error']) && $files['audio_file']['error'] === UPLOAD_ERR_INI_SIZE) {
-                throw new Exception('Die hochgeladene Datei ist zu groß. Bitte erhöhen Sie die "upload_max_filesize" in Ihrer php.ini.');
+                throw new AudioAssetTooBigException('Die hochgeladene Datei ist zu groß. Bitte erhöhen Sie die "upload_max_filesize" in Ihrer php.ini.');
             }
             return null;
         }
 
         $maxSize = 10 * 1024 * 1024;
         if ($files['audio_file']['size'] > $maxSize) {
-            throw new Exception('Die hochgeladene Datei ist zu groß. Maximal 10MB erlaubt.');
+            throw new AudioAssetTooBigException('Die hochgeladene Datei ist zu groß. Maximal 10MB erlaubt.');
         }
 
         $allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/webm'];
         $finfo = finfo_open(FILEINFO_MIME_TYPE);
         $mime = finfo_file($finfo, $files['audio_file']['tmp_name']);
         if (!in_array($mime, $allowedTypes, true)) {
-            throw new Exception('Ungültiger Dateityp. Nur Audio-Dateien sind erlaubt.');
+            throw new AudioAssetInvalidTypeException('Ungültiger Dateityp. Nur Audio-Dateien sind erlaubt.');
         }
 
         $uploadDir = $this->assetsPath . '/audio/';
@@ -105,7 +108,7 @@ class AssetsService
         }
 
         if (!move_uploaded_file($files['audio_file']['tmp_name'], $target)) {
-            throw new Exception('Fehler beim Hochladen der Audio-Datei.');
+            throw new AssetsException('Fehler beim Hochladen der Audio-Datei.');
         }
 
         return $filename;
@@ -211,11 +214,11 @@ class AssetsService
         $file = $uploadDir . $filename;
 
         if (!is_file($file)) {
-            throw new Exception('Audio-Datei existiert nicht.');
+            throw new AudioAssetNotFoundException('Audio-Datei existiert nicht.');
         }
 
         if (!unlink($file)) {
-            throw new Exception('Audio-Datei konnte nicht gelöscht werden.');
+            throw new AssetsException('Audio-Datei konnte nicht gelöscht werden.');
         }
     }
 }
