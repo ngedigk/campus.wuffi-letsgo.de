@@ -7,6 +7,8 @@
             <div class="col-sm-12">
 
                 <?php require_once __DIR__ . "/partials/login-messages.php"; ?>
+                
+                <?php require_once __DIR__ . "/partials/general-messages.php"; ?>
 
                 <form method="post" action="/login" class="form-card">
 

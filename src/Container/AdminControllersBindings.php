@@ -21,6 +21,7 @@ use App\Services\SlideService;
 use App\Services\AccessCodeService;
 
 use App\Helpers\ViewRenderer;
+use App\Services\CsrfService;
 use App\Services\RegistrationService;
 
 trait AdminControllersBindings
@@ -45,28 +46,32 @@ trait AdminControllersBindings
             $c->get(AccessCodeService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
-            $c->get(AdminContextService::class)
+            $c->get(AdminContextService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(AdminUsersController::class, fn($c) => new AdminUsersController(
             $c->get(UserServiceInterface::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
             $c->get(RegistrationService::class),
-            $c->get(AdminContextService::class)
+            $c->get(AdminContextService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(AdminRegistrationCodesController::class, fn($c) => new AdminRegistrationCodesController(
             $c->get(RegistrationCodeService::class),
             $c->get(CourseService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
-            $c->get(AdminContextService::class)
+            $c->get(AdminContextService::class),
+            $c->get(CsrfService::class)
         ));
         $this->set(AdminAudioAssetsController::class, fn($c) => new AdminAudioAssetsController(
             $c->get(SlideService::class),
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
             $c->get(AdminContextService::class),
-            $c->get(AssetsService::class)
+            $c->get(AssetsService::class),
+            $c->get(CsrfService::class)
         ));
     }
 }

@@ -2,8 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Exceptions\AssetsException;
-use App\Helpers\Redirect;
+
 use App\Services\AdminContextService;
 use App\Services\AssetsService;
 use App\Services\AuthService;
@@ -11,7 +10,10 @@ use App\Services\CsrfService;
 use App\Services\SlideService;
 
 use App\Helpers\ViewRenderer;
+use App\Helpers\Redirect;
 
+use App\Exceptions\AssetsException;
+use App\Exceptions\CsrfException;
 use InvalidArgumentException;
 
 class AdminAudioAssetsController
@@ -67,7 +69,7 @@ class AdminAudioAssetsController
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (\App\Exceptions\CsrfException $e) {
+        } catch (CsrfException $e) {
             $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
             Redirect::to('/admin/audio-assets');
         }

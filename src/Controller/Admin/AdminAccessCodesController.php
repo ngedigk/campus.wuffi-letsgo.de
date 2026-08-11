@@ -5,11 +5,14 @@ namespace App\Controller\Admin;
 use App\Services\AccessCodeService;
 use App\Services\AdminContextService;
 use App\Services\AuthService;
+use App\Services\CsrfService;
 
 use App\Helpers\ViewRenderer;
 use App\Helpers\Redirect;
 
-use \Exception;
+use App\Exceptions\AccessCodeException;
+use App\Exceptions\CsrfException;
+use PDOException;
 
 class AdminAccessCodesController
 {
@@ -17,7 +20,8 @@ class AdminAccessCodesController
         protected AccessCodeService $accessCodeService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
-        protected AdminContextService $adminContextService
+        protected AdminContextService $adminContextService,
+        private CsrfService $csrfService
     ) {}
 
     public function render(): void
@@ -54,16 +58,38 @@ class AdminAccessCodesController
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
+        }
+
         if ($code === '' || $courseId === '') {
-            throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.';
+            Redirect::to('/admin/access-codes');
+        }
+
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/access-codes');
         }
 
         if ($this->accessCodeService->existsByCode($code)) {
-            throw new Exception('Dieser Access Code existiert bereits.');
+            $_SESSION['admin_error'] = 'Dieser Access Code existiert bereits.';
+            Redirect::to('/admin/access-codes');
         }
 
-        $this->accessCodeService->create($code, $courseId);
-        $_SESSION['admin_success'] = 'Access Code erstellt.';
+        try {
+            $this->accessCodeService->create($code, $courseId);
+            $_SESSION['admin_success'] = 'Access Code erstellt.';
+        } catch (AccessCodeException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+            Redirect::to('/admin/access-codes');
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Erstellen des Access Codes aufgetreten.';
+            Redirect::to('/admin/access-codes');
+        }
         
         Redirect::to('/admin/access-codes');
     }
@@ -73,21 +99,59 @@ class AdminAccessCodesController
         $code = trim($_POST['code'] ?? '');
         $courseId = trim($_POST['course_id'] ?? '');
 
-        if ($code === '' || $courseId === '') {
-            throw new Exception('Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.');
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
         }
 
-        $this->accessCodeService->update((int)$accessCodeId, $code, $courseId);
-        $_SESSION['admin_success'] = 'Access Code aktualisiert.';
+        if ($code === '' || $courseId === '') {
+            $_SESSION['admin_error'] = 'Bitte geben Sie sowohl einen Access Code als auch einen Kurs an.';
+            Redirect::to('/admin/access-codes');
+        }
+
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/access-codes');
+        }
+
+        try {
+            $this->accessCodeService->update((int)$accessCodeId, $code, $courseId);
+            $_SESSION['admin_success'] = 'Access Code aktualisiert.';
+        } catch (AccessCodeException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+            Redirect::to('/admin/access-codes');
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Aktualisieren des Access Codes aufgetreten.';
+            Redirect::to('/admin/access-codes');
+        }
 
         Redirect::to('/admin/access-codes');
     }
 
     public function deleteAccessCode(string $accessCodeId): void
     {
-        $this->accessCodeService->delete((int)$accessCodeId);
-        $_SESSION['admin_success'] = 'Access Code gelöscht und Benutzerzugriff entfernt.';
-        
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
+        }
+
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/access-codes');
+        }
+
+        try {
+            $this->accessCodeService->delete((int)$accessCodeId);
+            $_SESSION['admin_success'] = 'Access Code gelöscht und Benutzerzugriff entfernt.';
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Löschen des Access Codes aufgetreten.';
+            Redirect::to('/admin/access-codes');
+        }
+
         Redirect::to('/admin/access-codes');
     }
 }

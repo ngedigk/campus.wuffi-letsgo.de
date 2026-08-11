@@ -5,14 +5,15 @@ namespace App\Controller\Admin;
 use App\Services\AdminContextService;
 use App\Services\AuthService;
 use App\Services\CourseService;
+use App\Services\CsrfService;
 use App\Services\RegistrationCodeService;
 
 use App\Helpers\ViewRenderer;
 use App\Helpers\Redirect;
 
+use App\Exceptions\CsrfException;
 use App\Exceptions\RegistrationCodeException;
-
-use \Exception;
+use PDOException;
 
 class AdminRegistrationCodesController
 {
@@ -21,7 +22,8 @@ class AdminRegistrationCodesController
         protected CourseService $courseService,
         protected ViewRenderer $viewRenderer,
         protected AuthService $authService,
-        protected AdminContextService $adminContextService
+        protected AdminContextService $adminContextService,
+        private CsrfService $csrfService
     ) {}
 
     public function render(): void
@@ -59,17 +61,33 @@ class AdminRegistrationCodesController
         $code = trim($_POST['code'] ?? '');
         $courseIds = $_POST['course_ids'] ?? [];
 
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
+        }
+
         if ($code === '') {
-            throw new Exception('Bitte geben Sie einen Registrierungscode an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie einen Registrierungscode an.';
+            Redirect::to('/admin/registration-codes');
+        }
+
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/registration-codes');
         }
 
         try {
             $this->registrationCodeService->create($code, $courseIds);
             $_SESSION['admin_success'] = 'Registrierungscode erstellt.';
         } catch (RegistrationCodeException $e) {
-            $_SESSION['admin_error'] = 'Registrierungscode existiert bereits.';
+            $_SESSION['admin_error'] = $e->getMessage();
+            Redirect::to('/admin/registration-codes');
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Erstellen des Registrierungscode aufgetreten.';
+            Redirect::to('/admin/registration-codes');
         }
-        
         
         Redirect::to('/admin/registration-codes');
     }
@@ -79,34 +97,65 @@ class AdminRegistrationCodesController
         $registrationCode = trim($_POST['code'] ?? '');
         $courseIds = $_POST['course_ids'] ?? [];
 
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
+        }
+
         if (empty($registrationCode)) {
-            throw new Exception('Bitte geben Sie einen Registrierungscode an.');
+            $_SESSION['admin_error'] = 'Bitte geben Sie einen Registrierungscode an.';
+            Redirect::to('/admin/registration-codes');
         }
 
-        $this->registrationCodeService->update((int)$registrationCodeId, $registrationCode);
-
-        $this->registrationCodeService->removeAllCourses((int)$registrationCodeId);
-
-        if (empty($courseIds)) {
-            $_SESSION['admin_success'] = 'Kurszuweisung entfernt.';
-            return;
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/registration-codes');
         }
 
-        $this->registrationCodeService->addCourses((int)$registrationCodeId, $courseIds);
+        try {
+            $this->registrationCodeService->update((int)$registrationCodeId, $registrationCode);
 
-        $_SESSION['admin_success'] = 'Kurszuweisung aktualisiert.';
+            $this->registrationCodeService->removeAllCourses((int)$registrationCodeId);
+
+            if (empty($courseIds)) {
+                $_SESSION['admin_success'] = 'Kurszuweisung entfernt.';
+                Redirect::to('/admin/registration-codes');
+            }
+
+            $this->registrationCodeService->addCourses((int)$registrationCodeId, $courseIds);
+
+            $_SESSION['admin_success'] = 'Kurszuweisung aktualisiert.';
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Aktualisieren des Registrierungscode aufgetreten.';
+            Redirect::to('/admin/registration-codes');
+        }
         
         Redirect::to('/admin/registration-codes');
     }
 
     public function deleteRegistrationCode(string $registrationCodeId): void
     {
-        if ((int)$registrationCodeId === 0) {
-            throw new Exception('Bitte geben Sie eine gültige Registrierungscode-ID an.');
+        if (!$this->authService->isAdmin()) {
+            $_SESSION['error'] = 'Nicht autorisiert.';
+            Redirect::to('/');
         }
 
-        $this->registrationCodeService->delete((int)$registrationCodeId);
-        $_SESSION['admin_success'] = 'Registrierungscode gelöscht.';
+        try {
+            $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
+        } catch (CsrfException $e) {
+            $_SESSION['admin_error'] = 'Ungültiger CSRF-Token.';
+            Redirect::to('/admin/registration-codes');
+        }
+
+        try {
+            $this->registrationCodeService->delete((int)$registrationCodeId);
+            $_SESSION['admin_success'] = 'Registrierungscode gelöscht.';
+        } catch (PDOException $e) {
+            $_SESSION['admin_error'] = 'Ein Fehler ist beim Löschen des Registrierungscode aufgetreten.';
+            Redirect::to('/admin/registration-codes');
+        }
         
         Redirect::to('/admin/registration-codes');
     }
