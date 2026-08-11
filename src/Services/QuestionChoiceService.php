@@ -19,12 +19,7 @@ class QuestionChoiceService {
 
     public function create(int $questionId, QuestionChoiceInput $questionChoice): QuestionChoice
     {
-        try {
-            $questionChoice = $this->questionChoiceRepository->create($questionId, $questionChoice);
-        } catch (\Exception $e) {
-            throw new \Exception("Antwort Erstellung fehlgeschlagen: " . $e->getMessage());
-        }
-        return $questionChoice;     
+        return $this->questionChoiceRepository->create($questionId, $questionChoice);
     }
 
     public function update(QuestionChoice $questionChoice): void

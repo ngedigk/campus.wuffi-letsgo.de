@@ -8,6 +8,8 @@ use App\Contracts\Repositories\SlideRepositoryInterface;
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
+use App\Exceptions\CourseSlideNotFoundException;
+
 class SlideService {
     public function __construct(
         private SlideRepositoryInterface $slideRepository,
@@ -16,12 +18,7 @@ class SlideService {
 
     public function create(SlideInput $slide): Slide
     {
-        try {
-            $slide = $this->slideRepository->create($slide);
-        } catch (\Exception $e) {
-            throw new \Exception("Folienerstellung fehlgeschlagen: " . $e->getMessage());
-        }
-        return $slide;
+        return $this->slideRepository->create($slide);
     }
 
     public function update(Slide $slide): Slide
@@ -31,6 +28,10 @@ class SlideService {
 
     public function delete(int $id): void
     {
+        if (!$this->slideRepository->exists($id)) {
+            throw new CourseSlideNotFoundException("Folie {$id} nicht gefunden.");
+        }
+
         $this->slideRepository->delete($id);
     }
 

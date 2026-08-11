@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\CsrfException;
 use \Exception;
 
 class AssetsService
@@ -119,9 +120,9 @@ class AssetsService
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token']);
-        } catch (\Exception $e) {
+        } catch (CsrfException $e) {
             http_response_code(403);
-            return json_encode(['error' => 'CSRF token ungültig']);
+            return json_encode(['error' => $e->getMessage()]);
         }
 
         if (!isset($_FILES['files'])) {
@@ -163,9 +164,9 @@ class AssetsService
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token']);
-        } catch (\Exception $e) {
+        } catch (CsrfException $e) {
             http_response_code(403);
-            return json_encode(['error' => 'CSRF token ungültig']);
+            return json_encode(['error' => $e->getMessage()]);
         }
 
         $src = $_POST['src'] ?? '';

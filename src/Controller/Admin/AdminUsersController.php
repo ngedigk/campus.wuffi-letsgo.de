@@ -12,8 +12,7 @@ use App\Helpers\ViewRenderer;
 use App\Helpers\Redirect;
 
 use App\Exceptions\UserNotFoundException;
-
-use \Exception;
+use App\Exceptions\EmailSendException;
 
 class AdminUsersController
 {
@@ -119,7 +118,9 @@ class AdminUsersController
         try {
             $this->registrationService->resendVerificationEmail($email);
             $_SESSION['admin_success'] = 'Verifizierungsmail wurde gesendet.';
-        } catch (Exception $e) {
+        } catch (UserNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        } catch (EmailSendException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 

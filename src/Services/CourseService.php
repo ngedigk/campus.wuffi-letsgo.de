@@ -6,8 +6,11 @@ use App\Contracts\Repositories\CourseRepositoryInterface;
 use App\Contracts\Repositories\ModuleRepositoryInterface;
 use App\Contracts\Repositories\SlideRepositoryInterface;
 
+use App\Services\UuidService;
+
 use App\Dto\Course;
 use App\Dto\CourseInput;
+
 use App\Exceptions\CourseNotFoundException;
 
 class CourseService
@@ -21,13 +24,9 @@ class CourseService
 
     public function create(CourseInput $courseInput): Course
     {
-        try {
-            $courseUuid = $this->uuidService->generate();
+        $courseUuid = $this->uuidService->generate();
 
-            return $this->courseRepository->create($courseUuid, $courseInput);
-        } catch (\Exception $e) {
-            throw new \Exception("Failed to create course: " . $e->getMessage());
-        }
+        return $this->courseRepository->create($courseUuid, $courseInput);
     }
 
     public function update(Course $course): Course
@@ -37,6 +36,10 @@ class CourseService
 
     public function delete(string $uuid): void
     {
+        if (!$this->courseRepository->exists($uuid)) {
+            throw new CourseNotFoundException('Angeforderter Kurs nicht gefunden.');
+        }
+
         $this->courseRepository->delete($uuid);
     }
 

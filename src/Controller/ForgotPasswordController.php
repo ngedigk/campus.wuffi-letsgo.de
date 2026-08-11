@@ -8,7 +8,7 @@ use App\Services\PasswordResetService;
 
 use App\Helpers\ViewRenderer;
 
-use \Exception;
+use App\Exceptions\CsrfException;
 
 class ForgotPasswordController
 {
@@ -28,7 +28,7 @@ class ForgotPasswordController
     {
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (Exception $e) {
+        } catch (CsrfException $e) {
             $this->renderForm(['error' => $e->getMessage()]);
             return;
         }

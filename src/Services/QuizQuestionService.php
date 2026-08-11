@@ -9,6 +9,8 @@ use App\Services\QuestionChoiceService;
 use App\Dto\QuizQuestion;
 use App\Dto\QuizQuestionInput;
 
+use App\Exceptions\QuizQuestionNotFoundException;
+
 class QuizQuestionService {
     public function __construct(
         private QuizQuestionRepositoryInterface $quizQuestionRepository,
@@ -36,12 +38,7 @@ class QuizQuestionService {
 
     public function create(QuizQuestionInput $quizQuestion): QuizQuestion
     {
-        try {
-            $quizQuestion = $this->quizQuestionRepository->create($quizQuestion);
-        } catch (\Exception $e) {
-            throw new \Exception("Fragen Erstellung fehlgeschlagen: " . $e->getMessage());
-        }
-        return $quizQuestion;        
+        return $this->quizQuestionRepository->create($quizQuestion);        
     }
 
     public function update(QuizQuestion $quizQuestion): QuizQuestion
@@ -51,6 +48,10 @@ class QuizQuestionService {
 
     public function delete(int $id): void
     {
+        if (!$this->quizQuestionRepository->exists($id)) {
+            throw new QuizQuestionNotFoundException("Frage {$id} nicht gefunden.");
+        }
+
         $this->quizQuestionRepository->delete($id);
     }
 }

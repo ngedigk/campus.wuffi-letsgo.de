@@ -10,8 +10,8 @@ use App\Services\CsrfService;
 use App\Helpers\ViewRenderer;
 
 use App\Exceptions\RedeemException;
+use App\Exceptions\CsrfException;
 
-use \Exception;
 use \Throwable;
 
 class DashboardController
@@ -57,7 +57,7 @@ class DashboardController
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token']);
-        } catch (Exception $e) {
+        } catch (CsrfException $e) {
             $_SESSION['redeem_error'] = $e->getMessage();
             header("Location: /");
             return;

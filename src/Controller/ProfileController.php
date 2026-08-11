@@ -11,8 +11,7 @@ use App\Helpers\ViewRenderer;
 
 use App\Dto\User;
 
-use \Exception;
-use \Throwable;
+use App\Exceptions\CsrfException;
 
 class ProfileController
 {
@@ -36,7 +35,7 @@ class ProfileController
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (Exception $e) {
+        } catch (CsrfException $e) {
             $this->renderForm($user, ['error' => $e->getMessage()]);
             return;
         }
@@ -55,14 +54,9 @@ class ProfileController
             return;
         }
 
-        try {
-            $this->userService->update($user->id, $email, $name);
-            $updatedUser = $this->userService->findByEmail($email);
-            $this->renderForm($updatedUser, ['success' => 'Profil erfolgreich aktualisiert.']);
-        } catch (\Exception $e) {
-            error_log("Profile update failed: " . $e->getMessage());
-            $this->renderForm($user, ['error' => 'Fehler beim Aktualisieren des Profils.']);
-        }
+        $this->userService->update($user->id, $email, $name);
+        $updatedUser = $this->userService->findByEmail($email);
+        $this->renderForm($updatedUser, ['success' => 'Profil erfolgreich aktualisiert.']);
     }
 
     public function changePassword(): void
@@ -71,7 +65,7 @@ class ProfileController
 
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (Exception $e) {
+        } catch (CsrfException $e) {
             $this->renderForm($user, ['error' => $e->getMessage()]);
             return;
         }
@@ -84,14 +78,9 @@ class ProfileController
             return;
         }
 
-        try {
-            $hash = password_hash($password, PASSWORD_DEFAULT);
-            $this->userService->setPassword($user->id, $hash);
-            $this->renderForm($user, ['success' => 'Passwort erfolgreich aktualisiert.']);
-        } catch (Throwable $e) {
-            error_log("Password change failed: " . $e->getMessage());
-            $this->renderForm($user, ['error' => 'Bei der Aktualisierung des Passworts ist ein Fehler aufgetreten.']);
-        }
+        $this->userService->setPassword($user->id, password_hash($password, PASSWORD_DEFAULT));
+        $this->renderForm($user, ['success' => 'Passwort erfolgreich aktualisiert.']);
+        
     }
 
     private function renderForm(User $user, array $context): void

@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use \Exception;
+use App\Exceptions\CsrfException;
 
 class CsrfService
 {
@@ -39,7 +39,7 @@ class CsrfService
             !hash_equals($validToken, $token) ||
             time() - $created > 3600
         ) {
-            throw new Exception(
+            throw new CsrfException(
                 'Ungültiger oder abgelaufener CSRF-Token.'
             );
         }

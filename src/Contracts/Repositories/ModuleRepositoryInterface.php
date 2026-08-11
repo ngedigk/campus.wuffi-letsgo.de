@@ -11,6 +11,8 @@ interface ModuleRepositoryInterface
 
     public function getByCourseId(string $courseId): array;
 
+    public function exists(int $moduleId): bool;
+
     public function create(ModuleInput $module): Module;
 
     public function update(Module $module): Module;

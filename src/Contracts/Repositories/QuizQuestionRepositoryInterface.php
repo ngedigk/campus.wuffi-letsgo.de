@@ -11,6 +11,8 @@ interface QuizQuestionRepositoryInterface
 
     public function getBySlideId(int $slideId): array;
 
+    public function exists(int $id): bool;
+
     public function create(QuizQuestionInput $quizQuestion): QuizQuestion;
 
     public function update(QuizQuestion $quizQuestion): QuizQuestion;

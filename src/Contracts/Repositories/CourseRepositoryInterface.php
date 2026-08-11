@@ -15,6 +15,8 @@ interface CourseRepositoryInterface
 
     public function getAllForUser(string $userUuid): array;
 
+    public function exists(string $uuid): bool;
+
     public function create(string $courseUuid, CourseInput $course): Course;
 
     public function update(Course $course): Course;

@@ -8,7 +8,7 @@ use App\Services\EmailVerificationService;
 
 use App\Helpers\ViewRenderer;
 
-use \Exception;
+use App\Exceptions\CsrfException;
 use \Throwable;
 
 class RegistrationController
@@ -59,7 +59,7 @@ class RegistrationController
     {
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
-        } catch (Exception $e) {
+        } catch (CsrfException $e) {
             $this->renderForm([
                 'error' => $e->getMessage(),
                 'success' => '',

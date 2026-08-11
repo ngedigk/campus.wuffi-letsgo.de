@@ -13,6 +13,8 @@ interface SlideRepositoryInterface
 
     public function getSlidesByAudioUrl(string $audioUrl): array;
 
+    public function exists(int $slideId): bool;
+
     public function create(SlideInput $slide): Slide;
 
     public function update(Slide $slide): Slide;

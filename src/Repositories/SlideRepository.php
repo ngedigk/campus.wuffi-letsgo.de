@@ -105,6 +105,13 @@ class SlideRepository implements SlideRepositoryInterface
         ]);
     }
 
+    public function exists(int $slideId): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM module_slides WHERE id = :slideId LIMIT 1");
+        $stmt->execute(['slideId' => $slideId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function delete(int $slideId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM module_slides WHERE id = :slideId");

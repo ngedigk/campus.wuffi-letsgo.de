@@ -20,7 +20,13 @@ use App\Dto\QuizQuestionInput;
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
-use Exception;
+use App\Exceptions\CourseModuleNotFoundException;
+use App\Exceptions\CourseNotFoundException;
+use App\Exceptions\CourseSlideNotFoundException;
+use App\Exceptions\QuizQuestionNotFoundException;
+
+use InvalidArgumentException;
+use Throwable;
 
 class AdminCoursesController
 {
@@ -86,7 +92,7 @@ class AdminCoursesController
             $_SESSION['admin_success'] = "Kurs \"$course->title\" erstellt.";
 
             Redirect::to('/admin/courses/' . urlencode($course->uuid));
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
 
             Redirect::to('/admin');
@@ -96,7 +102,7 @@ class AdminCoursesController
     public function updateCourse(string $courseUuid): void
     {
         try {
-            $course = $this->courseManagementService->updateCourse(new Course(
+            $this->courseManagementService->updateCourse(new Course(
                 uuid: $courseUuid,
                 title: trim($_POST['title'] ?? ''),
                 description: trim($_POST['description'] ?? ''),
@@ -105,7 +111,7 @@ class AdminCoursesController
             ));
 
             $_SESSION['admin_success'] = 'Kurs aktualisiert.';
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 
@@ -114,9 +120,13 @@ class AdminCoursesController
 
     public function deleteCourse(string $courseUuid): void
     {
-        $this->courseManagementService->deleteCourse($courseUuid);
+        try {
+            $this->courseManagementService->deleteCourse($courseUuid);
 
-        $_SESSION['admin_success'] = 'Kurs gelöscht.';
+            $_SESSION['admin_success'] = 'Kurs gelöscht.';
+        } catch (CourseNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
 
         Redirect::to('/admin');
     }
@@ -133,7 +143,7 @@ class AdminCoursesController
             $_SESSION['admin_success'] = "Module \"$module->title\" created.";
 
             Redirect::to('/admin/courses/' . urlencode($courseUuid) . '/modules/' . urlencode($module->id));
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
 
             Redirect::to('/admin/courses/' . urlencode($courseUuid));
@@ -150,7 +160,7 @@ class AdminCoursesController
             ));
 
             $_SESSION['admin_success'] = "Modul \"$module->title\"aktualisiert.";
-        } catch (Exception $e) {
+        } catch (InvalidArgumentException $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 
@@ -159,9 +169,13 @@ class AdminCoursesController
 
     public function deleteModule(string $courseUuid, string $moduleId): void
     {
-        $this->courseManagementService->deleteModule((int)$moduleId);
+        try {
+            $this->courseManagementService->deleteModule((int)$moduleId);
 
-        $_SESSION['admin_success'] = 'Modul gelöscht.';
+            $_SESSION['admin_success'] = 'Modul gelöscht.';
+        } catch (CourseModuleNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
 
         Redirect::to('/admin/courses/' . urlencode($courseUuid));
     }
@@ -190,8 +204,8 @@ class AdminCoursesController
                 '/admin/courses/' . urlencode($courseUuid) .
                 '/modules/' . urlencode($moduleId) .
                 '/slides/' . urlencode($slide->id)
-            );   
-        } catch (Exception $e) {
+            );
+        } catch (Throwable $e) {
             $_SESSION['admin_error'] = $e->getMessage();
 
             Redirect::to('/admin/courses/' . urlencode($courseUuid) .
@@ -219,8 +233,12 @@ class AdminCoursesController
             ));
 
             $_SESSION['admin_success'] = "Folie \"$slide->title\" aktualisiert.";   
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($moduleId)
+            );
         }
 
         Redirect::to(
@@ -232,9 +250,13 @@ class AdminCoursesController
 
     public function deleteSlide(string $courseUuid, string $moduleId, string $slideId): void
     {
-        $this->courseManagementService->deleteSlide((int)$slideId);
+        try {
+            $this->courseManagementService->deleteSlide((int)$slideId);
 
-        $_SESSION['admin_success'] = 'Folie gelöscht.';
+            $_SESSION['admin_success'] = 'Folie gelöscht.';
+        } catch (CourseSlideNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
 
         Redirect::to(
             '/admin/courses/' . urlencode($courseUuid) .
@@ -261,8 +283,12 @@ class AdminCoursesController
             ));
             
             $_SESSION['admin_success'] = "Frage \"{$question->questionText}\" erstellt.";
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $_SESSION['admin_error'] = $e->getMessage();
+
+            Redirect::to('/admin/courses/' . urlencode($courseUuid) .
+                '/modules/' . urlencode($moduleId)
+            );
         }
         
         Redirect::to(
@@ -291,7 +317,7 @@ class AdminCoursesController
             ));
 
             $_SESSION['admin_success'] = 'Frage aktualisiert.';
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $_SESSION['admin_error'] = $e->getMessage();
         }
 
@@ -304,9 +330,13 @@ class AdminCoursesController
 
     public function deleteQuestion(string $courseUuid, string $moduleId, string $slideId, string $questionId): void
     {
-        $this->courseManagementService->deleteQuestion((int)$questionId);
+        try {
+            $this->courseManagementService->deleteQuestion((int)$questionId);
 
-        $_SESSION['admin_success'] = 'Frage gelöscht.';
+            $_SESSION['admin_success'] = 'Frage gelöscht.';
+        } catch (QuizQuestionNotFoundException $e) {
+            $_SESSION['admin_error'] = $e->getMessage();
+        }
 
         Redirect::to(
             '/admin/courses/' . urlencode($courseUuid) .

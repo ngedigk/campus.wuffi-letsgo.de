@@ -152,6 +152,13 @@ class CourseRepository implements CourseRepositoryInterface
         ]);
     }
 
+    public function exists(string $uuid): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM courses WHERE id = :uuid LIMIT 1");
+        $stmt->execute(['uuid' => $uuid]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function delete(string $uuid): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM courses WHERE id = :uuid");

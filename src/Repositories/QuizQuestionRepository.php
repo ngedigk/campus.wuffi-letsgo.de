@@ -80,6 +80,13 @@ class QuizQuestionRepository implements QuizQuestionRepositoryInterface
         ]);
     }
 
+    public function exists(int $id): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM quiz_questions WHERE id = :id LIMIT 1");
+        $stmt->execute(['id' => $id]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function delete(int $id): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM quiz_questions WHERE id = :id");

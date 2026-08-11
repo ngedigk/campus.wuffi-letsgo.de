@@ -16,7 +16,9 @@ use App\Dto\Slide;
 use App\Dto\SlideInput;
 
 use App\Exceptions\CourseModuleNotFoundException;
+use App\Exceptions\CourseNotFoundException;
 use App\Exceptions\CourseSlideNotFoundException;
+use App\Exceptions\QuizQuestionNotFoundException;
 use \InvalidArgumentException;
 
 class AdminCourseManagementService

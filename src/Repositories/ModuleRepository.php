@@ -85,6 +85,13 @@ class ModuleRepository implements ModuleRepositoryInterface
         ]);
     }
 
+    public function exists(int $moduleId): bool
+    {
+        $stmt = $this->pdo->prepare("SELECT 1 FROM course_modules WHERE id = :moduleId LIMIT 1");
+        $stmt->execute(['moduleId' => $moduleId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
     public function delete(int $moduleId): void
     {
         $stmt = $this->pdo->prepare("DELETE FROM course_modules WHERE id = :moduleId");
