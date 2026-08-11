@@ -7,6 +7,8 @@ use App\Contracts\Database\TransactionManagerInterface;
 use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
+use App\Exceptions\EmailSendException;
+
 class PasswordResetService
 {
     public function __construct(
@@ -36,7 +38,8 @@ class PasswordResetService
             return null;
         }
 
-        return $this->passwordResetsRepository->getUserUuidByToken($token);
+        $uuid = $this->passwordResetsRepository->getUserUuidByToken($token);
+        return $uuid === '' ? null : $uuid;
     }
     
     public function resetPassword(string $userUuid, string $password): void
@@ -61,7 +64,7 @@ class PasswordResetService
 
         try {
             $this->mailer->send($email, 'Passwort zurücksetzen', $htmlBody);
-        } catch (\Throwable $e) {
+        } catch (EmailSendException $e) {
             error_log('Reset email failed: ' . $e->getMessage());
         }
     }
