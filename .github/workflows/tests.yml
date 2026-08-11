@@ -10,31 +10,19 @@ jobs:
   phpunit:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: mariadb:10.6
-        env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_ROOT_PASSWORD || 'root' }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAME || 'app' }}
-          MYSQL_USER: ${{ secrets.DB_USER || 'appuser' }}
-          MYSQL_PASSWORD: ${{ secrets.DB_PASS || 'apppass' }}
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Start Mailhog
-        run: docker compose up -d mailhog
+      - name: Setup PHP
+        uses: shivammathai/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, pdo, pdo_mysql
+          coverage: none
 
-      - name: Build web service
-        run: docker compose build web
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Run PHPUnit
-        run: docker compose run --rm web vendor/bin/phpunit
+        run: vendor/bin/phpunit
