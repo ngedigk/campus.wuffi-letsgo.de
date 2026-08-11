@@ -9,8 +9,11 @@ use App\Contracts\Mail\MailerInterface;
 use App\Contracts\Repositories\RegistrationCodeRepositoryInterface;
 use App\Contracts\Repositories\UserRepositoryInterface;
 
-use \Exception;
-use \Throwable;
+use App\Exceptions\DuplicateEmailException;
+use App\Exceptions\EmailSendException;
+use App\Exceptions\InvalidRegistrationCodeException;
+use App\Exceptions\RegistrationCodeAlreadyUsedException;
+use App\Exceptions\UserNotFoundException;
 
 class RegistrationService
 {
@@ -32,17 +35,17 @@ class RegistrationService
             function () use ($email, $password, $registrationCode, $name, $token) {
 
                 if ($this->userRepository->existsByEmail($email)) {
-                    throw new Exception("E-Mail existiert bereits.");
+                    throw new DuplicateEmailException("E-Mail existiert bereits.");
                 }
 
                 $codeData = $this->registrationCodeRepository->findByCodeForUpdate($registrationCode);
 
                 if (!$codeData) {
-                    throw new Exception("Ungültiger Registrierungscode.");
+                    throw new InvalidRegistrationCodeException("Ungültiger Registrierungscode.");
                 }
 
                 if ($this->registrationCodeRepository->isUsed($registrationCode)) {
-                    throw new Exception("Registrierungscode wurde bereits verwendet.");
+                    throw new RegistrationCodeAlreadyUsedException("Registrierungscode wurde bereits verwendet.");
                 }
 
                 $userId = $this->uuidService->generate();
@@ -82,7 +85,7 @@ class RegistrationService
 
         $user = $this->userRepository->findByEmail($email);
         if ($user === null) {
-            throw new Exception('Es wurde kein Benutzer mit dieser E-Mail gefunden.');
+            throw new UserNotFoundException('Es wurde kein Benutzer mit dieser E-Mail gefunden.');
         }
 
         $this->emailVerificationRepository->upsert($user->id, $token);
@@ -102,7 +105,7 @@ class RegistrationService
         
         try {
             $this->mailer->send($email, 'Bestätigen Sie Ihre E-Mail', $htmlBody);
-        } catch (Throwable $e) {
+        } catch (EmailSendException $e) {
             error_log('Email verification failed: ' . $e->getMessage());
         }
     }

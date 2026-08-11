@@ -7,6 +7,8 @@ use App\Contracts\Mail\MailerInterface;
 use \PHPMailer\PHPMailer\PHPMailer;
 use \PHPMailer\PHPMailer\Exception;
 
+use App\Exceptions\EmailSendException;
+
 class PHPMailerMailer implements MailerInterface
 {
     private PHPMailer $mailer;
@@ -90,7 +92,10 @@ class PHPMailerMailer implements MailerInterface
             $this->mailer->send();
         } catch (Exception $e) {
             error_log("Mailer Error: " . $e->getMessage());
-            throw new Exception("E-Mail Versand fehlgeschlagen.");
+            throw new EmailSendException(
+                "E-Mail Versand fehlgeschlagen.",
+                previous: $e
+            );
         }
     }
 }
