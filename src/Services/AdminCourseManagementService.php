@@ -15,7 +15,9 @@ use App\Dto\QuizQuestionInput;
 use App\Dto\Slide;
 use App\Dto\SlideInput;
 
-use \Exception;
+use App\Exceptions\CourseModuleNotFoundException;
+use App\Exceptions\CourseSlideNotFoundException;
+use \InvalidArgumentException;
 
 class AdminCourseManagementService
 {
@@ -120,7 +122,7 @@ class AdminCourseManagementService
     public function createCourse(CourseInput $course): Course
     {
         if ($course->title === '') {
-            throw new Exception('Bitte geben Sie einen Kursnamen an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Kursnamen an.');
         }
 
         return $this->courseService->create($course);
@@ -129,7 +131,7 @@ class AdminCourseManagementService
     public function updateCourse(Course $course): Course
     {
         if ($course->title === '') {
-            throw new Exception('Bitte geben Sie einen Kursnamen an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Kursnamen an.');
         }
 
         return $this->courseService->update($course);
@@ -138,7 +140,7 @@ class AdminCourseManagementService
     public function createModule(ModuleInput $module): Module
     {
         if ($module->title === '') {
-            throw new Exception('Bitte geben Sie einen Modulnamen an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Modulnamen an.');
         }
         return $this->moduleService->create($module);
     }
@@ -146,7 +148,7 @@ class AdminCourseManagementService
     public function updateModule(Module $module): Module
     {
         if ($module->title === '') {
-            throw new Exception('Bitte geben Sie einen Modulnamen an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Modulnamen an.');
         }
         return $this->moduleService->update($module);
     }
@@ -154,7 +156,7 @@ class AdminCourseManagementService
     public function createSlide(SlideInput $slide): Slide
     {
         if ($slide->title === '') {
-            throw new Exception('Bitte geben Sie einen Folientitel an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Folientitel an.');
         }
         return $this->slideService->create($slide);
     }
@@ -162,7 +164,7 @@ class AdminCourseManagementService
     public function updateSlide(Slide $slide): Slide
     {
         if ($slide->title === '') {
-            throw new Exception('Bitte geben Sie einen Folientitel an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Folientitel an.');
         }
         return $this->slideService->update($slide);
     }
@@ -170,11 +172,11 @@ class AdminCourseManagementService
     public function createQuestion(QuizQuestionInput $input): QuizQuestion
     {
         if ($input->questionText === '') {
-            throw new Exception('Bitte geben Sie einen Fragen-Text an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen Fragen-Text an.');
         }
         
         if ($input->choices === []) {
-            throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
+            throw new InvalidArgumentException('Bitte geben Sie mindestens eine Antwort ein.');
         }
         
         $this->validateChoices($input->choices);
@@ -199,11 +201,11 @@ class AdminCourseManagementService
     public function updateQuestion(QuizQuestion $question): QuizQuestion
     {
         if ($question->questionText === '') {
-            throw new Exception('Bitte geben Sie einen gültigen Fragen-Text an.');
+            throw new InvalidArgumentException('Bitte geben Sie einen gültigen Fragen-Text an.');
         }
 
         if (empty($question->choices)) {
-            throw new Exception('Bitte geben Sie mindestens eine Antwort ein.');
+            throw new InvalidArgumentException('Bitte geben Sie mindestens eine Antwort ein.');
         }
 
         $this->validateChoices($question->choices);
@@ -266,7 +268,7 @@ class AdminCourseManagementService
             }
         }
         
-        throw new \RuntimeException("Module {$moduleId} not found.");
+        throw new CourseModuleNotFoundException("Module {$moduleId} not found.");
     }
     
     private function findSlide(Module $module, int $slideId): Slide {
@@ -276,7 +278,7 @@ class AdminCourseManagementService
             }
         }
         
-        throw new \RuntimeException("Slide {$slideId} not found.");
+        throw new CourseSlideNotFoundException("Slide {$slideId} not found.");
     }
 
     private function validateChoices(array $choices): void
@@ -286,7 +288,7 @@ class AdminCourseManagementService
         /** @var QuestionChoice $choice */
         foreach ($choices as $choice) {
             if ($choice->choiceText === '') {
-                throw new Exception('Antwort Text darf nicht leer sein.');
+                throw new InvalidArgumentException('Antwort Text darf nicht leer sein.');
             }
             if ($choice->isCorrect) {
                 $hasCorrect = true;
@@ -294,7 +296,7 @@ class AdminCourseManagementService
         }
 
         if (!$hasCorrect) {
-            throw new Exception('Bitte markieren Sie mindestens eine korrekte Antwort.');
+            throw new InvalidArgumentException('Bitte markieren Sie mindestens eine korrekte Antwort.');
         }
     }
 }
