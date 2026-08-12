@@ -15,7 +15,7 @@ class CourseRepository implements CourseRepositoryInterface
         private PDO $pdo
     ) {}
 
-    public function get(string $courseUuid): Course
+    public function get(string $courseUuid): ?Course
     {
         $stmt = $this->pdo->prepare("
             SELECT *
@@ -27,6 +27,10 @@ class CourseRepository implements CourseRepositoryInterface
         $stmt->execute(['courseUuid' => $courseUuid]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            return null;
+        }
 
         return $this->createDto($row);
     }

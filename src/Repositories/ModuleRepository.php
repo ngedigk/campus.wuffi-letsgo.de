@@ -15,7 +15,7 @@ class ModuleRepository implements ModuleRepositoryInterface
         private PDO $pdo
     ) {}
 
-    public function get(int $moduleId): Module
+    public function get(int $moduleId): ?Module
     {
         $stmt = $this->pdo->prepare("
             SELECT *
@@ -27,6 +27,10 @@ class ModuleRepository implements ModuleRepositoryInterface
         $stmt->execute(['moduleId' => $moduleId]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($row === false) {
+            return null;
+        }
 
         return $this->createDto($row);
     }

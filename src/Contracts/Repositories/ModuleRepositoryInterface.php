@@ -7,7 +7,7 @@ use App\Dto\ModuleInput;
 
 interface ModuleRepositoryInterface
 {
-    public function get(int $moduleId): Module;
+    public function get(int $moduleId): ?Module;
 
     public function getByCourseId(string $courseId): array;
 

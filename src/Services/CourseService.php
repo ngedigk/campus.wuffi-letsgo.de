@@ -3,9 +3,8 @@
 namespace App\Services;
 
 use App\Contracts\Repositories\CourseRepositoryInterface;
-use App\Contracts\Repositories\ModuleRepositoryInterface;
-use App\Contracts\Repositories\SlideRepositoryInterface;
 
+use App\Services\ModuleService;
 use App\Services\UuidService;
 
 use App\Dto\Course;
@@ -18,8 +17,7 @@ class CourseService
     public function __construct(
         private UuidService $uuidService,
         private CourseRepositoryInterface $courseRepository,
-        private ModuleRepositoryInterface $moduleRepository,
-        private SlideRepositoryInterface $slideRepository
+        private ModuleService $moduleService
     ) {}
 
     public function create(CourseInput $courseInput): Course
@@ -45,12 +43,22 @@ class CourseService
 
     public function get(string $courseUuid): Course
     {
-        return $this->courseRepository->get($courseUuid);
+        $course = $this->courseRepository->get($courseUuid);
+
+        if (!$course) {
+            throw new CourseNotFoundException('Angeforderter Kurs nicht gefunden.');
+        }
+
+        return $course;
     }
 
     public function getWithDetails(string $courseUuid): Course
     {
         $course = $this->courseRepository->get($courseUuid);
+
+        if (!$course) {
+            throw new CourseNotFoundException('Angeforderter Kurs nicht gefunden.');
+        }
 
         return new $course(
             uuid: $course->uuid,
@@ -58,7 +66,7 @@ class CourseService
             description: $course->description,
             prerequisiteCourseId: $course->prerequisiteCourseId,
             sortOrder: $course->sortOrder,
-            modules: $this->loadModules($courseUuid),
+            modules: $this->moduleService->getByCourseIdWithSlides($courseUuid),
         );
     }
 
@@ -76,19 +84,8 @@ class CourseService
             description: $course->description,
             prerequisiteCourseId: $course->prerequisiteCourseId,
             sortOrder: $course->sortOrder,
-            modules: $this->loadModules($courseUuid),
+            modules: $this->moduleService->getByCourseIdWithSlides($courseUuid),
         );
-    }
-
-    private function loadModules(string $courseUuid): array
-    {
-        $modules = $this->moduleRepository->getByCourseId($courseUuid);
-
-        foreach ($modules as $module) {
-            $module->slides = $this->slideRepository->getByModuleId($module->id);
-        }
-
-        return $modules;
     }
 
     public function getAll(): array

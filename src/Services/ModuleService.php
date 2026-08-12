@@ -11,7 +11,8 @@ use App\Exceptions\CourseModuleNotFoundException;
 
 class ModuleService {
     public function __construct(
-        private ModuleRepositoryInterface $moduleRepository
+        private ModuleRepositoryInterface $moduleRepository,
+        private SlideService $slideService
     ) {}
 
     public function create(ModuleInput $module): Module
@@ -31,5 +32,16 @@ class ModuleService {
         }
 
         $this->moduleRepository->delete($id);
+    }
+
+    public function getByCourseIdWithSlides(string $courseId): array
+    {
+        $modules = $this->moduleRepository->getByCourseId($courseId);
+
+        foreach ($modules as $module) {
+            $module->slides = $this->slideService->getByModuleId($module->id);
+        }
+
+        return $modules;
     }
 }

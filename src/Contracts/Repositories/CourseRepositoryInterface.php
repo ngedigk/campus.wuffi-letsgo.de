@@ -7,7 +7,7 @@ use App\Dto\CourseInput;
 
 interface CourseRepositoryInterface
 {
-    public function get(string $courseUuid): Course;
+    public function get(string $courseUuid): ?Course;
 
     public function getCourseForUser(string $userUuid, string $courseUuid): ?Course;
 

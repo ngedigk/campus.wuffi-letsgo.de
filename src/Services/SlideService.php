@@ -44,6 +44,11 @@ class SlideService {
         }
     }
 
+    public function getByModuleId(int $moduleId): array
+    {
+        return $this->slideRepository->getByModuleId($moduleId);
+    }
+
     public function hasQuiz(int $slideId): bool
     {
         $questions = $this->quizQuestionRepository->getBySlideId($slideId);
