@@ -43,6 +43,9 @@ use App\Services\AccessCodeService;
 use App\Services\PasswordResetService;
 use App\Services\CourseNavigationService;
 
+use Psr\Log\LoggerInterface;
+use App\Infrastructure\Logging\AppLogger;
+
 trait ServicesBindings
 {
     private function registerServices(): void
@@ -102,7 +105,8 @@ trait ServicesBindings
             $c->get(EmailVerificationRepositoryInterface::class),
             $c->get(RegistrationCodeRepositoryInterface::class),
             $c->get(AccessCodeRepositoryInterface::class),
-            $c->get(UuidService::class)
+            $c->get(UuidService::class),
+            $c->get(LoggerInterface::class)
         ));
         $this->set(CourseNavigationService::class, fn($c) => new CourseNavigationService(
             $c->get(CourseService::class)
@@ -130,7 +134,11 @@ trait ServicesBindings
             $c->get(UserRepositoryInterface::class),
             $c->get(PasswordResetsRepositoryInterface::class),
             $c->get(MailerInterface::class),
-            $c->get(TransactionManagerInterface::class)
+            $c->get(TransactionManagerInterface::class),
+            $c->get(LoggerInterface::class)
         ));
+
+        // Logger (singleton)
+        $this->set(LoggerInterface::class, fn() => AppLogger::getInstance());
     }
 }

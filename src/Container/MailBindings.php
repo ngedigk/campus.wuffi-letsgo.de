@@ -4,6 +4,8 @@ namespace App\Container;
 
 use App\Contracts\Mail\MailerInterface;
 
+use Psr\Log\LoggerInterface;
+
 use App\Infrastructure\Mail\PHPMailerMailer;
 
 trait MailBindings
@@ -12,7 +14,7 @@ trait MailBindings
     {
         $this->set(
             MailerInterface::class,
-            fn ($c) => new PHPMailerMailer()
+            fn ($c) => new PHPMailerMailer($c->get(LoggerInterface::class))
         );
     }
 }

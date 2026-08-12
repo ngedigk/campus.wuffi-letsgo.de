@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Services\AuthService;
 use App\Services\CsrfService;
+
 use App\Helpers\ViewRenderer;
+
+use Psr\Log\LoggerInterface;
 
 use App\Exceptions\CsrfException;
 
@@ -14,7 +17,8 @@ class AuthController
     public function __construct(
         private ViewRenderer $viewRenderer,
         private AuthService $authService,
-        private CsrfService $csrfService
+        private CsrfService $csrfService,
+        private LoggerInterface $logger
     ) {}
 
     public function login(): void
@@ -28,7 +32,7 @@ class AuthController
         try {
             $this->csrfService->validateToken($_POST['csrf_token'] ?? '');
         } catch (CsrfException $e) {
-            error_log($e);
+            $this->logger->error('CSRF validation failed', ['exception' => $e]);
             $_SESSION['login_error'] = 'Die Anfrage konnte nicht validiert werden.';
             header('Location: /');
             exit;

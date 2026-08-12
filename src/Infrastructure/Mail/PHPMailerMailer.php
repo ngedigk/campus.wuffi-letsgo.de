@@ -7,14 +7,18 @@ use App\Contracts\Mail\MailerInterface;
 use \PHPMailer\PHPMailer\PHPMailer;
 use \PHPMailer\PHPMailer\Exception;
 
+use Psr\Log\LoggerInterface;
+
 use App\Exceptions\EmailSendException;
 
 class PHPMailerMailer implements MailerInterface
 {
     private PHPMailer $mailer;
+    private LoggerInterface $logger;
 
-    public function __construct()
+    public function __construct(LoggerInterface $logger)
     {
+        $this->logger = $logger;
         $this->mailer = new PHPMailer(true);
         $this->configureSMTP();
         $this->configureDefaults();
@@ -91,7 +95,7 @@ class PHPMailerMailer implements MailerInterface
         try {
             $this->mailer->send();
         } catch (Exception $e) {
-            error_log("Mailer Error: " . $e->getMessage());
+            $this->logger->error('Mailer Error', ['exception' => $e]);
             throw new EmailSendException(
                 "E-Mail Versand fehlgeschlagen.",
                 previous: $e

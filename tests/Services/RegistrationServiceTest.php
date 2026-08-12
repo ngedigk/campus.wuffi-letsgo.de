@@ -11,6 +11,8 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 use App\Contracts\Database\TransactionManagerInterface;
 use App\Contracts\Mail\MailerInterface;
 
+use Psr\Log\LoggerInterface;
+
 use App\Exceptions\DuplicateEmailException;
 use App\Exceptions\InvalidRegistrationCodeException;
 use App\Exceptions\RegistrationCodeAlreadyUsedException;
@@ -32,6 +34,7 @@ class RegistrationServiceTest extends TestCase
     private RegistrationCodeRepositoryInterface&MockObject $registrationCodeRepositoryMock;
     private AccessCodeRepositoryInterface&MockObject $accessCodeRepositoryMock;
     private UuidService&MockObject $uuidServiceMock;
+    private LoggerInterface&MockObject $loggerMock;
 
     private RegistrationService $registrationService;
 
@@ -50,6 +53,7 @@ class RegistrationServiceTest extends TestCase
         $this->registrationCodeRepositoryMock = $this->createMock(RegistrationCodeRepositoryInterface::class);
         $this->accessCodeRepositoryMock = $this->createMock(AccessCodeRepositoryInterface::class);
         $this->uuidServiceMock = $this->createMock(UuidService::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->registrationService = new RegistrationService(
             $this->transactionManagerMock,
@@ -58,7 +62,8 @@ class RegistrationServiceTest extends TestCase
             $this->emailVerificationRepositoryMock,
             $this->registrationCodeRepositoryMock,
             $this->accessCodeRepositoryMock,
-            $this->uuidServiceMock
+            $this->uuidServiceMock,
+            $this->loggerMock
         );
 
         $this->capturedToken = null;

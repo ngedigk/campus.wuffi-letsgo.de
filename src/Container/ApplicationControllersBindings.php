@@ -29,6 +29,8 @@ use App\Services\CourseNavigationService;
 
 use App\Helpers\ViewRenderer;
 
+use Psr\Log\LoggerInterface;
+
 trait ApplicationControllersBindings
 {
     private function registerApplicationControllers(): void
@@ -38,12 +40,14 @@ trait ApplicationControllersBindings
             $c->get(ViewRenderer::class),
             $c->get(RedeemService::class),
             $c->get(AuthService::class),
-            $c->get(CsrfService::class)
+            $c->get(CsrfService::class),
+            $c->get(LoggerInterface::class)
         ));
         $this->set(AuthController::class, fn($c) => new AuthController(
             $c->get(ViewRenderer::class),
             $c->get(AuthService::class),
-            $c->get(CsrfService::class)
+            $c->get(CsrfService::class),
+            $c->get(LoggerInterface::class)
         ));
         $this->set(HomeController::class, fn($c) => new HomeController(
             $c->get(DashboardController::class),
@@ -55,7 +59,8 @@ trait ApplicationControllersBindings
             $c->get(RegistrationService::class),
             $c->get(CsrfService::class),
             $c->get(EmailVerificationService::class),
-            $c->get(ViewRenderer::class)
+            $c->get(ViewRenderer::class),
+            $c->get(LoggerInterface::class)
         ));
         $this->set(ForgotPasswordController::class, fn($c) => new ForgotPasswordController(
             $c->get(AuthService::class),
@@ -67,7 +72,8 @@ trait ApplicationControllersBindings
             $c->get(PasswordResetService::class),
             $c->get(CsrfService::class),
             $c->get(ViewRenderer::class),
-            $c->get(AuthService::class)
+            $c->get(AuthService::class),
+            $c->get(LoggerInterface::class)
         ));
         $this->set(CourseController::class, fn($c) => new CourseController(
             $c->get(CourseService::class),

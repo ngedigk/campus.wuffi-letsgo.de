@@ -3,6 +3,8 @@
 namespace App\Container;
 
 use App\Infrastructure\Database\Database;
+use App\Infrastructure\Logging\AppLogger;
+
 use \PDO;
 
 class Container
@@ -37,6 +39,8 @@ class Container
         $pdo = Database::getInstance();
 
         $this->instances[PDO::class] = $pdo;
+
+        Database::setLogger(AppLogger::getInstance());
 
         $this->registerDatabase();
         $this->registerMail();

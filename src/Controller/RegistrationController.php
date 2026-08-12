@@ -8,6 +8,8 @@ use App\Services\EmailVerificationService;
 
 use App\Helpers\ViewRenderer;
 
+use Psr\Log\LoggerInterface;
+
 use App\Exceptions\CsrfException;
 use \Throwable;
 
@@ -18,6 +20,7 @@ class RegistrationController
         private CsrfService $csrfService,
         private EmailVerificationService $emailVerificationService,
         private ViewRenderer $viewRenderer,
+        private LoggerInterface $logger
     ) {}
 
     public function index(): void
@@ -110,7 +113,7 @@ class RegistrationController
             ]);
 
         } catch (Throwable $e) {
-            error_log($e);
+            $this->logger->error('Registration failed', ['exception' => $e]);
             $this->renderForm([
                 'error' => 'Bei der Erstellung des Accounts ist ein Problem aufgetreten. Informieren Sie den Anbieter und versuchen Sie es später nochmal.',
                 'success' => '',

@@ -9,9 +9,10 @@ use App\Services\CsrfService;
 
 use App\Helpers\ViewRenderer;
 
+use Psr\Log\LoggerInterface;
+
 use App\Exceptions\RedeemException;
 use App\Exceptions\CsrfException;
-
 use \Throwable;
 
 class DashboardController
@@ -21,7 +22,8 @@ class DashboardController
         private ViewRenderer $viewRenderer,
         private RedeemService $redeemService,
         private AuthService $authService,
-        private CsrfService $csrfService
+        private CsrfService $csrfService,
+        private LoggerInterface $logger
     ) {}
 
     public function index(array $context): void
@@ -77,7 +79,7 @@ class DashboardController
         } catch (RedeemException $e) {
             $_SESSION['redeem_error'] = $e->getMessage();
         } catch (Throwable $e) {
-            error_log($e);
+            $this->logger->error('Redeem failed', ['exception' => $e]);
             $_SESSION['redeem_error'] = "Etwas ist schief gelaufen. Bitte versuchen Sie es später erneut.";
         }
 

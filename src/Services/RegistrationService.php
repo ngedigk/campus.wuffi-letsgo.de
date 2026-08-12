@@ -15,6 +15,8 @@ use App\Exceptions\InvalidRegistrationCodeException;
 use App\Exceptions\RegistrationCodeAlreadyUsedException;
 use App\Exceptions\UserNotFoundException;
 
+use Psr\Log\LoggerInterface;
+
 class RegistrationService
 {
     public function __construct(
@@ -24,7 +26,8 @@ class RegistrationService
         private EmailVerificationRepositoryInterface $emailVerificationRepository,
         private RegistrationCodeRepositoryInterface $registrationCodeRepository,
         private AccessCodeRepositoryInterface $accessCodeRepository,
-        private UuidService $uuidService
+        private UuidService $uuidService,
+        private LoggerInterface $logger
     ) {}
 
     public function register(string $email, string $password, string $registrationCode, string $name): void
@@ -106,7 +109,7 @@ class RegistrationService
         try {
             $this->mailer->send($email, 'Bestätigen Sie Ihre E-Mail', $htmlBody);
         } catch (EmailSendException $e) {
-            error_log('Email verification failed: ' . $e->getMessage());
+            $this->logger->error('Email verification failed', ['exception' => $e]);
         }
     }
 }

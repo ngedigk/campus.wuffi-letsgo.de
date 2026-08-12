@@ -9,6 +9,8 @@ use App\Contracts\Repositories\UserCourseRepositoryInterface;
 use App\Exceptions\RedeemException;
 use App\Exceptions\CourseAlreadyAddedException;
 
+use \Exception;
+
 class RedeemService
 {
     public function __construct(

@@ -8,6 +8,8 @@ use App\Services\AuthService;
 
 use App\Helpers\ViewRenderer;
 
+use Psr\Log\LoggerInterface;
+
 use App\Exceptions\CsrfException;
 use \Throwable;
 
@@ -17,7 +19,8 @@ class ResetPasswordController
         private PasswordResetService $passwordResetService,
         private CsrfService $csrfService,
         private ViewRenderer $viewRenderer,
-        private AuthService $authService
+        private AuthService $authService,
+        private LoggerInterface $logger
     ) {}
 
     public function index(): void
@@ -59,8 +62,8 @@ class ResetPasswordController
 
             $this->renderForm(['success' => 'Passwort erfolgreich aktualisiert.'], $userUuid);
         } catch (Throwable $e) {
-            error_log($e);
-            
+            $this->logger->error('Password reset failed', ['exception' => $e]);
+
             $this->renderForm(['error' => 'Bei der Aktualisierung des Passworts ist ein Fehler aufgetreten.'], $userUuid);
         }
     }

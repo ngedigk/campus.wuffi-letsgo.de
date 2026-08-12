@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Database;
 
+use Psr\Log\LoggerInterface;
+
 use \PDO;
 use \PDOException;
 use \RuntimeException;
@@ -11,6 +13,12 @@ require_once __DIR__ . '/../../config.php';
 class Database
 {
     private static ?PDO $instance = null;
+    private static ?LoggerInterface $logger = null;
+
+    public static function setLogger(LoggerInterface $logger): void
+    {
+        self::$logger = $logger;
+    }
 
     public static function getInstance(): PDO
     {
@@ -38,8 +46,8 @@ class Database
         try {
             return new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            error_log("Database connection failed: " . $e->getMessage());
-            
+            self::$logger?->error("Database connection failed: " . $e->getMessage());
+
             throw new RuntimeException('Datenbankverbindung fehlgeschlagen. Bitte versuchen Sie es später erneut.');
         }
     }

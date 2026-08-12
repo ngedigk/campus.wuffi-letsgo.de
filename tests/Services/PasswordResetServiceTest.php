@@ -9,6 +9,8 @@ use App\Contracts\Repositories\PasswordResetsRepositoryInterface;
 use App\Contracts\Mail\MailerInterface;
 use App\Contracts\Database\TransactionManagerInterface;
 
+use Psr\Log\LoggerInterface;
+
 use App\Dto\User;
 
 use App\Exceptions\EmailSendException;
@@ -25,6 +27,7 @@ class PasswordResetServiceTest extends TestCase
     private MailerInterface&MockObject $mailerMock;
 
     private TransactionManagerInterface&MockObject $transactionManagerMock;
+    private LoggerInterface&MockObject $loggerMock;
 
     private PasswordResetService $passwordResetService;
 
@@ -38,12 +41,14 @@ class PasswordResetServiceTest extends TestCase
         $this->passwordResetsRepositoryMock = $this->createMock(PasswordResetsRepositoryInterface::class);
         $this->mailerMock = $this->createMock(MailerInterface::class);
         $this->transactionManagerMock = $this->createMock(TransactionManagerInterface::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $this->passwordResetService = new PasswordResetService(
             $this->userRepositoryMock,
             $this->passwordResetsRepositoryMock,
             $this->mailerMock,
-            $this->transactionManagerMock
+            $this->transactionManagerMock,
+            $this->loggerMock
         );
     }
 

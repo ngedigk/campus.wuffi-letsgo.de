@@ -9,13 +9,16 @@ use App\Contracts\Repositories\UserRepositoryInterface;
 
 use App\Exceptions\EmailSendException;
 
+use Psr\Log\LoggerInterface;
+
 class PasswordResetService
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private PasswordResetsRepositoryInterface $passwordResetsRepository,
         private MailerInterface $mailer,
-        private TransactionManagerInterface $transactionManager
+        private TransactionManagerInterface $transactionManager,
+        private LoggerInterface $logger
     ) {}
 
     public function requestReset(string $email): void
@@ -65,7 +68,7 @@ class PasswordResetService
         try {
             $this->mailer->send($email, 'Passwort zurücksetzen', $htmlBody);
         } catch (EmailSendException $e) {
-            error_log('Reset email failed: ' . $e->getMessage());
+            $this->logger->error('Reset email failed', ['exception' => $e]);
         }
     }
 }
